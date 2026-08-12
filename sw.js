@@ -1,0 +1,5 @@
+const CACHE="colosseum-restoration-v9";
+const LOCAL=["./","./index.html","./styles.css","./app.js","./pdf.js","./manifest.webmanifest","./assets/icon-192.svg","./assets/icon-512.svg","./assets/pokeball-active.svg","./assets/pokeball-inactive.svg"];
+self.addEventListener("install",event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE).then(c=>c.addAll(LOCAL)))});
+self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+self.addEventListener("fetch",event=>{if(event.request.method!=="GET")return;const u=new URL(event.request.url);if(u.pathname.includes("/assets/")){event.respondWith(caches.match(event.request).then(c=>c||fetch(event.request).then(r=>{const cp=r.clone();caches.open(CACHE).then(x=>x.put(event.request,cp));return r})));return;}event.respondWith(fetch(event.request).then(r=>{const cp=r.clone();caches.open(CACHE).then(x=>x.put(event.request,cp));return r}).catch(()=>caches.match(event.request).then(r=>r||caches.match("./index.html"))))});
