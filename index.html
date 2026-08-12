@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Colosseum Restoration</title>
+<style>
+:root{
+ --bg:#050505;--panel:#080808;--line:#e8e8e8;--red:#ff3434;--yellow:#ffe95b;
+ --font:"Courier New",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#111;color:#f5f5f5;font-family:var(--font);font-weight:700}
+button,input,textarea{font:inherit}
+.app-shell{overflow:auto;min-height:100vh;padding:12px;background:#111}
+.report{width:1180px;min-width:1180px;margin:0 auto;background:var(--bg);border:3px solid var(--line);box-shadow:0 0 0 4px #111,0 0 0 6px var(--line);padding:16px}
+.pixel-panel{border:2px solid var(--line);background:var(--panel);box-shadow:inset 0 0 0 2px #171717;position:relative}
+.pixel-panel:before,.pixel-panel:after{content:"";position:absolute;width:8px;height:8px;background:var(--bg);border:2px solid var(--line)}
+.pixel-panel:before{left:-5px;top:-5px}.pixel-panel:after{right:-5px;bottom:-5px}
+.hero{display:grid;grid-template-columns:120px 1fr 120px;align-items:center;padding:16px 22px;margin-bottom:16px}
+.hero-title{text-align:center}
+h1{font-size:32px;line-height:1.2;margin:0;letter-spacing:1px}
+h2{font-size:18px;color:var(--red);margin:0 0 14px}
+.pixel-badge{width:72px;height:72px;margin:auto;display:grid;place-items:center;border:3px solid var(--line);color:var(--yellow);font-size:24px}
+.pokeball-row{display:flex;justify-content:center;gap:10px;margin-top:12px}
+.ball{width:18px;height:18px;min-width:18px;min-height:18px;aspect-ratio:1/1;flex:0 0 18px;border:2px solid #7a7a7a;border-radius:50%;display:inline-block;background:linear-gradient(#242424 0 45%,#6a6a6a 45% 55%,#242424 55%);position:relative;opacity:.38}
+.ball:after{content:"";position:absolute;width:5px;height:5px;border:2px solid #777;background:#202020;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
+.ball.on{opacity:1;border-color:#fff;background:linear-gradient(#ff2020 0 45%,#fff 45% 55%,#fff 55%);filter:drop-shadow(0 0 2px rgba(255,40,40,.75))}
+.ball.on:after{border-color:#fff;background:#111}
+.section{padding:16px;margin-bottom:16px}
+.form-grid{display:grid;grid-template-columns:1.25fr .7fr .7fr;gap:12px 18px}
+.form-grid label{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.form-grid input{min-width:0;flex:1;background:#050505;border:0;border-bottom:2px solid #858585;color:white;padding:8px 6px;border-radius:0}
+.compare-head{display:grid;grid-template-columns:1fr 1fr;text-align:center;gap:28px}
+.block-title{color:var(--yellow);font-size:18px;text-align:center;margin:6px 0 10px}
+.photo-pair-block{margin:8px 0 14px}
+.second-photo-block{border-top:2px solid #777;padding-top:14px;margin-top:16px}
+.photo-pair{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.photo-box{width:min(100%,330px);aspect-ratio:63/88;justify-self:center;background:#020202;border:2px solid var(--line);color:#aaa;cursor:pointer;position:relative;padding:0;overflow:hidden}
+.photo-box img{width:100%;height:100%;object-fit:contain;background:#000}
+.photo-box span{position:absolute;inset:0;display:grid;place-items:center}
+.photo-box.has-photo span{display:none}
+.rating-block{border-top:1px dashed #666;padding-top:8px;margin-top:8px}
+.rating-head{display:grid;grid-template-columns:1fr 220px 1fr;gap:10px;align-items:center;text-align:center}
+.rating-head h2{margin:0}
+.rating-head .block-title{margin:0}
+.rating-row{display:grid;grid-template-columns:1fr 220px 1fr;align-items:center;gap:10px;padding:5px 0}
+.rating-row .criterion{text-align:center;font-size:16px}
+.scale{display:flex;justify-content:center;gap:7px}
+.scale button{border:0;background:transparent;padding:0;cursor:pointer;line-height:0}
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.note-box{padding:14px}
+.work-checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+.work-item{display:flex;align-items:center;gap:10px;background:transparent;color:#f5f5f5;border:0;text-align:left;padding:5px 2px;cursor:pointer}
+.work-item.active .ball{opacity:1;border-color:#fff;background:linear-gradient(#ff2020 0 45%,#fff 45% 55%,#fff 55%);filter:drop-shadow(0 0 2px rgba(255,40,40,.75))}
+.other-work{display:flex;gap:10px;align-items:center;margin-top:12px;color:var(--yellow)}
+.other-work input{flex:1;background:#050505;border:0;border-bottom:2px solid #858585;color:white;padding:8px 6px}
+textarea{width:100%;resize:vertical;background:#030303;color:white;border:1px solid #777;padding:12px;min-height:160px}
+.price-box{padding:14px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;align-items:center}
+.price-box h2{margin:0}
+.price-entry{display:flex;justify-content:flex-end;align-items:center;gap:8px;font-size:24px}
+.price-entry input{width:240px;background:#050505;color:#fff;border:0;border-bottom:2px solid #858585;padding:8px;text-align:right;font-size:22px}
+.bottom-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.status-box{padding:24px;display:flex;flex-direction:column;gap:10px;font-size:18px}
+.action-stack{display:grid;gap:5px}
+.menu-button{background:#efefef;color:#111;border:3px double #111;padding:11px 14px;text-align:left;cursor:pointer}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#f2f2f2;color:#111;padding:10px 16px;border:2px solid #111;display:none;z-index:20}
+dialog{width:min(720px,calc(100vw - 30px));background:#050505;color:white;border:3px solid white;font-family:var(--font)}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+.dialog-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #777}
+.dialog-head h2{margin:10px 0}
+.dialog-head button{background:#222;color:white;border:1px solid #777;padding:8px 12px}
+.history-item{border-bottom:1px solid #555;padding:12px;display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}
+.history-item button{padding:7px 10px}.small{font-size:13px;color:#aaa}
+@media(max-width:700px){.app-shell{padding:8px}.report{transform-origin:top left}}
+
+
+@media print{
+  @page{size:210mm 420mm;margin:7mm}
+
+  html,body{
+    width:auto!important;height:auto!important;margin:0!important;padding:0!important;
+    background:transparent!important;color:#111!important;
+  }
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .app-shell{
+    width:auto!important;min-height:0!important;padding:0!important;overflow:visible!important;
+    background:transparent!important;
+  }
+  .report{
+    width:auto!important;min-width:0!important;margin:0!important;padding:0!important;
+    transform:none!important;box-shadow:none!important;border:0!important;
+    background:transparent!important;color:#111!important;
+  }
+
+  .pixel-panel{
+    background:transparent!important;color:#111!important;border-color:#111!important;
+    box-shadow:none!important;
+  }
+
+  /* Cuadrados decorativos de esquina */
+  .pixel-panel:before,.pixel-panel:after{
+    display:block!important;content:""!important;position:absolute!important;
+    width:2.4mm!important;height:2.4mm!important;background:#fff!important;
+    border:.45mm solid #111!important;z-index:5!important;
+  }
+  .pixel-panel:before{left:-1.2mm!important;top:-1.2mm!important}
+  .pixel-panel:after{right:-1.2mm!important;bottom:-1.2mm!important}
+
+  input,textarea{background:transparent!important;color:#111!important;border-color:#777!important}
+  .photo-box{background:transparent!important;color:#555!important;border-color:#111!important}
+  .photo-box img{background:transparent!important}
+  .status-box,.note-box,.price-box{background:transparent!important}
+
+  .hero{grid-template-columns:20mm 1fr 20mm;padding:3mm 4mm;margin-bottom:2mm}
+  .pixel-badge{width:14mm;height:14mm;font-size:10pt;border-color:#111!important}
+  h1{font-size:15pt;line-height:1.05;color:#111!important}
+  h2{font-size:8.5pt;margin-bottom:1.5mm}
+
+  /* Poké Balls decorativas del título */
+  .pokeball-row{
+    display:flex!important;visibility:visible!important;opacity:1!important;
+    margin-top:1.6mm!important;gap:1.6mm!important;
+  }
+  .pokeball-row .ball{
+    display:inline-block!important;visibility:visible!important;opacity:1!important;
+    width:3.6mm!important;height:3.6mm!important;min-width:3.6mm!important;min-height:3.6mm!important;
+    flex:0 0 3.6mm!important;aspect-ratio:1/1!important;border:.4mm solid #111!important;
+    background:linear-gradient(#ff2020 0 45%,#fff 45% 55%,#fff 55%)!important;
+    filter:none!important;
+  }
+  .pokeball-row .ball:after{
+    width:.9mm!important;height:.9mm!important;border:.3mm solid #111!important;background:#111!important;
+  }
+
+  .section{padding:2.4mm;margin-bottom:2mm}
+  .form-grid{gap:1.2mm 2.8mm;font-size:7.4pt}
+  .form-grid input{padding:.7mm;font-size:7.4pt}
+  .compare-head{gap:5mm}
+
+  /* Fotos bastante más grandes */
+  .photo-pair-block{margin:1mm 0 1.8mm}
+  .second-photo-block{padding-top:1.5mm;margin-top:1.5mm}
+  .photo-pair{gap:12mm}
+  .photo-box{width:56mm!important;height:auto!important;aspect-ratio:63/88!important}
+  .block-title{font-size:8.5pt;margin:.7mm 0 1mm}
+
+  .rating-block{padding-top:.7mm;margin-top:.7mm}
+  .rating-head{grid-template-columns:1fr 38mm 1fr;gap:1mm}
+  .rating-head h2{font-size:7pt;margin:0}
+  .rating-row{grid-template-columns:1fr 38mm 1fr;gap:1mm;padding:.22mm 0}
+  .rating-row .criterion{font-size:6.5pt}
+  .scale{gap:.5mm}
+  .scale button{
+    width:3.2mm!important;height:3.2mm!important;min-width:3.2mm!important;min-height:3.2mm!important;
+    flex:0 0 3.2mm!important;padding:0!important;
+  }
+  .scale .ball{
+    width:3.2mm!important;height:3.2mm!important;min-width:3.2mm!important;min-height:3.2mm!important;
+    flex:0 0 3.2mm!important;aspect-ratio:1/1!important;border-width:.35mm!important;
+  }
+  .scale .ball:after{width:.8mm!important;height:.8mm!important;border-width:.28mm!important}
+
+  /* Página 2 */
+  .notes-grid{
+    break-before:page!important;page-break-before:always!important;
+    display:grid!important;grid-template-columns:1fr 1fr!important;
+    gap:5mm!important;margin:0 0 5mm!important;padding-top:5mm!important;
+  }
+  .note-box{padding:5mm!important;min-height:110mm}
+  .note-box h2{font-size:11pt;margin-bottom:5mm}
+  .work-checklist{grid-template-columns:1fr!important;gap:3mm}
+  .work-item{
+    font-size:10pt;padding:.7mm 0;color:#111!important;
+    display:flex!important;align-items:center!important;gap:3mm!important;
+  }
+  .work-item .ball{
+    width:4.8mm!important;height:4.8mm!important;min-width:4.8mm!important;min-height:4.8mm!important;
+    flex:0 0 4.8mm!important;aspect-ratio:1/1!important;
+  }
+  .other-work{font-size:10pt;margin-top:5mm}
+  .other-work input{font-size:10pt;padding:1.2mm}
+  textarea{min-height:84mm!important;height:84mm!important;font-size:10pt;padding:2.5mm}
+
+  .price-box{padding:5mm;margin-bottom:5mm}
+  .price-box h2{font-size:11pt}
+  .price-entry{font-size:14pt}
+  .price-entry input{font-size:14pt;width:52mm;padding:1.2mm}
+
+  .bottom-grid{display:block!important}
+  .status-box{padding:6mm;font-size:11pt;gap:2mm}
+  .no-print{display:none!important}
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+<main id="report" class="report">
+<header class="hero pixel-panel">
+  <div class="pixel-badge">CR</div>
+  <div class="hero-title">
+    <h1>REPORTE DE RESTAURACIÓN<br>DE CARTA POKÉMON</h1>
+    <div class="pokeball-row" aria-hidden="true">
+      <span class="ball on"></span><span class="ball on"></span><span class="ball on"></span>
+      <span class="ball on"></span><span class="ball on"></span><span class="ball on"></span>
+    </div>
+  </div>
+  <div class="pixel-badge">8B</div>
+</header>
+
+<section class="pixel-panel section">
+  <h2>▶ DATOS DE LA CARTA</h2>
+  <div class="form-grid">
+    <label>Cliente<input id="cliente" type="text"></label>
+    <label>Fecha<input id="fecha" type="date"></label>
+    <label>Carta<input id="carta" type="text"></label>
+    <label>Set<input id="set" type="text"></label>
+    <label>Número<input id="numero" type="text"></label>
+    <label>Versión / Idioma<input id="idioma" type="text"></label>
+    <label>Valor estimado<input id="valor" type="text" inputmode="decimal"></label>
+  </div>
+</section>
+
+<section class="pixel-panel section compare-section">
+  <div class="compare-head">
+    <h2>◉ ESTADO INICIAL (ANTES)</h2>
+    <h2>◉ ESTADO FINAL (DESPUÉS)</h2>
+  </div>
+
+  <div class="photo-pair-block">
+    <div class="block-title">FRENTE</div>
+    <div class="photo-pair">
+      <button class="photo-box" data-photo="frontBefore" type="button">
+        <img alt="Frente antes" hidden><span>+ AGREGAR FOTO</span>
+        <input type="file" accept="image/*" hidden>
+      </button>
+      <button class="photo-box" data-photo="frontAfter" type="button">
+        <img alt="Frente después" hidden><span>+ AGREGAR FOTO</span>
+        <input type="file" accept="image/*" hidden>
+      </button>
+    </div>
+  </div>
+
+  <div class="rating-block">
+    <div class="rating-head"><h2>ANTES</h2><div class="block-title">PUNTUACIONES FRENTE</div><h2>DESPUÉS</h2></div>
+    <div id="ratings-front"></div>
+  </div>
+
+  <div class="photo-pair-block second-photo-block">
+    <div class="block-title">DORSO</div>
+    <div class="photo-pair">
+      <button class="photo-box" data-photo="backBefore" type="button">
+        <img alt="Dorso antes" hidden><span>+ AGREGAR FOTO</span>
+        <input type="file" accept="image/*" hidden>
+      </button>
+      <button class="photo-box" data-photo="backAfter" type="button">
+        <img alt="Dorso después" hidden><span>+ AGREGAR FOTO</span>
+        <input type="file" accept="image/*" hidden>
+      </button>
+    </div>
+  </div>
+
+  <div class="rating-block">
+    <div class="rating-head"><h2>ANTES</h2><div class="block-title">PUNTUACIONES DORSO</div><h2>DESPUÉS</h2></div>
+    <div id="ratings-back"></div>
+  </div>
+
+  <div class="rating-block compact-ratings">
+    <div class="rating-head"><h2>ANTES</h2><div class="block-title">CANTO / BORDE + GENERAL</div><h2>DESPUÉS</h2></div>
+    <div id="ratings-extra"></div>
+  </div>
+</section>
+
+<section class="notes-grid">
+  <div class="pixel-panel note-box">
+    <h2>▶ TRABAJO REALIZADO</h2>
+    <div class="work-checklist">
+      <button type="button" class="work-item" data-work="limpieza"><span class="ball"></span><span>Limpieza</span></button>
+      <button type="button" class="work-item" data-work="bordes"><span class="ball"></span><span>Limpieza de bordes</span></button>
+      <button type="button" class="work-item" data-work="pliegues"><span class="ball"></span><span>Reparación pliegues / creases</span></button>
+      <button type="button" class="work-item" data-work="relaminado"><span class="ball"></span><span>Pegado / relaminado</span></button>
+      <button type="button" class="work-item" data-work="prensado"><span class="ball"></span><span>Prensado</span></button>
+      <button type="button" class="work-item" data-work="pulido"><span class="ball"></span><span>Pulido</span></button>
+      <button type="button" class="work-item" data-work="lustrado"><span class="ball"></span><span>Lustrado</span></button>
+    </div>
+    <label class="other-work">Otro:<input id="otroTrabajo" type="text" placeholder="Especificar..."></label>
+  </div>
+
+  <div class="pixel-panel note-box">
+    <h2>▶ OBSERVACIONES</h2>
+    <textarea id="observaciones" rows="8" placeholder="Observaciones adicionales..."></textarea>
+  </div>
+</section>
+
+<section class="pixel-panel price-box">
+  <h2>▶ PRECIO DEL TRABAJO</h2>
+  <div class="price-entry"><span>$</span><input id="precioTrabajo" type="text" inputmode="decimal" placeholder="0,00"></div>
+</section>
+
+<footer class="bottom-grid">
+  <div class="pixel-panel status-box">
+    <strong>¡CARTA RESTAURADA!</strong>
+    <span>¡LISTA PARA LA SIGUIENTE BATALLA!</span>
+  </div>
+  <div class="action-stack no-print">
+    <button id="pdfBtn" class="menu-button" type="button">▶ GENERAR PDF</button>
+    <button id="saveBtn" class="menu-button" type="button">▣ GUARDAR REPORTE</button>
+    <button id="newBtn" class="menu-button" type="button">＋ NUEVO REPORTE</button>
+    <button id="historyBtn" class="menu-button" type="button">▤ HISTORIAL</button>
+  </div>
+</footer>
+</main>
+</div>
+
+<dialog id="historyDialog">
+  <div class="dialog-head"><h2>HISTORIAL</h2><button id="closeHistory" type="button">✕</button></div>
+  <div id="historyList"></div>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+const criteria={
+ front:["Suciedad","Rayones","Pliegues","Creases","Delaminación","Whitening","Brillo"],
+ back:["Suciedad","Rayones","Pliegues","Creases","Delaminación","Whitening","Brillo"],
+ extra:["Suciedad (canto / borde)","Bending"]
+};
+const state={
+ id:null,ratings:{before:{},after:{}},
+ photos:{frontBefore:null,frontAfter:null,backBefore:null,backAfter:null},
+ work:{limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false}
+};
+const fields=["cliente","fecha","carta","set","numero","idioma","valor","observaciones","otroTrabajo","precioTrabajo"];
+const $=s=>document.querySelector(s);
+const keyFor=(g,i)=>`${g}__${i}`;
+
+function buildRatings(){
+ [["#ratings-front","front"],["#ratings-back","back"],["#ratings-extra","extra"]].forEach(([sel,group])=>{
+  const box=$(sel);box.innerHTML="";
+  criteria[group].forEach(item=>{
+   const row=document.createElement("div");row.className="rating-row";
+   row.appendChild(makeScale("before",group,item));
+   const label=document.createElement("div");label.className="criterion";label.textContent=item;row.appendChild(label);
+   row.appendChild(makeScale("after",group,item));box.appendChild(row);
+  });
+ });
+}
+function makeScale(side,group,item){
+ const wrap=document.createElement("div");wrap.className="scale";const key=keyFor(group,item);
+ if(state.ratings[side][key]==null)state.ratings[side][key]=0;
+ for(let i=1;i<=10;i++){
+  const b=document.createElement("button");b.type="button";b.title=`${i}/10`;
+  b.innerHTML=`<span class="ball ${i<=state.ratings[side][key]?"on":""}"></span>`;
+  b.onclick=()=>{state.ratings[side][key]=i;refreshScale(wrap,i);autosaveDraft()};
+  wrap.appendChild(b);
+ }return wrap;
+}
+function refreshScale(wrap,val){[...wrap.querySelectorAll("button")].forEach((b,i)=>b.querySelector(".ball").classList.toggle("on",i<val))}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.style.display="block";clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display="none",1700)}
+function resizeImage(file,max=1400,quality=.82){return new Promise((resolve,reject)=>{const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{let{width,height}=img;const sc=Math.min(1,max/Math.max(width,height));width=Math.round(width*sc);height=Math.round(height*sc);const c=document.createElement("canvas");c.width=width;c.height=height;c.getContext("2d").drawImage(img,0,0,width,height);URL.revokeObjectURL(url);resolve(c.toDataURL("image/jpeg",quality))};img.onerror=reject;img.src=url})}
+
+document.querySelectorAll(".photo-box").forEach(box=>{
+ const input=box.querySelector("input");
+ box.onclick=()=>input.click();
+ input.onchange=async()=>{const file=input.files?.[0];if(!file)return;const data=await resizeImage(file);state.photos[box.dataset.photo]=data;const img=box.querySelector("img");img.src=data;img.hidden=false;box.classList.add("has-photo");autosaveDraft()}
+});
+document.querySelectorAll(".work-item").forEach(btn=>{
+ btn.onclick=()=>{const k=btn.dataset.work;state.work[k]=!state.work[k];btn.classList.toggle("active",state.work[k]);btn.querySelector(".ball").classList.toggle("on",state.work[k]);autosaveDraft()}
+});
+
+function collect(){const d={id:state.id,createdAt:new Date().toISOString(),ratings:state.ratings,photos:state.photos,work:state.work,fields:{}};fields.forEach(id=>d.fields[id]=$("#"+id).value);return d}
+function apply(data){
+ if(!data)return;state.id=data.id||null;state.ratings=data.ratings||{before:{},after:{}};state.photos=data.photos||{};state.work=data.work||{};
+ fields.forEach(id=>$("#"+id).value=data.fields?.[id]||"");buildRatings();
+ document.querySelectorAll(".work-item").forEach(btn=>{const on=!!state.work[btn.dataset.work];btn.classList.toggle("active",on);btn.querySelector(".ball").classList.toggle("on",on)});
+ document.querySelectorAll(".photo-box").forEach(box=>{const v=state.photos[box.dataset.photo],img=box.querySelector("img");if(v){img.src=v;img.hidden=false;box.classList.add("has-photo")}else{img.hidden=true;box.classList.remove("has-photo")}})
+}
+function clearForm(){
+ state.id=null;state.ratings={before:{},after:{}};state.photos={frontBefore:null,frontAfter:null,backBefore:null,backAfter:null};state.work={limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false};
+ fields.forEach(id=>$("#"+id).value=id==="fecha"?new Date().toISOString().slice(0,10):"");buildRatings();
+ document.querySelectorAll(".work-item").forEach(b=>{b.classList.remove("active");b.querySelector(".ball").classList.remove("on")});
+ document.querySelectorAll(".photo-box").forEach(box=>{box.classList.remove("has-photo");const img=box.querySelector("img");img.hidden=true;img.removeAttribute("src");box.querySelector("input").value=""});
+ localStorage.removeItem("cr_draft");
+}
+function autosaveDraft(){try{localStorage.setItem("cr_draft",JSON.stringify(collect()))}catch(e){}}
+fields.forEach(id=>$("#"+id).addEventListener("input",autosaveDraft));
+
+function db(){return new Promise((resolve,reject)=>{const r=indexedDB.open("colosseumRestoration",1);r.onupgradeneeded=()=>r.result.createObjectStore("reports",{keyPath:"id"});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function saveReport(){const data=collect();if(!data.id)data.id=crypto.randomUUID();data.updatedAt=new Date().toISOString();state.id=data.id;const d=await db();await new Promise((res,rej)=>{const tx=d.transaction("reports","readwrite");tx.objectStore("reports").put(data);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});autosaveDraft();toast("REPORTE GUARDADO")}
+async function listReports(){const d=await db();return await new Promise((res,rej)=>{const r=d.transaction("reports","readonly").objectStore("reports").getAll();r.onsuccess=()=>res(r.result.sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||"")));r.onerror=()=>rej(r.error)})}
+async function deleteReport(id){const d=await db();await new Promise((res,rej)=>{const tx=d.transaction("reports","readwrite");tx.objectStore("reports").delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});renderHistory()}
+async function renderHistory(){const list=$("#historyList");list.innerHTML="";const reports=await listReports();if(!reports.length){list.innerHTML='<p class="small">Todavía no hay reportes guardados.</p>';return}reports.forEach(r=>{const item=document.createElement("div");item.className="history-item";const text=document.createElement("div");text.innerHTML=`<strong>${r.fields?.carta||"Sin nombre"}</strong><div class="small">${r.fields?.cliente||"Sin cliente"} · ${r.fields?.fecha||""}</div>`;const open=document.createElement("button");open.textContent="ABRIR";open.onclick=()=>{apply(r);$("#historyDialog").close();autosaveDraft()};const del=document.createElement("button");del.textContent="BORRAR";del.onclick=()=>deleteReport(r.id);item.append(text,open,del);list.appendChild(item)})}
+
+$("#saveBtn").onclick=saveReport;
+$("#newBtn").onclick=()=>{if(confirm("¿Crear un reporte nuevo?")){clearForm();toast("NUEVO REPORTE")}};
+$("#pdfBtn").onclick=()=>{autosaveDraft();setTimeout(()=>window.print(),50)};
+$("#historyBtn").onclick=async()=>{await renderHistory();$("#historyDialog").showModal()};
+$("#closeHistory").onclick=()=>$("#historyDialog").close();
+
+function fitMobile(){const report=$(".report");const shell=$(".app-shell");if(window.innerWidth<1180){const scale=Math.min(1,(window.innerWidth-16)/1180);report.style.transform=`scale(${scale})`;shell.style.width=`${1180*scale+16}px`}else{report.style.transform="";shell.style.width=""}}
+window.addEventListener("resize",fitMobile);
+document.addEventListener("DOMContentLoaded",()=>{$("#fecha").value=new Date().toISOString().slice(0,10);buildRatings();try{const d=JSON.parse(localStorage.getItem("cr_draft")||"null");if(d)apply(d)}catch(e){}fitMobile();if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{})});
+
+</script>
+</body>
+</html>
