@@ -61,7 +61,10 @@ h2{font-size:18px;color:var(--red);margin:0 0 14px}
 }
 .row-label{color:var(--yellow);font-size:18px;align-self:start;padding-top:10px}
 .photo-box{
-  height:320px;background:#020202;border:2px solid var(--line);color:#aaa;cursor:pointer;
+  width:min(100%, 360px);
+  aspect-ratio:63 / 88;
+  justify-self:center;
+  background:#020202;border:2px solid var(--line);color:#aaa;cursor:pointer;
   position:relative;padding:0;overflow:hidden
 }
 .photo-box img{width:100%;height:100%;object-fit:contain;background:#000}
@@ -127,7 +130,7 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
   .no-print{display:none!important}
   .hero{grid-template-columns:80px 1fr 80px}
   h1{font-size:22px}
-  .photo-box{height:190px}
+  .photo-box{width:190px;aspect-ratio:63 / 88;height:auto}
   .section{margin-bottom:8px;padding:10px}
   .notes-grid{margin-bottom:8px}
   .rating-row{padding:2px 0}
