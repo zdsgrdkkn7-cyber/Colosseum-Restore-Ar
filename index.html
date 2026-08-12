@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <title>Colosseum Restoration</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <main id="report" class="report">
+      <header class="hero pixel-panel">
+        <div class="trainer-placeholder pixel-badge">CR</div>
+        <div class="hero-title">
+          <h1>REPORTE DE RESTAURACIÓN<br>DE CARTA POKÉMON</h1>
+          <div class="pokeball-row" aria-hidden="true">
+            <span class="ball on"></span><span class="ball on"></span><span class="ball on"></span>
+            <span class="ball on"></span><span class="ball on"></span><span class="ball on"></span>
+          </div>
+        </div>
+        <div class="trainer-placeholder pixel-badge">8B</div>
+      </header>
+
+      <section class="pixel-panel section">
+        <h2>▶ DATOS DE LA CARTA</h2>
+        <div class="form-grid">
+          <label>Cliente<input id="cliente" type="text" autocomplete="off"></label>
+          <label>Fecha<input id="fecha" type="date"></label>
+          <label>Carta<input id="carta" type="text" autocomplete="off"></label>
+          <label>Set<input id="set" type="text" autocomplete="off"></label>
+          <label>Número<input id="numero" type="text" autocomplete="off"></label>
+          <label>Versión / Idioma<input id="idioma" type="text" autocomplete="off"></label>
+          <label>Valor estimado<input id="valor" type="text" inputmode="decimal" autocomplete="off"></label>
+        </div>
+      </section>
+
+      <section class="pixel-panel section compare-section">
+        <div class="compare-head">
+          <h2>◉ ESTADO INICIAL (ANTES)</h2>
+          <h2>◉ ESTADO FINAL (DESPUÉS)</h2>
+        </div>
+
+        <div class="photo-grid">
+          <div class="row-label">FRENTE</div>
+          <button class="photo-box" data-photo="frontBefore" type="button">
+            <img alt="Frente antes" hidden>
+            <span>+ AGREGAR FOTO</span>
+            <input type="file" accept="image/*" capture="environment" hidden>
+          </button>
+          <button class="photo-box" data-photo="frontAfter" type="button">
+            <img alt="Frente después" hidden>
+            <span>+ AGREGAR FOTO</span>
+            <input type="file" accept="image/*" capture="environment" hidden>
+          </button>
+
+          <div class="row-label">DORSO</div>
+          <button class="photo-box" data-photo="backBefore" type="button">
+            <img alt="Dorso antes" hidden>
+            <span>+ AGREGAR FOTO</span>
+            <input type="file" accept="image/*" capture="environment" hidden>
+          </button>
+          <button class="photo-box" data-photo="backAfter" type="button">
+            <img alt="Dorso después" hidden>
+            <span>+ AGREGAR FOTO</span>
+            <input type="file" accept="image/*" capture="environment" hidden>
+          </button>
+        </div>
+      </section>
+
+      <section class="pixel-panel section ratings-section">
+        <div class="rating-head">
+          <h2>ESTADO INICIAL (ANTES)</h2>
+          <div></div>
+          <h2>ESTADO FINAL (DESPUÉS)</h2>
+        </div>
+        <div id="ratings"></div>
+      </section>
+
+      <section class="notes-grid">
+        <div class="pixel-panel note-box">
+          <h2>▶ TRABAJO REALIZADO</h2>
+          <textarea id="trabajo" rows="6" placeholder="Describí el trabajo realizado..."></textarea>
+        </div>
+        <div class="pixel-panel note-box">
+          <h2>▶ OBSERVACIONES</h2>
+          <textarea id="observaciones" rows="6" placeholder="Observaciones adicionales..."></textarea>
+        </div>
+      </section>
+
+      <footer class="bottom-grid">
+        <div class="pixel-panel status-box">
+          <strong>¡CARTA RESTAURADA!</strong>
+          <span>¡LISTA PARA LA SIGUIENTE BATALLA!</span>
+        </div>
+        <div class="action-stack no-print">
+          <button id="pdfBtn" class="menu-button" type="button">▶ GENERAR PDF</button>
+          <button id="saveBtn" class="menu-button" type="button">▣ GUARDAR REPORTE</button>
+          <button id="newBtn" class="menu-button" type="button">＋ NUEVO REPORTE</button>
+          <button id="historyBtn" class="menu-button" type="button">▤ HISTORIAL</button>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <dialog id="historyDialog">
+    <div class="dialog-head">
+      <h2>HISTORIAL</h2>
+      <button id="closeHistory" type="button">✕</button>
+    </div>
+    <div id="historyList"></div>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
