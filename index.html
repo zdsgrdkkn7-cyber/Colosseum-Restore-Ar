@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-192.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Colosseum Restoration</title>
+<link rel="stylesheet" href="styles.css?v=15">
+</head>
+<body>
+<div class="app-shell">
+<main id="report" class="report">
+
+<header class="hero pixel-panel">
+  <div class="header-meta header-left">
+    <label>CLIENTE<input id="cliente" type="text" placeholder="Nombre / @usuario"></label>
+    <label>FECHA<input id="fecha" type="date"></label>
+  </div>
+
+  <div class="hero-title">
+    <div class="hero-title-line">
+      <img class="title-sprite title-sprite-hooh" src="assets/ho-oh.png" alt="" aria-hidden="true">
+      <img class="title-logo-jp" src="assets/title-jp.png" alt="Pokémon Colosseum">
+      <img class="title-sprite title-sprite-lugia" src="assets/lugia.png" alt="" aria-hidden="true">
+    </div>
+    <div class="hero-subtitle">REPORTE DE RESTAURACIÓN</div>
+  </div>
+
+  <div class="header-meta header-right">
+    <span class="brand-label">COLOSSEUM RESTORE</span>
+    <span class="brand-ig">IG: @colosseum.ar</span>
+  </div>
+</header>
+
+<section class="pixel-panel section">
+  <h2>▶ DATOS DE LA CARTA</h2>
+  <div class="form-grid card-data-grid">
+    <label>Carta<input id="carta" type="text"></label>
+    <label>Número<input id="numero" type="text"></label>
+    <label>Set<input id="set" type="text"></label>
+    <label>Versión<input id="version" type="text"></label>
+    <label>Idioma<input id="idioma" type="text"></label>
+    <label>Estado<input id="estado" type="text"></label>
+    <label>Precio<input id="precio" type="text" inputmode="decimal" placeholder="$ 0,00"></label>
+  </div>
+</section>
+
+<section class="pixel-panel section compare-section">
+  <div class="compare-head">
+    <h2>◉ ESTADO INICIAL (ANTES)</h2>
+    <h2>◉ ESTADO FINAL (DESPUÉS)</h2>
+  </div>
+
+  <div class="photo-pair-block">
+    <div class="block-title">FRENTE</div>
+    <div class="photo-pair">
+      <button class="photo-box" data-photo="frontBefore" type="button">
+        <img alt="Frente antes" hidden><span>+ AGREGAR FOTO</span>
+        <input type="file" accept="image/*" hidden>
+      </button>
+      <button class="photo-box" data-photo="frontAfter" type="button">
+        <img alt="Frente después" hidden><span>+ AGREGAR FOTO</span>
+        <input type="file" accept="image/*" hidden>
+      </button>
+    </div>
+  </div>
+
+  <div class="rating-block">
+    <div class="rating-head"><h2>ANTES</h2><div class="block-title">PUNTUACIONES FRENTE</div><h2>DESPUÉS</h2></div>
+    <div id="ratings-front"></div>
+  </div>
+
+  <div class="photo-pair-block second-photo-block">
+    <div class="block-title">DORSO</div>
+    <div class="photo-pair">
+      <button class="photo-box" data-photo="backBefore" type="button">
+        <img alt="Dorso antes" hidden><span>+ AGREGAR FOTO</span>
+        <input type="file" accept="image/*" hidden>
+      </button>
+      <button class="photo-box" data-photo="backAfter" type="button">
+        <img alt="Dorso después" hidden><span>+ AGREGAR FOTO</span>
+        <input type="file" accept="image/*" hidden>
+      </button>
+    </div>
+  </div>
+
+  <div class="rating-block">
+    <div class="rating-head"><h2>ANTES</h2><div class="block-title">PUNTUACIONES DORSO</div><h2>DESPUÉS</h2></div>
+    <div id="ratings-back"></div>
+  </div>
+
+  <div class="rating-block compact-ratings">
+    <div class="rating-head"><h2>ANTES</h2><div class="block-title">GENERAL</div><h2>DESPUÉS</h2></div>
+    <div id="ratings-extra"></div>
+  </div>
+</section>
+
+<section class="notes-grid">
+  <div class="pixel-panel note-box">
+    <h2>▶ TRABAJO REALIZADO</h2>
+    <div class="work-checklist">
+      <button type="button" class="work-item" data-work="limpieza"><span class="ball"></span><span>Limpieza</span></button>
+      <button type="button" class="work-item" data-work="bordes"><span class="ball"></span><span>Limpieza de bordes</span></button>
+      <button type="button" class="work-item" data-work="pliegues"><span class="ball"></span><span>Reparación pliegues / creases</span></button>
+      <button type="button" class="work-item" data-work="relaminado"><span class="ball"></span><span>Pegado / relaminado</span></button>
+      <button type="button" class="work-item" data-work="prensado"><span class="ball"></span><span>Prensado</span></button>
+      <button type="button" class="work-item" data-work="pulido"><span class="ball"></span><span>Pulido</span></button>
+      <button type="button" class="work-item" data-work="lustrado"><span class="ball"></span><span>Lustrado</span></button>
+    </div>
+    <label class="other-work">Otro:<input id="otroTrabajo" type="text" placeholder="Especificar..."></label>
+  </div>
+
+  <div class="pixel-panel note-box result-box">
+    <h2>▶ RESULTADO</h2>
+
+    <div class="result-grades">
+      <label class="result-grade">
+        <span>FRENTE</span>
+        <input id="resultadoFrente" class="result-input" type="text" placeholder="Ej: NM">
+      </label>
+      <label class="result-grade">
+        <span>DORSO</span>
+        <input id="resultadoDorso" class="result-input" type="text" placeholder="Ej: LP">
+      </label>
+    </div>
+
+    <label class="observations-label" for="observaciones">OBSERVACIONES</label>
+    <div class="result-notes-row">
+      <textarea id="observaciones" rows="6" placeholder="Resultado final, detalles y notas..."></textarea>
+      <img class="result-celebi" src="assets/celebi.webp" alt="" aria-hidden="true">
+    </div>
+  </div>
+</section>
+
+<section class="pixel-panel price-box">
+  <h2>▶ COSTO DE RESTAURACIÓN</h2>
+  <div class="price-entry"><span>U$</span><input id="precioTrabajo" type="text" inputmode="decimal" placeholder="0,00"></div>
+</section>
+
+<footer class="bottom-grid">
+  <div class="pixel-panel status-box">
+    <strong>¡CARTA RESTAURADA!</strong>
+    <span>¡LISTA PARA LA SIGUIENTE BATALLA!</span>
+  </div>
+  <div class="action-stack no-print">
+    <button id="pdfBtn" class="menu-button" type="button">▶ GENERAR PDF</button>
+    <button id="saveBtn" class="menu-button" type="button">▣ GUARDAR REPORTE</button>
+    <button id="newBtn" class="menu-button" type="button">＋ NUEVO REPORTE</button>
+    <button id="historyBtn" class="menu-button" type="button">▤ HISTORIAL</button>
+  </div>
+</footer>
+
+</main>
+</div>
+
+<dialog id="historyDialog">
+  <div class="dialog-head"><h2>HISTORIAL</h2><button id="closeHistory" type="button">✕</button></div>
+
+  <div class="history-remito-bar">
+    <div class="history-selection-status">
+      <strong>REMITO</strong>
+      <span id="selectedReportCount">0 reportes seleccionados</span>
+    </div>
+
+    <label class="lot-discount">
+      DESCUENTO POR LOTE
+      <span class="discount-input-wrap">
+        <input id="lotDiscount" type="number" inputmode="decimal" min="0" max="100" step="1" value="0">
+        <span>%</span>
+      </span>
+    </label>
+
+    <div class="history-remito-actions">
+      <button id="selectAllReports" type="button">SELECCIONAR TODO</button>
+      <button id="remitoBtn" type="button" disabled>▶ GENERAR REMITO</button>
+    </div>
+  </div>
+
+  <div id="historyList"></div>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.3/dist/jspdf.umd.min.js"></script>
+<script src="pdf.js?v=15"></script>
+<script src="app.js?v=15"></script>
+</body>
+</html>
