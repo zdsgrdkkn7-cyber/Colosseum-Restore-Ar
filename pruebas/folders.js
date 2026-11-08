@@ -41,6 +41,23 @@ window.renderFolderHistory=function(root,reports){
  const lots=[...new Set([...reports.filter(r=>clientOf(r)===filterClient).map(lotOf),...(pref.lots||[]).filter(x=>x[0]===filterClient).map(x=>x[1])])].sort((a,b)=>a.localeCompare(b));
  if(!filterLot){root.append(btn('＋ NUEVO LOTE',()=>document.querySelector('#createLotFolder')?.click()));lots.forEach(l=>{const rs=reports.filter(r=>clientOf(r)===filterClient&&lotOf(r)===l);const row=node('div','folder-entry');row.append(btn('📁 '+l+' ('+rs.length+')',()=>{filterLot=l;renderHistory()}));row.append(btn('RENOMBRAR',async()=>{const next=prompt('Nuevo nombre del lote:',l);if(!next||!norm(next)||norm(next)===l)return;for(const r of rs){r.lotFolder=norm(next);r.fields=r.fields||{};r.fields.lote=norm(next);await putReport(r)}const p=folderPrefs();p.lots=(p.lots||[]).map(x=>x[0]===filterClient&&x[1]===l?[filterClient,norm(next)]:x);localStorage.setItem('colosseumFolders_PRUEBAS_V1',JSON.stringify(p));await renderHistory()}));root.append(row)});return;}
  root.append(btn('＋ NUEVO REPORTE',()=>newReportInLot(filterClient,filterLot)));
+ const actions=node('div','folder-bulk-actions');
+ actions.append(btn('SELECCIONAR TODAS LAS DEL LOTE',()=>{
+  const visible=reports.filter(r=>clientOf(r)===filterClient&&lotOf(r)===filterLot);
+  visible.forEach(r=>selectedReportIds.add(r.id));
+  renderHistory();
+ }));
+ actions.append(btn('MOVER SELECCIONADAS',async()=>{
+  const visible=reports.filter(r=>clientOf(r)===filterClient&&lotOf(r)===filterLot&&selectedReportIds.has(r.id));
+  if(!visible.length){alert('Seleccioná al menos una carta de este lote.');return;}
+  const dest=chooseFolder(filterClient,filterLot);
+  if(!dest)return;
+  if(!confirm('¿Mover '+visible.length+' reporte(s) a '+dest[0]+' / '+dest[1]+'?'))return;
+  remember(dest[0],dest[1]);
+  for(const r of visible){r.clientFolder=dest[0];r.lotFolder=dest[1];r.fields=r.fields||{};r.fields.cliente=dest[0];r.fields.lote=dest[1];r.updatedAt=new Date().toISOString();await putReport(r);selectedReportIds.delete(r.id);}
+  await renderHistory();toast('REPORTES MOVIDOS');
+ }));
+ root.append(actions);
  const matching=reports.filter(r=>clientOf(r)===filterClient&&lotOf(r)===filterLot);if(!matching.length)root.append(node('p','small','Este lote todavía no tiene reportes.'));
  matching.forEach(r=>{const item=node('div','history-item');item.dataset.reportId=r.id;const check=node('input','history-check');check.type='checkbox';check.checked=selectedReportIds.has(r.id);check.setAttribute('aria-label','Seleccionar '+(r.fields?.carta||'reporte'));check.onchange=()=>{if(check.checked)selectedReportIds.add(r.id);else selectedReportIds.delete(r.id);updateRemitoControls()};const detail=node('div','');detail.innerHTML='<strong>'+escapeHTML(r.fields?.carta||'Sin nombre')+'</strong><div class="small">'+escapeHTML(r.fields?.fecha||'')+'</div>';const cost=node('div','history-cost',formatHistoryCost(r.fields?.precioTrabajo));item.append(check,detail,cost,btn('ABRIR',()=>{currentClient=filterClient;currentLot=filterLot;apply(r);document.querySelector('#historyDialog').close();autosaveDraft()}),btn('MOVER',async()=>{const dest=chooseFolder(filterClient,filterLot);if(dest)await move(r,...dest)}),btn('BORRAR',()=>deleteReport(r.id)));root.append(item)});
 };
