@@ -111,6 +111,26 @@
     } finally {db.close();}
     alert("Importación finalizada.\nNuevos: "+added+"\nYa existentes (sin cambios): "+skipped+"\n\nCerrá y volvé a abrir Historial para verlos.");
   }
+
+  async function clearAllLocalData() {
+    const records=await allReports();
+    if(!confirm("¿BORRAR TODOS LOS DATOS DE COLOSSEUM EN ESTE DISPOSITIVO?\\n\\nSe eliminarán "+records.length+" reportes, sus fotos, las carpetas y el borrador actual. No se puede deshacer.\\n\\nExportá un respaldo antes de continuar si querés conservarlos."))return;
+    if(!confirm("ÚLTIMA CONFIRMACIÓN\\n\\n¿Eliminar definitivamente todos los archivos locales?"))return;
+    const db=await openDB();
+    try {
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(STORE,"readwrite");
+        tx.objectStore(STORE).clear();
+        tx.oncomplete=resolve;
+        tx.onerror=()=>reject(tx.error||Error("No se pudo vaciar la base"));
+        tx.onabort=()=>reject(tx.error||Error("Se canceló el borrado"));
+      });
+    } finally {db.close();}
+    localStorage.removeItem("cr_draft");
+    localStorage.removeItem("colosseumFoldersV1");
+    alert("Datos locales eliminados. La aplicación se recargará vacía.");
+    location.reload();
+  }
   function init() {
     const exportBtn=$("exportDatabaseBtn"), importBtn=$("importDatabaseBtn"), input=$("databaseFileInput");
     if(!exportBtn || !importBtn || !input) return;
@@ -118,6 +138,12 @@
       exportBtn.disabled=true;
       try{await exportBackup();}catch(e){alert("No se pudo exportar: "+e.message);}
       finally{exportBtn.disabled=false;}
+    });
+    const clearBtn=$("clearDatabaseBtn");
+    if(clearBtn) clearBtn.addEventListener("click",async()=>{
+      clearBtn.disabled=true;
+      try{await clearAllLocalData();}catch(e){alert("No se pudo borrar la base: "+e.message);}
+      finally{clearBtn.disabled=false;}
     });
     importBtn.addEventListener("click",()=>input.click());
     input.addEventListener("change",async()=>{
