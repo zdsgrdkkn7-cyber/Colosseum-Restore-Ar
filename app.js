@@ -10,7 +10,7 @@ const state={
  budgetManualOverride:false,
  finalManualOverride:false
 };
-const fields=["cliente","fecha","carta","numero","set","version","idioma","estado","precio","observaciones","otroTrabajo","resultadoFrente","resultadoDorso","precioPresupuestado","descuentoResultado","precioTrabajo"];
+const fields=["cliente","lote","fecha","carta","numero","set","version","idioma","estado","precio","observaciones","otroTrabajo","resultadoFrente","resultadoDorso","precioPresupuestado","descuentoResultado","precioTrabajo"];
 const $=s=>document.querySelector(s);
 const keyFor=(g,i)=>`${g}__${i}`;
 
@@ -146,11 +146,13 @@ document.querySelectorAll(".work-item").forEach(btn=>{
 function collect(){
  const d={id:state.id,createdAt:new Date().toISOString(),ratings:state.ratings,photos:state.photos,work:state.work,budgetManualOverride:state.budgetManualOverride,finalManualOverride:state.finalManualOverride,fields:{}};
  fields.forEach(id=>{const el=$("#"+id);d.fields[id]=el?el.value:""});
+ d.clientFolder=state.clientFolder||"";d.lotFolder=state.lotFolder||"";
  return d;
 }
 function apply(data){
  if(!data)return;
  state.id=data.id||null;
+ state.clientFolder=data.clientFolder||data.fields?.cliente||"";state.lotFolder=data.lotFolder||data.fields?.lote||"General";
  state.ratings=data.ratings||{before:{},after:{}};
  state.photos=data.photos||{};
  state.work={limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false,otro:false,...(data.work||{})};
@@ -242,7 +244,7 @@ function updateRemitoControls(){
 }
 
 function db(){return new Promise((resolve,reject)=>{const r=indexedDB.open("colosseumRestoration",1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains("reports"))r.result.createObjectStore("reports",{keyPath:"id"})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
-async function saveReport(){const data=collect();if(!data.id)data.id=crypto.randomUUID();data.updatedAt=new Date().toISOString();state.id=data.id;const d=await db();await new Promise((res,rej)=>{const tx=d.transaction("reports","readwrite");tx.objectStore("reports").put(data);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});autosaveDraft();toast("REPORTE GUARDADO")}
+async function saveReport(){const data=collect();if(!data.id)data.id=crypto.randomUUID();data.updatedAt=new Date().toISOString();if(typeof assignReportFolder==="function")assignReportFolder(data);state.clientFolder=data.clientFolder;state.lotFolder=data.lotFolder;state.id=data.id;const d=await db();await new Promise((res,rej)=>{const tx=d.transaction("reports","readwrite");tx.objectStore("reports").put(data);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});autosaveDraft();toast("REPORTE GUARDADO")}
 async function listReports(){const d=await db();return await new Promise((res,rej)=>{const r=d.transaction("reports","readonly").objectStore("reports").getAll();r.onsuccess=()=>res(r.result.sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||"")));r.onerror=()=>rej(r.error)})}
 async function deleteReport(id){
  const d=await db();
@@ -266,12 +268,13 @@ async function renderHistory(){
  const validIds=new Set(historyReports.map(r=>r.id));
  [...selectedReportIds].forEach(id=>{if(!validIds.has(id))selectedReportIds.delete(id)});
 
- if(!historyReports.length){
+ if(!historyReports.length && typeof renderFolderHistory!=="function"){
    list.innerHTML='<p class="small">Todavía no hay reportes guardados.</p>';
    updateRemitoControls();
    return;
  }
 
+ if(typeof renderFolderHistory==="function"){renderFolderHistory(list,historyReports);updateRemitoControls();return;}
  historyReports.forEach(r=>{
    const item=document.createElement("div");
    item.className="history-item";
@@ -337,7 +340,7 @@ function initControls(){
  const saveBtn=$("#saveBtn"),newBtn=$("#newBtn"),pdfBtn=$("#pdfBtn"),budgetPdfBtn=$("#budgetPdfBtn"),historyBtn=$("#historyBtn"),closeHistory=$("#closeHistory"),
        remitoBtn=$("#remitoBtn"),selectAllReports=$("#selectAllReports"),recalculateBudgetBtn=$("#recalculateBudgetBtn");
  if(saveBtn)saveBtn.onclick=async()=>{try{await saveReport()}catch(e){console.error(e);toast("ERROR AL GUARDAR")}};
- if(newBtn)newBtn.onclick=()=>{if(confirm("¿Crear un reporte nuevo?")){clearForm();toast("NUEVO REPORTE")}};
+ if(newBtn)newBtn.onclick=()=>{if(confirm("¿Crear un reporte nuevo?")){clearForm();if(typeof resetReportFolderSelection==="function")resetReportFolderSelection();toast("NUEVO REPORTE")}};
  if(pdfBtn)pdfBtn.onclick=async()=>{try{if(typeof generatePdf!=="function")throw new Error("generatePdf no disponible");await generatePdf()}catch(e){console.error(e);toast("ERROR AL GENERAR PDF")}};
  if(budgetPdfBtn)budgetPdfBtn.onclick=async()=>{
    try{
