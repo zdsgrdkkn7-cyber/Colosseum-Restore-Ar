@@ -1,0 +1,37 @@
+/* Colosseum Restoration — Rev18 */
+html,body{max-width:100%;overflow-x:hidden}
+.centering-row{margin:12px 0 0;border:1px solid #666;background:#050505;padding:10px 12px;color:#f2f2eb}
+.centering-main{display:flex;align-items:center;justify-content:center;gap:12px;min-height:30px}
+.centering-main strong,.centering-reference{color:var(--yellow)}
+.centering-values{font-weight:700;white-space:nowrap}
+.centering-reference{text-align:center;font-size:11px;margin-top:6px;letter-spacing:.3px}
+.centering-score{font-size:18px;color:var(--yellow);min-width:28px}
+.centering-measure-btn,.centering-remeasure{background:#efefef;color:#111;border:3px double #111;padding:8px 12px;font-weight:800;cursor:pointer}
+.centering-remeasure{font-size:10px;padding:5px 8px}
+.centering-balls{display:flex;gap:3px}
+.centering-ball{width:15px;height:15px;border-radius:50%;display:inline-block;border:1px solid #777;background:#333;position:relative;overflow:hidden}
+.centering-ball.full{background:linear-gradient(#e83030 0 48%,#111 49% 56%,#f2f2eb 57%)}
+.centering-ball.half::before{content:"";position:absolute;inset:0 50% 0 0;background:linear-gradient(#e83030 0 48%,#111 49% 56%,#f2f2eb 57%)}
+.restoration-details{margin-bottom:16px;padding:14px}
+.restoration-detail-row{border:1px solid #666;background:#050505;padding:10px;margin:0 0 12px}
+.detail-head{display:grid;grid-template-columns:1fr 1fr;gap:12px;color:var(--yellow);font-weight:800;text-align:center;margin-bottom:6px}
+.detail-photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.detail-photo{aspect-ratio:4/3;width:100%;padding:0;position:relative;overflow:hidden;background:#0a0a0a;border:2px solid #777;color:#aaa;cursor:pointer}
+.detail-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.detail-photo span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.72);padding:6px;font-size:10px}
+.detail-photo img[hidden]+span{top:50%;bottom:auto;transform:translateY(-50%);background:transparent}
+.detail-description{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px}
+.detail-description input{width:100%;box-sizing:border-box;background:#050505;color:#fff;border:0;border-bottom:2px solid #777;padding:8px;font-size:16px}
+.detail-delete{background:#222;color:#ddd;border:1px solid #777;padding:6px 9px}
+.detail-add{width:100%}
+.centering-dialog{width:min(1050px,96vw);max-height:94vh;background:#080808;color:#eee;border:2px solid #777;padding:14px}
+.centering-dialog::backdrop{background:rgba(0,0,0,.88)}
+.centering-help{color:#aaa;font-size:12px}
+.centering-canvas-wrap{max-height:72vh;overflow:auto;text-align:center;background:#000}
+#centeringCanvas{max-width:100%;height:auto;touch-action:none;display:block;margin:auto}
+.centering-editor-result{text-align:center;color:var(--yellow);font-size:20px;font-weight:900;padding:8px}
+.centering-editor-actions{display:flex;justify-content:flex-end;gap:10px}
+.centering-editor-actions button{padding:9px 12px;font-weight:800}
+@media(max-width:700px){
+ .centering-main{gap:7px}.centering-reference{font-size:10px}.centering-ball{width:13px;height:13px}
+}
