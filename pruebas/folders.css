@@ -6,3 +6,18 @@
 #historyList{max-height:48dvh;min-height:100px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 .folder-bulk-actions{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px}
 .folder-bulk-actions button{flex:1;min-width:130px}
+
+/* Rev19.5 — jerarquía visual del historial */
+#folderToolbar{gap:8px;padding:12px 8px}
+#folderToolbar button{background:#343434!important;color:#f4f4f4!important;border:1px solid #707070!important;border-radius:999px!important;padding:9px 14px!important;font-size:12px!important;font-weight:700!important;box-shadow:none!important}
+#folderToolbar button:active{background:#505050!important}
+#historyList .folder-breadcrumb{gap:7px;padding:14px 8px 10px}
+#historyList .folder-breadcrumb button{background:transparent!important;border:0!important;border-radius:0!important;color:#e5b95e!important;padding:5px 1px!important;box-shadow:none!important;font-weight:700!important}
+#historyList .folder-text-action{display:inline-flex;align-items:center;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;color:#e5b95e!important;padding:12px 8px!important;margin:4px 0 8px!important;font-size:14px!important;font-weight:700!important}
+#historyList .folder-entry{background:#222;border:1px solid #454545;border-radius:8px;margin:8px 4px;padding:7px 9px;gap:8px}
+#historyList .folder-entry button:first-child{background:transparent!important;border:0!important;border-radius:0!important;color:#f2f2f2!important;padding:8px 4px!important;text-align:left!important;box-shadow:none!important}
+#historyList .folder-entry button:last-child{background:transparent!important;border:0!important;color:#aaa!important;font-size:11px!important;padding:8px 5px!important;box-shadow:none!important}
+#historyList .folder-entry button:last-child:active{color:white!important}
+#historyList .folder-trash{background:transparent!important;color:#e94141!important;border:1px solid transparent!important;border-radius:6px!important;font-size:16px!important;width:36px;min-width:36px;height:38px;padding:6px!important;box-shadow:none!important;line-height:1!important}
+#historyList .folder-trash:active{background:#411818!important}
+@media(max-width:650px){#historyList .history-item{grid-template-columns:22px minmax(0,1fr) auto!important}#historyList .history-item .history-cost{grid-column:2}#historyList .history-item .folder-trash{grid-column:3;grid-row:1 / span 2}#historyList .history-item button:not(.folder-trash){grid-column:2;justify-self:start}}
