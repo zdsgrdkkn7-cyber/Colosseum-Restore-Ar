@@ -147,15 +147,30 @@
       if(!r||typeof r!=="object"||(typeof r.id!=="string"&&typeof r.id!=="number")||seen.has(r.id))throw Error("Reportes con IDs inválidos o duplicados.");
       seen.add(r.id);
     }
-    if(!confirm("Se encontraron "+records.length+" reportes.\n\nSolo se agregarán los que no existan. Ninguno será sobrescrito.\n\n¿Importar?"))return;
-    const db=await openDB();let added=0,skipped=0;
+    const db=await openDB();let added=0,updated=0,unchanged=0;
     try{
+      const existing=await new Promise((resolve,reject)=>{
+        const tx=db.transaction(STORE,"readonly"),req=tx.objectStore(STORE).getAll();
+        req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+      });
+      const byId=new Map(existing.map(r=>[r.id,r]));
+      const pending=records.map(report=>({report,previous:byId.get(report.id)}));
+      const newItems=pending.filter(x=>x.previous===undefined);
+      const changed=pending.filter(x=>x.previous!==undefined&&JSON.stringify(x.previous)!==JSON.stringify(x.report));
+      unchanged=pending.length-newItems.length-changed.length;
+      if(!confirm("IMPORTAR BASE DE DATOS\\n\\nNuevos: "+newItems.length+"\\nExistentes con cambios: "+changed.length+"\\nSin cambios: "+unchanged+"\\n\\nLos reportes existentes con diferencias se REEMPLAZARÁN por la versión importada, incluidas sus fotos.\\n\\n¿Continuar?"))return;
+      // Guardar las versiones anteriores en una copia local descargable antes de reemplazarlas.
+      // Si hay cambios, la exportación previa es obligatoria para poder revertirlos.
+      if(changed.length){
+        const backup={format:FORMAT,version:VERSION,exportedAt:new Date().toISOString(),database:DB,store:STORE,records:await Promise.all(changed.map(x=>encode(x.previous)))};
+        const stamp=new Date().toISOString().replace(/[:.]/g,"-");
+        download(JSON.stringify(backup),"Colosseum_AntesDeImportar_"+stamp+".json");
+        if(!confirm("Se descargó un respaldo de los "+changed.length+" reportes que se reemplazarán.\\n\\nVerificá que se haya guardado en Archivos antes de continuar.\\n\\n¿Confirmás la actualización?"))return;
+      }
       await new Promise((resolve,reject)=>{
         const tx=db.transaction(STORE,"readwrite"),store=tx.objectStore(STORE);
-        for(const report of records){
-          const get=store.get(report.id);
-          get.onsuccess=()=>{if(get.result!==undefined){skipped++;return;}const add=store.add(report);add.onsuccess=()=>added++;};
-        }
+        for(const item of newItems){store.add(item.report).onsuccess=()=>added++;}
+        for(const item of changed){store.put(item.report).onsuccess=()=>updated++;}
         tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error||Error("Falló la importación"));tx.onabort=()=>reject(tx.error||Error("Importación cancelada"));
       });
     }finally{db.close();}
@@ -167,7 +182,7 @@
         localStorage.setItem(key,JSON.stringify({clients:[...clients],lots:[...lots.values()]}));
       }catch(e){console.warn("No se pudieron fusionar carpetas",e);}
     }
-    alert("Importación finalizada.\nNuevos: "+added+"\nYa existentes: "+skipped+"\n\nVolvé a abrir Historial.");
+    alert("Importación finalizada.\nNuevos: "+added+"\nActualizados: "+updated+"\nSin cambios: "+unchanged+"\n\nVolvé a abrir Historial.");
   }
   function init() {
     const exportBtn=$("exportDatabaseBtn"), importBtn=$("importDatabaseBtn"), input=$("databaseFileInput");
