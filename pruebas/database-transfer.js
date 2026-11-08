@@ -70,46 +70,104 @@
     setTimeout(()=>URL.revokeObjectURL(url),60000);
   }
   async function exportBackup() {
+    if(!window.zip?.ZipWriter||!window.ColosseumMediaV201) throw Error("No se cargó el módulo ZIP. Verificá tu conexión.");
     const records=await allReports();
-    const payload={format:FORMAT,version:VERSION,exportedAt:new Date().toISOString(),database:DB,store:STORE,records:await Promise.all(records.map(encode))};
-    const stamp=new Date().toISOString().slice(0,10);
-    download(JSON.stringify(payload),"Colosseum_Respaldo_"+stamp+".json");
-    alert("Respaldo generado: "+records.length+" reportes. Guardá el archivo en Archivos o iCloud.");
+    const writer=new zip.ZipWriter(new zip.BlobWriter("application/zip"),{level:0});
+    const names=new Set(), manifest={format:"colosseum-split-backup",version:1,createdAt:new Date().toISOString(),database:DB,store:STORE,records:[],photoCount:0};
+    try {
+      try{manifest.folderPreferences=JSON.parse(localStorage.getItem("colosseumFolders_PRUEBAS_V1")||"null");}catch{}
+      for(const record of records){
+        const part=await ColosseumMediaV201.split([record]);
+        manifest.records.push(part.manifest.records[0]);
+        for(const file of part.files){
+          if(names.has(file.filename))continue;
+          await writer.add("photos/"+file.filename,new zip.BlobReader(file.blob),{level:0});
+          names.add(file.filename);
+        }
+      }
+      manifest.photoCount=names.size;
+      const check=ColosseumMediaV201.verify(manifest,[...names].map(filename=>({filename})));
+      if(!check.ok)throw Error("El respaldo tiene referencias a fotografías faltantes.");
+      await writer.add("database.json",new zip.TextReader(JSON.stringify(manifest)),{level:0});
+      const blob=await writer.close();
+      const url=URL.createObjectURL(blob),a=document.createElement("a");
+      a.href=url;a.download="Colosseum_Respaldo_"+new Date().toISOString().slice(0,10)+".zip";
+      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),120000);
+      alert("ZIP generado: "+records.length+" reportes y "+names.size+" fotografías. Guardalo en Archivos.");
+    }catch(e){try{await writer.close();}catch{}throw e;}
   }
   async function importBackup(file) {
-    if(!file) return;
-    const payload=JSON.parse(await file.text());
-    if(!payload || payload.format!==FORMAT || payload.version!==VERSION || !Array.isArray(payload.records))
-      throw Error("Archivo incompatible. Seleccioná un respaldo JSON de Colosseum.");
-    if(payload.records.length>10000) throw Error("El archivo contiene demasiados registros.");
-    const records=payload.records.map(decode);
+    if(!file)return;
+    let records,folders=null;
+    if(file.name.toLowerCase().endsWith(".zip")){
+      if(!window.zip?.ZipReader)throw Error("No se cargó el módulo ZIP.");
+      const reader=new zip.ZipReader(new zip.BlobReader(file));
+      try{
+        const entries=await reader.getEntries();
+        const byName=new Map(entries.map(e=>[e.filename,e]));
+        const jsonEntry=byName.get("database.json");
+        if(!jsonEntry||jsonEntry.directory)throw Error("El ZIP no contiene database.json.");
+        const payload=JSON.parse(await jsonEntry.getData(new zip.TextWriter()));
+        if(payload.format!=="colosseum-split-backup"||payload.version!==1||!Array.isArray(payload.records))throw Error("Formato ZIP incompatible.");
+        if(payload.records.length>10000)throw Error("Demasiados reportes.");
+        folders=payload.folderPreferences;
+        records=[];
+        const hashCache=new Map();
+        for(const original of payload.records){
+          const record={...original,photos:{...(original.photos||{})}};
+          for(const key of ["frontBefore","frontAfter","backBefore","backAfter"]){
+            const ref=record.photos[key];if(!ref)continue;
+            if(!ref.filename||!ref.sha256||!/^([a-f0-9]{64})\.(jpg|png|webp|gif|bin)$/.test(ref.filename)||ref.filename.split(".")[0]!==ref.sha256)throw Error("Referencia de foto inválida.");
+            const entry=byName.get("photos/"+ref.filename);
+            if(!entry||entry.directory)throw Error("Falta la foto "+ref.filename);
+            let data=hashCache.get(ref.filename);
+            if(!data){
+              const blob=await entry.getData(new zip.BlobWriter(ref.mime||"application/octet-stream"));
+              const hash=new Uint8Array(await crypto.subtle.digest("SHA-256",await blob.arrayBuffer()));
+              const actual=Array.from(hash,x=>x.toString(16).padStart(2,"0")).join("");
+              if(actual!==ref.sha256)throw Error("La foto "+ref.filename+" está dañada o fue modificada.");
+              const bytes=new Uint8Array(await blob.arrayBuffer());
+              let binary="";for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));
+              data="data:"+(ref.mime||"application/octet-stream")+";base64,"+btoa(binary);
+              hashCache.set(ref.filename,data);
+            }
+            record.photos[key]=data;
+          }
+          records.push(record);
+        }
+      }finally{await reader.close();}
+    }else{
+      const payload=JSON.parse(await file.text());
+      if(!payload||payload.format!==FORMAT||payload.version!==VERSION||!Array.isArray(payload.records))throw Error("JSON incompatible.");
+      if(payload.records.length>10000)throw Error("Demasiados reportes.");
+      records=payload.records.map(decode);
+    }
     const seen=new Set();
-    for(const r of records) {
-      if(!r || typeof r!=="object" || !Object.prototype.hasOwnProperty.call(r,"id") ||
-         (typeof r.id!=="string" && typeof r.id!=="number") || seen.has(r.id))
-        throw Error("El respaldo contiene reportes sin ID válido o duplicados.");
+    for(const r of records){
+      if(!r||typeof r!=="object"||(typeof r.id!=="string"&&typeof r.id!=="number")||seen.has(r.id))throw Error("Reportes con IDs inválidos o duplicados.");
       seen.add(r.id);
     }
-    if(!confirm("Se encontraron "+records.length+" reportes.\n\nSe agregarán solamente los que no existan. Ningún reporte actual será sobrescrito.\n\n¿Importar?")) return;
-    const db=await openDB();
-    let added=0,skipped=0;
-    try {
+    if(!confirm("Se encontraron "+records.length+" reportes.\n\nSolo se agregarán los que no existan. Ninguno será sobrescrito.\n\n¿Importar?"))return;
+    const db=await openDB();let added=0,skipped=0;
+    try{
       await new Promise((resolve,reject)=>{
-        const tx=db.transaction(STORE,"readwrite"), store=tx.objectStore(STORE);
-        for(const report of records) {
+        const tx=db.transaction(STORE,"readwrite"),store=tx.objectStore(STORE);
+        for(const report of records){
           const get=store.get(report.id);
-          get.onsuccess=()=>{
-            if(get.result!==undefined){skipped++;return;}
-            const put=store.add(report);
-            put.onsuccess=()=>added++;
-          };
+          get.onsuccess=()=>{if(get.result!==undefined){skipped++;return;}const add=store.add(report);add.onsuccess=()=>added++;};
         }
-        tx.oncomplete=resolve;
-        tx.onerror=()=>reject(tx.error||Error("Falló la importación"));
-        tx.onabort=()=>reject(tx.error||Error("Importación cancelada"));
+        tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error||Error("Falló la importación"));tx.onabort=()=>reject(tx.error||Error("Importación cancelada"));
       });
-    } finally {db.close();}
-    alert("Importación finalizada.\nNuevos: "+added+"\nYa existentes (sin cambios): "+skipped+"\n\nCerrá y volvé a abrir Historial para verlos.");
+    }finally{db.close();}
+    if(folders&&typeof folders==="object"){
+      try{
+        const key="colosseumFolders_PRUEBAS_V1",current=JSON.parse(localStorage.getItem(key)||'{"clients":[],"lots":[]}');
+        const clients=new Set([...(current.clients||[]),...(Array.isArray(folders.clients)?folders.clients:[])]);
+        const lots=new Map([...(current.lots||[]),...(Array.isArray(folders.lots)?folders.lots:[])].filter(x=>Array.isArray(x)&&x.length===2).map(x=>[JSON.stringify(x),x]));
+        localStorage.setItem(key,JSON.stringify({clients:[...clients],lots:[...lots.values()]}));
+      }catch(e){console.warn("No se pudieron fusionar carpetas",e);}
+    }
+    alert("Importación finalizada.\nNuevos: "+added+"\nYa existentes: "+skipped+"\n\nVolvé a abrir Historial.");
   }
   function init() {
     const exportBtn=$("exportDatabaseBtn"), importBtn=$("importDatabaseBtn"), input=$("databaseFileInput");
