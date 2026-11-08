@@ -303,7 +303,7 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
 
 /* REV14.2 — título gráfico japonés + subtítulo */
 .hero{
-  grid-template-columns:250px minmax(0,1fr) 250px;
+  grid-template-columns:200px minmax(0,1fr) 200px;
   gap:18px;
 }
 
