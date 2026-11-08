@@ -234,10 +234,10 @@ input, textarea, select { font-size: max(16px, 1em); }
   <div class="history-backup-bar" style="display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-top:1px solid #555">
   <button type="button" id="exportDatabaseBtn">↓ EXPORTAR BASE DE DATOS</button>
   <button type="button" id="importDatabaseBtn">↑ IMPORTAR BASE DE DATOS</button>
-  <input type="file" id="databaseFileInput" accept=".json,application/json" hidden>
-  <small style="flex-basis:100%;opacity:.8">Respaldo completo de reportes y fotografías. Importar agrega reportes nuevos sin sobrescribir los existentes.</small>
+  <input type="file" id="databaseFileInput" accept=".zip,.json,application/zip,application/json" hidden>
+  <small style="flex-basis:100%;opacity:.8">Exporta un ZIP con database.json y photos/. Importa ZIP o JSON antiguo sin sobrescribir reportes existentes.</small>
 </div>
-<div style="margin:12px 0;padding:12px;border:1px solid #786330;border-radius:6px;background:#171717;color:#fff"><strong style="color:#f5d35a">RESPALDO ZIP · REV20.1 PRUEBAS</strong><div style="margin-top:8px"><button type="button" id="exportSplitZipBtn">↓ EXPORTAR BACKUP ZIP (DATOS + FOTOS)</button></div><small id="zipExportStatus" style="display:block;margin-top:8px">Genera un único ZIP con database.json y photos/. Solo lee la base de pruebas; no modifica ni sincroniza datos. Requiere conexión para cargar el módulo ZIP.</small></div><section id="driveSyncPanel" style="margin:12px 0;padding:12px;border:1px solid #555;background:#171717;color:#fff"><strong style="color:#f5d35a">GOOGLE DRIVE · REV20 PRUEBAS</strong><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="driveConnectBtn">CONECTAR GOOGLE DRIVE</button><button type="button" id="driveDisconnectBtn" hidden>DESCONECTAR</button></div><small id="driveConnectionStatus" style="display:block;margin-top:8px">Sin conectar. Esta etapa no sube, descarga ni modifica reportes.</small></section><div id="folderToolbar" class="folder-toolbar"><button type="button" id="createClientFolder">＋ CLIENTE</button><button type="button" id="createLotFolder">＋ LOTE</button><button type="button" id="showAllFolders">VER TODOS</button></div><div id="historyList"></div>
+<section id="driveSyncPanel" style="margin:12px 0;padding:12px;border:1px solid #555;background:#171717;color:#fff"><strong style="color:#f5d35a">GOOGLE DRIVE · REV20 PRUEBAS</strong><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="driveConnectBtn">CONECTAR GOOGLE DRIVE</button><button type="button" id="driveDisconnectBtn" hidden>DESCONECTAR</button></div><small id="driveConnectionStatus" style="display:block;margin-top:8px">Sin conectar. Esta etapa no sube, descarga ni modifica reportes.</small></section><div id="folderToolbar" class="folder-toolbar"><button type="button" id="createClientFolder">＋ CLIENTE</button><button type="button" id="createLotFolder">＋ LOTE</button><button type="button" id="showAllFolders">VER TODOS</button></div><div id="historyList"></div>
 </dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.3/dist/jspdf.umd.min.js"></script>
@@ -246,12 +246,12 @@ input, textarea, select { font-size: max(16px, 1em); }
 <script src="pricing-v17-2.js"></script>
 <script src="rev18.js?v=18.8.1"></script>
 <script src="batch-budget-v17.js"></script>
-<script src="database-transfer.js?v=18.8.1"></script>
+<script src="database-transfer.js?v=20.1.2"></script>
 <script src="folders.js?v=19.5"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="drive-sync.js?v=20.0.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.62/dist/zip.min.js"></script>
 <script src="media-format-v20-1.js?v=20.1.0"></script>
-<script src="export-split-zip-v20-1.js?v=20.1.0"></script>
+
 </body>
 </html>
