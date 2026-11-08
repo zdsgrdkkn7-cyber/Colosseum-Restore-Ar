@@ -1,9 +1,5 @@
-const CACHE="colosseum-restoration-v18-8-1";
-const CORE=[
-  "./pdf.js?v=18.8.1","./database-transfer.js?v=18.8.1",
-  "./manifest.webmanifest","./assets/ho-oh.png","./assets/lugia.png","./assets/celebi.webp","./assets/title-jp.png",
-  "./assets/pokeball-active.svg","./assets/pokeball-inactive.svg"
-];
+const CACHE="colosseum-restoration-v19-7-1";
+const CORE=["./","./index.html","./styles.css?v=16.1","./rev18.css?v=18.8.1","./folders.css?v=19.7.1","./app.js?v=19.7.1","./folders.js?v=19.7.1","./pdf.js?v=18.8.1","./database-transfer.js?v=18.8.1","./manifest.webmanifest","./assets/ho-oh.png","./assets/lugia.png","./assets/celebi.webp","./assets/title-jp.png","./assets/pokeball-active.svg","./assets/pokeball-inactive.svg"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(cache=>Promise.allSettled(CORE.map(url=>cache.add(url)))).then(()=>self.skipWaiting()))});
-self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("colosseum-restoration-")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",event=>{if(event.request.method!=="GET")return;event.respondWith(fetch(event.request).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy)).catch(()=>{});return response}).catch(()=>caches.match(event.request)))});
