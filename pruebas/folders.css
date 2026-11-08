@@ -1,2 +1,8 @@
 .folder-toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-bottom:1px solid #555}.folder-toolbar button,.folder-button{cursor:pointer}.folder-breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:12px}.folder-entry{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #454545}.folder-entry button:first-child{flex:1;text-align:left;font-weight:bold}.folder-entry button:last-child{font-size:11px}.history-item{flex-wrap:wrap;gap:8px}
 .folder-breadcrumb+.folder-button{margin:8px 12px;padding:10px 14px;font-weight:bold}
+
+/* Rev19.2 — scroll propio del historial en iPhone */
+#historyDialog{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#historyList{max-height:48dvh;min-height:100px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.folder-bulk-actions{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px}
+.folder-bulk-actions button{flex:1;min-width:130px}
