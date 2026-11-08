@@ -1,6 +1,6 @@
-const CACHE="colosseum-restoration-v18-8-1";
+const CACHE="colosseum-restoration-v19-1";
 const CORE=[
-  "./pdf.js?v=18.8.1","./database-transfer.js?v=18.8.1",
+  "./pdf.js?v=18.8.1","./database-transfer.js?v=18.8.1","./folders.js?v=19.1","./folders.css?v=19.1",
   "./manifest.webmanifest","./assets/ho-oh.png","./assets/lugia.png","./assets/celebi.webp","./assets/title-jp.png",
   "./assets/pokeball-active.svg","./assets/pokeball-inactive.svg"
 ];
