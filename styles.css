@@ -711,3 +711,9 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
 .hero-title-line{grid-template-columns:68px minmax(0,1fr) 68px;column-gap:4px}
 .title-logo-jp{width:100%;max-width:none;max-height:108px}
 .hero-title-line .title-sprite{max-width:64px;max-height:64px;object-fit:contain}
+
+/* Rev19.7.4 — conjunto del logo más compacto y sprites más grandes */
+.hero{grid-template-columns:180px minmax(0,1fr) 180px;column-gap:12px}
+.hero-title-line{width:min(100%,560px);margin-inline:auto;grid-template-columns:90px minmax(0,1fr) 90px;column-gap:6px}
+.hero-title-line .title-sprite-hooh,
+.hero-title-line .title-sprite-lugia{width:86px!important;height:86px!important;max-width:86px!important;max-height:86px!important;object-fit:contain}
