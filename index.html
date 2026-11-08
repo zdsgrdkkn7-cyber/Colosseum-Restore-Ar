@@ -234,6 +234,7 @@ input, textarea, select { font-size: max(16px, 1em); }
   <div class="history-backup-bar" style="display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-top:1px solid #555">
   <button type="button" id="exportDatabaseBtn">↓ EXPORTAR BASE DE DATOS</button>
   <button type="button" id="importDatabaseBtn">↑ IMPORTAR BASE DE DATOS</button>
+  <button type="button" id="clearDatabaseBtn" title="Borrar todos los reportes, fotos, carpetas y borrador guardados en este dispositivo" style="margin-left:auto;background:#9b1c24;color:#fff;border:1px solid #f04b54;border-radius:5px;padding:5px 8px;font-size:10px;font-weight:700;cursor:pointer">🗑 BORRAR TODO</button>
   <input type="file" id="databaseFileInput" accept=".json,application/json" hidden>
   <small style="flex-basis:100%;opacity:.8">Respaldo completo de reportes y fotografías. Importar agrega reportes nuevos sin sobrescribir los existentes.</small>
 </div>
@@ -246,7 +247,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 <script src="pricing-v17-2.js"></script>
 <script src="rev18.js?v=18.8.1"></script>
 <script src="batch-budget-v17.js"></script>
-<script src="database-transfer.js?v=18.8.1"></script>
+<script src="database-transfer.js?v=18.8.2"></script>
 <script src="folders.js?v=19.7.1"></script>
 </body>
 </html>
