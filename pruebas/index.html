@@ -231,15 +231,17 @@ input, textarea, select { font-size: max(16px, 1em); }
       <button id="remitoBtn" type="button" disabled>▶ GENERAR REMITO</button>
     </div>
   </div>
-  <div class="history-backup-bar" style="display:flex;align-items:center;gap:7px;padding:12px 0;border-top:1px solid #555;flex-wrap:nowrap">
-  <button type="button" id="exportDatabaseBtn" style="flex:1;min-width:0;font-size:clamp(9px,2.4vw,13px);padding:12px 4px">↓ EXPORTAR BASE DE DATOS</button>
-  <button type="button" id="importDatabaseBtn" style="flex:1;min-width:0;font-size:clamp(9px,2.4vw,13px);padding:12px 4px">↑ IMPORTAR BASE DE DATOS</button>
-  <button type="button" id="clearTestDatabaseBtn" aria-label="Borrar base de pruebas" title="Borrar base de pruebas" style="flex:0 0 34px;width:34px;height:38px;min-width:34px;padding:7px;background:#861b20;color:#fff;border:1px solid #d94a4a;display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 10v7M14 10v7"/></svg></button>
+  <div class="history-backup-bar" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 38px;align-items:stretch;column-gap:6px;padding:12px 0;border-top:1px solid #555">
+  <button type="button" id="exportDatabaseBtn" style="min-width:0;width:100%;box-sizing:border-box;white-space:normal;font-size:clamp(10px,2.6vw,13px);line-height:1.2;padding:10px 3px">↓ EXPORTAR BASE</button>
+  <button type="button" id="importDatabaseBtn" style="min-width:0;width:100%;box-sizing:border-box;white-space:normal;font-size:clamp(10px,2.6vw,13px);line-height:1.2;padding:10px 3px">↑ IMPORTAR BASE</button>
+  <button type="button" id="clearTestDatabaseBtn" aria-label="Borrar base de pruebas" title="Borrar base de pruebas" style="width:38px;min-width:0;height:100%;box-sizing:border-box;padding:7px;background:#861b20;color:#fff;border:1px solid #d94a4a;display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 10v7M14 10v7"/></svg></button>
   <input type="file" id="databaseFileInput" accept=".zip,.json,application/zip,application/json" hidden>
 </div>
 <section id="driveSyncPanel" style="margin:8px 0 12px;padding:12px;border:1px solid #555;background:#171717;color:#fff">
-  <strong style="color:#f5d35a">GOOGLE DRIVE</strong>
-  <div style="margin-top:7px;font-size:13px">Estado: <span id="driveConnectionStatus" style="color:#ff6767">Desconectado</span></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:nowrap">
+    <strong style="color:#f5d35a;white-space:nowrap">GOOGLE DRIVE</strong>
+    <span id="driveConnectionStatus" style="color:#ff6767;font-size:clamp(11px,2.8vw,14px);white-space:nowrap">● Desconectado</span>
+  </div>
   <div style="margin-top:10px"><button type="button" id="driveConnectBtn">CONECTAR</button></div>
   <small id="driveActivityStatus" style="display:block;margin-top:9px;line-height:1.4;color:#c9c9c9"></small>
 </section><div id="folderToolbar" class="folder-toolbar"><button type="button" id="createClientFolder">＋ CLIENTE</button><button type="button" id="createLotFolder">＋ LOTE</button><button type="button" id="showAllFolders">VER TODOS</button></div><div id="historyList"></div>
