@@ -1173,7 +1173,10 @@ async function generateBatchBudget(rawReports,discountPercent=0){
         const lines=doc.splitTextToSize(pdfSafeText(d.text||"Sin observaciones adicionales"),91);
         return {detail:d,lines,height:Math.max(88,Math.ceil(lines.length*4.3+28))};
       });
-      const pageH=42+rows.reduce((sum,row)=>sum+row.height+8,0)+2;
+      // jsPDF normalizes portrait pages with height < width by swapping dimensions.
+      // Keep the custom page portrait even when only one detail remains.
+      const contentH=42+rows.reduce((sum,row)=>sum+row.height+8,0)+2;
+      const pageH=Math.max(211,contentH);
       doc.addPage([210,pageH],"portrait");
       paintPdfBackground(doc,210,pageH);
       drawBattleFrame(doc,8,10,194,24);
