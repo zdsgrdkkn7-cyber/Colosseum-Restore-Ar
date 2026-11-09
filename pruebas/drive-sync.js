@@ -1,4 +1,4 @@
-/* Colosseum Rev20.4 — respaldo manual en Drive, solo base PRUEBAS.
+/* Colosseum Rev20.5 — respaldo manual en Drive, solo base PRUEBAS.
    Publica el manifiesto AL FINAL; no sobrescribe reportes locales.
    Recupera reportes y fotos directamente en IndexedDB, con confirmaciones. */
 (()=>{
@@ -83,44 +83,89 @@ async function upload(){
  status("Respaldo subido: "+reports.length+" reportes, "+done.size+" fotografías. Carpeta: "+FOLDER+".");
 }
 async function download(){
- status("Buscando respaldo…");
- const root=await folder(FOLDER,null,false),photos=await folder(PHOTO_FOLDER,root,false);
+ status("Consultando database.json…");
+ const root=await folder(FOLDER,null,false);
  const m=await list(root,MANIFEST);if(!m.length)throw Error("No se encontró database.json.");
  const manifest=await (await api("https://www.googleapis.com/drive/v3/files/"+m[0].id+"?alt=media")).json();
- if(manifest.format!=="colosseum-split-backup"||manifest.version!==1||!Array.isArray(manifest.records))throw Error("Formato de respaldo incompatible.");
- if(manifest.records.length>10000)throw Error("Demasiados reportes.");
- const names=new Set();
- for(const r of manifest.records)for(const key of ["frontBefore","frontAfter","backBefore","backAfter"]){
-  const ref=r.photos?.[key];if(!ref)continue;
-  if(!ref.filename||!ref.sha256||!/^[a-f0-9]{64}\.(jpg|png|webp|gif|bin)$/.test(ref.filename)||ref.sha256!==ref.filename.split(".")[0])throw Error("Referencia de fotografía inválida.");
-  names.add(ref.filename);
+ if(manifest.format!=="colosseum-split-backup"||manifest.version!==1||!Array.isArray(manifest.records)||manifest.records.length>10000)throw Error("Formato de respaldo incompatible.");
+ const keys=["frontBefore","frontAfter","backBefore","backAfter"];
+ const local=await readDB(),byId=new Map(local.map(r=>[r.id,r])),seen=new Set();
+ const photoCache=new Map(),needed=new Map(),pending=[];
+ const stable=value=>{
+  if(Array.isArray(value))return value.map(stable);
+  if(value&&typeof value==="object"&&!(value instanceof Blob))return Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])]));
+  return value;
+ };
+ const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",bytes)),x=>x.toString(16).padStart(2,"0")).join("");
+ const localPhoto=async value=>{
+  if(typeof value==="string"&&value.startsWith("data:")){
+   const match=/^data:([^;,]+)?;base64,([\s\S]*)$/.exec(value);if(!match)throw Error("Foto local incompatible");
+   const raw=atob(match[2]),bytes=new Uint8Array(raw.length);
+   for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+   return {sha256:await hash(bytes),mime:match[1]||"application/octet-stream",size:bytes.length,data:value};
+  }
+  if(value instanceof Blob)return {sha256:await hash(await value.arrayBuffer()),mime:value.type||"application/octet-stream",size:value.size,data:value};
+  throw Error("Formato de foto local desconocido");
+ };
+ for(let i=0;i<manifest.records.length;i++){
+  const remote=manifest.records[i];
+  if(!remote||(typeof remote.id!=="string"&&typeof remote.id!=="number")||seen.has(remote.id))throw Error("ID de reporte inválido o duplicado.");
+  seen.add(remote.id);
+  const previous=byId.get(remote.id),localCopy=previous?{...previous,photos:{...(previous.photos||{})}}:null;
+  const remoteCopy={...remote,photos:{...(remote.photos||{})}};
+  status("Comparando reportes "+(i+1)+"/"+manifest.records.length+"…");
+  for(const key of keys){
+   const ref=remoteCopy.photos[key];
+   if(ref){
+    if(!ref.filename||!ref.sha256||!/^[a-f0-9]{64}\.(jpg|png|webp|gif|bin)$/.test(ref.filename)||ref.filename.split(".")[0]!==ref.sha256)throw Error("Referencia de fotografía inválida.");
+   }
+   const old=localCopy?.photos[key];
+   if(old){
+    const info=await localPhoto(old);
+    if(!photoCache.has(info.sha256))photoCache.set(info.sha256,info.data);
+    localCopy.photos[key]={fileId:null,filename:info.sha256+"."+({"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"}[info.mime]||"bin"),sha256:info.sha256,mime:info.mime,size:info.size};
+   }
+   if(ref&&!photoCache.has(ref.sha256))needed.set(ref.filename,ref);
+  }
+  if(localCopy&&JSON.stringify(stable(localCopy))===JSON.stringify(stable(remoteCopy)))continue;
+  pending.push(remote);
  }
- if(typeof window.ColosseumImportRecords!=="function")throw Error("No cargó el módulo de importación.");
- if(!confirm("RECUPERAR DESDE DRIVE\n\n"+manifest.records.length+" reportes y "+names.size+" fotografías.\n\nSe descargarán directamente a Colosseum PRUEBAS, sin generar ZIP. Se verificará cada fotografía y podrás confirmar los cambios antes de importarlos.\n\n¿Continuar?"))return;
- const cache=new Map();let i=0;
- for(const name of names){
-  status("Descargando y verificando foto "+(++i)+"/"+names.size+"…");
-  const found=await list(photos,name);if(!found.length)throw Error("Falta en Drive: "+name);
-  const blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
-  const bytes=new Uint8Array(await blob.arrayBuffer());
-  const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",bytes));
-  const hash=Array.from(digest,x=>x.toString(16).padStart(2,"0")).join("");
-  if(hash!==name.split(".")[0])throw Error("Foto dañada: "+name);
-  let binary="";for(let j=0;j<bytes.length;j+=8192)binary+=String.fromCharCode(...bytes.subarray(j,j+8192));
-  cache.set(name,btoa(binary));
+ const newCount=pending.filter(r=>!byId.has(r.id)).length,updated=pending.length-newCount,unchanged=manifest.records.length-pending.length;
+ // Only fetch photos referenced by records that will actually be imported.
+ const missing=new Map();
+ for(const record of pending)for(const key of keys){
+  const ref=record.photos?.[key];if(ref&&!photoCache.has(ref.sha256))missing.set(ref.filename,ref);
  }
- const records=manifest.records.map(original=>{
+ if(!pending.length){
+  status("Drive actualizado: "+unchanged+" reportes sin cambios. No se descargaron fotografías.");
+  alert("La base ya está actualizada.\n"+unchanged+" reportes sin cambios.\n0 fotografías descargadas.");
+  return;
+ }
+ if(!confirm("RECUPERAR CAMBIOS DE DRIVE\n\nNuevos: "+newCount+"\nActualizados: "+updated+"\nSin cambios: "+unchanged+"\nFotos para descargar: "+missing.size+"\n\n¿Continuar?"))return;
+ if(missing.size){
+  const photos=await folder(PHOTO_FOLDER,root,false);let i=0;
+  for(const [name,ref] of missing){
+   status("Descargando foto necesaria "+(++i)+"/"+missing.size+"…");
+   const found=await list(photos,name);if(!found.length)throw Error("Falta en Drive: "+name);
+   const blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
+   const bytes=new Uint8Array(await blob.arrayBuffer());
+   if(await hash(bytes)!==ref.sha256)throw Error("Foto dañada: "+name);
+   let binary="";for(let j=0;j<bytes.length;j+=8192)binary+=String.fromCharCode(...bytes.subarray(j,j+8192));
+   photoCache.set(ref.sha256,"data:"+(ref.mime||"application/octet-stream")+";base64,"+btoa(binary));
+  }
+ }
+ const records=pending.map(original=>{
   const record={...original,photos:{...(original.photos||{})}};
-  for(const key of ["frontBefore","frontAfter","backBefore","backAfter"]){
+  for(const key of keys){
    const ref=record.photos[key];if(!ref)continue;
-   if(!cache.has(ref.filename))throw Error("Foto no descargada: "+ref.filename);
-   record.photos[key]="data:"+(ref.mime||"application/octet-stream")+";base64,"+cache.get(ref.filename);
+   const data=photoCache.get(ref.sha256);if(!data)throw Error("Falta fotografía: "+ref.filename);
+   record.photos[key]=data;
   }
   return record;
  });
- status("Fotografías verificadas. Preparando importación…");
+ status("Importando únicamente los cambios…");
  await window.ColosseumImportRecords(records,manifest.folderPreferences);
- status("Recuperación de Drive finalizada o cancelada. Revisá Historial.");
+ status("Comparación completa: "+unchanged+" sin cambios; "+missing.size+" fotos descargadas.");
 }
 async function run(action){if(busy)return;busy=true;buttons();try{await action();}catch(e){status("Error: "+e.message);alert("Google Drive: "+e.message);}finally{busy=false;buttons();}}
 function init(){
