@@ -43,7 +43,7 @@ input, textarea, select { font-size: max(16px, 1em); }
   .history-remito-actions button { font-size:11px; min-width:0 !important; }
 }
 </style>
-<link rel="stylesheet" href="folders.css?v=20.7.1">
+<link rel="stylesheet" href="folders.css?v=20.8.0">
 </head>
 <body>
 <div class="app-shell">
@@ -200,7 +200,7 @@ input, textarea, select { font-size: max(16px, 1em); }
     <span>¡LISTA PARA LA SIGUIENTE BATALLA!</span>
   </div>
   <div class="action-stack no-print">
-    <button id="budgetPdfBtn" class="menu-button budget-button" type="button">◇ GENERAR PRESUPUESTO</button>
+    <button id="budgetPdfBtn" class="menu-button budget-button" type="button">◇ PRESUPUESTO</button>
     <button id="pdfBtn" class="menu-button" type="button">▶ GENERAR REPORTE</button>
     <button id="saveBtn" class="menu-button" type="button">▣ GUARDAR REPORTE</button>
     <button id="newBtn" class="menu-button" type="button">＋ NUEVO REPORTE</button>
@@ -216,19 +216,19 @@ input, textarea, select { font-size: max(16px, 1em); }
   <div class="history-remito-bar">
     <div class="history-selection-status">
       <strong>LOTE</strong>
-      <span id="selectedReportCount">0 reportes seleccionados</span>
+      <span id="selectedReportCount">0 seleccionados</span>
     </div>
     <label class="lot-discount">
-      DESCUENTO POR LOTE
+      Dto.
       <span class="discount-input-wrap">
         <input id="lotDiscount" type="number" inputmode="decimal" min="0" max="100" step="1" value="0">
         <span>%</span>
       </span>
     </label>
     <div class="history-remito-actions">
-      <button id="selectAllReports" type="button">SELECCIONAR TODO</button>
+      <button id="selectAllReports" type="button">SELECCIONAR</button>
       <button id="batchBudgetBtn" type="button" disabled>◇ GENERAR PRESUPUESTO</button>
-      <button id="remitoBtn" type="button" disabled>▶ GENERAR REMITO</button>
+      <button id="remitoBtn" type="button" disabled>▶ REMITO</button>
     </div>
   </div>
   <div class="history-backup-bar" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 38px;align-items:stretch;column-gap:6px;padding:12px 0;border-top:1px solid #555">
@@ -242,7 +242,7 @@ input, textarea, select { font-size: max(16px, 1em); }
     <strong style="color:#f5d35a;white-space:nowrap">GOOGLE DRIVE</strong>
     <span id="driveConnectionStatus" style="color:#ff6767;font-size:clamp(11px,2.8vw,14px);white-space:nowrap">● Desconectado</span>
   </div>
-  <div style="margin-top:10px"><button type="button" id="driveConnectBtn">CONECTAR</button></div>
+  <div class="drive-toggle-wrap"><button type="button" id="driveConnectBtn">CONECTAR</button></div>
   <small id="driveActivityStatus" style="display:block;margin-top:9px;line-height:1.4;color:#c9c9c9"></small>
 </section><div id="folderToolbar" class="folder-toolbar"><button type="button" id="createClientFolder">＋ CLIENTE</button><button type="button" id="createLotFolder">＋ LOTE</button><button type="button" id="showAllFolders">VER TODOS</button></div><div id="historyList"></div>
 </dialog>
