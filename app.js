@@ -460,5 +460,5 @@ document.addEventListener("DOMContentLoaded",()=>{
  Object.assign(version.style,{position:"fixed",right:"8px",bottom:"6px",zIndex:"1000",fontSize:"10px",color:"#999",background:"#111",padding:"3px 5px",borderRadius:"3px",pointerEvents:"none"});
  document.body.appendChild(version);
  fitMobile();
- if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+ if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=21.3.0").catch(()=>{});
 });
