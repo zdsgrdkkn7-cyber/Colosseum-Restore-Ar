@@ -37,3 +37,36 @@
 #historyDialog .history-backup-bar #exportDatabaseBtn,
 #historyDialog .history-backup-bar #importDatabaseBtn{padding:8px 2px!important;letter-spacing:0!important}
 #historyDialog .history-backup-bar #clearTestDatabaseBtn{grid-column:3!important;grid-row:1!important;width:34px!important;min-width:34px!important;max-width:34px!important;height:100%!important;padding:5px!important;box-sizing:border-box!important}
+
+/* Rev20.8 — compactación visual SOLO del Historial de PRUEBAS */
+#historyDialog .dialog-head h2{margin:4px 0!important}
+#historyDialog .dialog-head button{padding:5px 9px!important}
+#historyDialog .history-remito-bar{
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+ gap:7px 8px!important;padding:9px!important;margin:8px 0!important;
+}
+#historyDialog .history-selection-status{flex-direction:row!important;align-items:center!important;gap:8px!important;min-width:0}
+#historyDialog .history-selection-status strong{font-size:15px!important}
+#historyDialog .history-selection-status span{font-size:11px!important;white-space:nowrap}
+#historyDialog .lot-discount{gap:5px!important;font-size:11px!important}
+#historyDialog .discount-input-wrap{gap:3px!important}
+#historyDialog #lotDiscount{width:43px!important;min-width:0!important;padding:4px 5px!important;font-size:13px!important}
+#historyDialog .history-remito-actions{
+ grid-column:1/-1!important;display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;
+}
+#historyDialog .history-remito-actions button{
+ min-width:0!important;width:100%!important;padding:7px 2px!important;
+ font-size:clamp(9px,2.3vw,12px)!important;line-height:1.15!important;
+ white-space:normal!important;overflow-wrap:break-word!important;
+}
+#historyDialog .history-backup-bar{padding:7px 0!important}
+#historyDialog .history-backup-bar #exportDatabaseBtn,
+#historyDialog .history-backup-bar #importDatabaseBtn{padding:7px 2px!important}
+#historyDialog #driveSyncPanel{padding:9px!important;margin:5px 0 7px!important}
+#historyDialog #driveSyncPanel .drive-toggle-wrap{margin-top:6px!important}
+#historyDialog #driveConnectBtn{padding:6px 13px!important;font-size:12px!important}
+#historyDialog #driveActivityStatus{margin-top:5px!important;font-size:11px!important;line-height:1.25!important}
+#historyDialog #folderToolbar{padding:7px 3px!important;gap:5px!important}
+#historyDialog #folderToolbar button{padding:6px 10px!important;font-size:11px!important}
+#historyDialog #historyList .folder-entry{padding:8px 9px!important}
