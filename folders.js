@@ -8,7 +8,9 @@ const lotOf=r=>norm(r.lotFolder)||DEFAULT_LOT;
 let filterClient='',filterLot='',currentClient='',currentLot='';
 function navigate(c,l){
  if(filterClient!==c||filterLot!==l)selectedReportIds.clear();
- filterClient=c;navigate(filterClient,l);
+ filterClient=c;
+ filterLot=l;
+ renderHistory();
 }
 window.getActiveLotReports=function(){
  if(!filterClient||!filterLot)return [];
@@ -52,7 +54,8 @@ window.renderFolderHistory=function(root,reports){
  const actions=node('div','folder-bulk-actions');
  const selectLot=btn('SELECCIONAR TODAS',()=>{
   const visible=reports.filter(r=>clientOf(r)===filterClient&&lotOf(r)===filterLot);
-  if(visible.every(r=>selectedReportIds.has(r.id)))visible.forEach(r=>selectedReportIds.delete(r.id));\n  else visible.forEach(r=>selectedReportIds.add(r.id));
+  if(visible.every(r=>selectedReportIds.has(r.id)))visible.forEach(r=>selectedReportIds.delete(r.id));
+  else visible.forEach(r=>selectedReportIds.add(r.id));
   renderHistory();
  });
  const lotReports=reports.filter(r=>clientOf(r)===filterClient&&lotOf(r)===filterLot);
