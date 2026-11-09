@@ -405,7 +405,45 @@ window.addEventListener("resize",fitMobile);
 document.addEventListener("DOMContentLoaded",()=>{
  const fecha=$("#fecha");if(fecha&&!fecha.value)fecha.value=new Date().toISOString().slice(0,10);
  buildRatings();addPanelCorners();initControls();
- try{const d=JSON.parse(localStorage.getItem("cr_draft")||"null");if(d)apply(d);else updateBudgetPreview({force:true})}catch(e){console.error("No se pudo recuperar borrador",e);updateBudgetPreview({force:true})}
+ // Rev21.2: recover only drafts that have not already been saved.
+ // Never discard a draft if local database lookup fails.
+ (async()=>{
+  try{
+   const draft=JSON.parse(localStorage.getItem("cr_draft")||"null");
+   if(!draft){updateBudgetPreview({force:true});return;}
+   if(!draft.id){ // New unsaved report: restore only if it contains actual work.
+    const hasContent=Object.entries(draft.fields||{}).some(([key,value])=>key!=="fecha"&&String(value||"").trim())||
+      Object.values(draft.photos||{}).some(Boolean)||
+      Object.values(draft.work||{}).some(Boolean)||
+      Object.values(draft.ratings?.before||{}).some(Boolean)||
+      Object.values(draft.ratings?.after||{}).some(Boolean);
+    if(hasContent)apply(draft);else updateBudgetPreview({force:true});
+    return;
+   }
+   const database=await db();
+   const saved=await new Promise((resolve,reject)=>{
+    const req=database.transaction("reports","readonly").objectStore("reports").get(draft.id);
+    req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+   });
+   if(!saved){apply(draft);return;}
+   const stable=value=>Array.isArray(value)?value.map(stable):value&&typeof value==="object"&&!(value instanceof Blob)?Object.fromEntries(Object.keys(value).sort().map(key=>[key,stable(value[key])])):value;
+   // Compare only editable report data, not timestamps or legacy metadata.
+   const keys=["fields","ratings","photos","work","budgetManualOverride","finalManualOverride","clientFolder","lotFolder"];
+   const normalized=(value)=>Object.fromEntries(keys.map(key=>[key,value[key]??(key==="fields"||key==="ratings"||key==="photos"||key==="work"?{}:key==="clientFolder"||key==="lotFolder"?"":false)]));
+   if(JSON.stringify(stable(normalized(draft)))===JSON.stringify(stable(normalized(saved)))){
+    localStorage.removeItem("cr_draft");updateBudgetPreview({force:true});return;
+   }
+   // Keep the draft until the user explicitly decides what to do with it.
+   if(confirm("Encontramos modificaciones sin guardar de un reporte anterior. ¿Querés recuperarlas?\\n\\nAceptar: recuperar borrador.\\nCancelar: empezar un reporte nuevo.")){
+    apply(draft);
+   }else{
+    localStorage.removeItem("cr_draft");updateBudgetPreview({force:true});
+   }
+  }catch(error){
+   console.error("No se pudo verificar el borrador; se conserva para evitar pérdidas",error);
+   try{const draft=JSON.parse(localStorage.getItem("cr_draft")||"null");if(draft)apply(draft);}catch(_){}
+  }
+ })();
  fitMobile();
  if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
 });
