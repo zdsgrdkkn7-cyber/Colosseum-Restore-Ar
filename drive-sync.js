@@ -92,6 +92,71 @@ async function upload(){
  await uploadBlob(MANIFEST,new Blob([JSON.stringify(manifest)],{type:"application/json"}),"application/json",root,old[0]?.id);
  status("Respaldo subido: "+reports.length+" reportes, "+done.size+" fotografías. Carpeta: "+FOLDER+".");
 }
+// Rev20.9.5: sincronización puntual y no destructiva al guardar un reporte.
+let autoPending=null,autoRunning=false;
+async function silentRefresh(){
+ if(connected())return true;
+ try{auth();}catch{return false;}
+ return new Promise(resolve=>{
+  let finished=false;
+  const finish=value=>{if(finished)return;finished=true;resolve(value);};
+  const old=client.callback;
+  client.callback=r=>{
+   if(r?.access_token){token=r.access_token;expires=Date.now()+(Number(r.expires_in)||3600)*1000;saveSession();buttons();finish(true);}
+   else finish(false);
+  };
+  try{client.requestAccessToken({prompt:""});}catch{finish(false);}
+  setTimeout(()=>finish(false),8000);
+ });
+}
+async function syncOneReport(reportId){
+ if(!connected()&&!(await silentRefresh())){
+  status("Reporte guardado localmente. Conectá Google Drive para sincronizar.");
+  return;
+ }
+ const reports=await readDB(),report=reports.find(r=>String(r.id)===String(reportId));
+ if(!report)return;
+ status("Sincronizando reporte con Google Drive…");
+ // No crear carpetas ni manifiestos automáticamente: evitamos usar otra cuenta por error.
+ const root=await folder(FOLDER,null,false);
+ const files=await list(root,MANIFEST);
+ if(!files.length)throw Error("No existe database.json; hacé primero un respaldo manual.");
+ const manifest=await (await api("https://www.googleapis.com/drive/v3/files/"+files[0].id+"?alt=media")).json();
+ if(manifest.format!=="colosseum-split-backup"||manifest.version!==1||!Array.isArray(manifest.records))throw Error("Manifiesto de Drive incompatible.");
+ const part=await ColosseumMediaV201.split([report]);
+ const entry=part.manifest.records[0];
+ const photos=await folder(PHOTO_FOLDER,root,false);
+ for(const file of part.files){
+  const existing=await list(photos,file.filename);
+  if(!existing.length)await uploadBlob(file.filename,file.blob,file.mime,photos);
+ }
+ // Preservar todos los registros remotos ajenos a este guardado.
+ const i=manifest.records.findIndex(r=>String(r.id)===String(reportId));
+ if(i>=0){
+  const remote=manifest.records[i];
+  if(remote.updatedAt&&report.updatedAt&&Date.parse(remote.updatedAt)>Date.parse(report.updatedAt)){
+   status("Conflicto: Drive tiene una versión más reciente. No se sobrescribió.");
+   return;
+  }
+  manifest.records[i]=entry;
+ }else manifest.records.push(entry);
+ manifest.createdAt=new Date().toISOString();
+ manifest.photoCount=new Set(manifest.records.flatMap(r=>Object.values(r.photos||{}).filter(v=>v&&v.filename).map(v=>v.filename))).size;
+ await uploadBlob(MANIFEST,new Blob([JSON.stringify(manifest)],{type:"application/json"}),"application/json",root,files[0].id);
+ status("Reporte sincronizado con Google Drive.");
+}
+async function processAutoQueue(){
+ if(autoRunning)return;
+ autoRunning=true;
+ try{
+  while(autoPending!==null){
+   const id=autoPending;autoPending=null;
+   try{await syncOneReport(id);}
+   catch(e){status("Guardado local correcto. Drive pendiente: "+e.message);}
+  }
+ }finally{autoRunning=false;}
+}
+function onReportSaved(id){autoPending=id;void processAutoQueue();}
 async function download(){
  status("Consultando database.json…");
  const root=await folder(FOLDER,null,false);
@@ -178,7 +243,7 @@ async function download(){
  status("Comparación completa: "+unchanged+" sin cambios; "+missing.size+" fotos descargadas.");
 }
 async function run(action){if(busy)return;busy=true;buttons();try{await action();}catch(e){status("Error: "+e.message);alert("Google Drive: "+e.message);}finally{busy=false;buttons();}}
-window.ColosseumDrive=Object.freeze({connected,upload:()=>run(upload),download:()=>run(download)});
+window.ColosseumDrive=Object.freeze({connected,upload:()=>run(upload),download:()=>run(download),onReportSaved});
 function init(){
  restoreSession();
  const connect=$("driveConnectBtn");if(!connect)return;
