@@ -1,4 +1,4 @@
-/* Colosseum Rev20.5 — respaldo manual en Drive, solo base PRUEBAS.
+/* Colosseum Rev20.6 — respaldo manual en Drive, solo base PRUEBAS.
    Publica el manifiesto AL FINAL; no sobrescribe reportes locales.
    Recupera reportes y fotos directamente en IndexedDB, con confirmaciones. */
 (()=>{
@@ -20,9 +20,18 @@ function restoreSession(){
 }
 function saveSession(){try{sessionStorage.setItem(SESSION_KEY,JSON.stringify({token,expires}));}catch{}}
 function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);}catch{}}
-function status(s){if($("driveConnectionStatus"))$("driveConnectionStatus").textContent=s;}
+function status(s){if($("driveActivityStatus"))$("driveActivityStatus").textContent=s;}
 function connected(){return !!token&&Date.now()<expires-60000;}
-function buttons(){if($("driveConnectBtn"))$("driveConnectBtn").textContent=connected()?"RENOVAR CONEXIÓN":"CONECTAR GOOGLE DRIVE";if($("driveDisconnectBtn"))$("driveDisconnectBtn").hidden=!token;for(const id of ["driveUploadBtn","driveDownloadBtn"])if($(id))$(id).disabled=!connected()||busy;}
+function buttons(){
+ const active=connected(),toggle=$("driveConnectBtn"),indicator=$("driveConnectionStatus");
+ if(toggle){toggle.textContent=active?"DESCONECTAR":"CONECTAR";toggle.disabled=busy;}
+ if(indicator){indicator.textContent=active?"Conectado":"Desconectado";indicator.style.color=active?"#65d887":"#ff6767";}
+ for(const id of ["exportDatabaseBtn","importDatabaseBtn"]){
+  const el=$(id);if(!el)continue;
+  el.disabled=busy;
+  el.title=active?(id==="exportDatabaseBtn"?"Subir base a Google Drive":"Recuperar base desde Google Drive"):(id==="exportDatabaseBtn"?"Exportar ZIP al dispositivo":"Importar ZIP o JSON del dispositivo");
+ }
+}
 function auth(){if(!window.google?.accounts?.oauth2)throw Error("No cargó Google Identity Services");if(client)return;client=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:r=>{if(r.error){status("Autorización fallida: "+r.error);return;}token=r.access_token;expires=Date.now()+(Number(r.expires_in)||3600)*1000;saveSession();status("Conectado. Podés subir o recuperar un respaldo de PRUEBAS.");buttons();}});}
 async function api(url,opts={}){
  if(!connected())throw Error("La sesión de Google venció. Tocá CONECTAR GOOGLE DRIVE.");
@@ -168,13 +177,19 @@ async function download(){
  status("Comparación completa: "+unchanged+" sin cambios; "+missing.size+" fotos descargadas.");
 }
 async function run(action){if(busy)return;busy=true;buttons();try{await action();}catch(e){status("Error: "+e.message);alert("Google Drive: "+e.message);}finally{busy=false;buttons();}}
+window.ColosseumDrive=Object.freeze({connected,upload:()=>run(upload),download:()=>run(download)});
 function init(){
  restoreSession();
  const connect=$("driveConnectBtn");if(!connect)return;
- connect.onclick=()=>{try{auth();client.requestAccessToken({prompt:connected()?"":"consent"});}catch(e){status(e.message);}};
- $("driveDisconnectBtn").onclick=()=>{if(token&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(token,()=>{});token=null;expires=0;clearSession();status("Desconectado. Datos locales intactos.");buttons();};
- $("driveUploadBtn").onclick=()=>run(upload);
- $("driveDownloadBtn").onclick=()=>run(download);
+ connect.onclick=()=>{
+  if(connected()){
+   if(token&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(token,()=>{});
+   token=null;expires=0;clearSession();
+   status("Sesión desconectada. Los datos locales siguen intactos.");buttons();
+  }else{
+   try{auth();client.requestAccessToken({prompt:"consent"});}catch(e){status(e.message);}
+  }
+ };
  buttons();
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
