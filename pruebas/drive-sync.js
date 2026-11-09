@@ -1,4 +1,4 @@
-/* Colosseum Rev20.6 — respaldo manual en Drive, solo base PRUEBAS.
+/* Colosseum Rev20.7 — respaldo manual en Drive, solo base PRUEBAS.
    Publica el manifiesto AL FINAL; no sobrescribe reportes locales.
    Recupera reportes y fotos directamente en IndexedDB, con confirmaciones. */
 (()=>{
@@ -25,7 +25,7 @@ function connected(){return !!token&&Date.now()<expires-60000;}
 function buttons(){
  const active=connected(),toggle=$("driveConnectBtn"),indicator=$("driveConnectionStatus");
  if(toggle){toggle.textContent=active?"DESCONECTAR":"CONECTAR";toggle.disabled=busy;}
- if(indicator){indicator.textContent=active?"Conectado":"Desconectado";indicator.style.color=active?"#65d887":"#ff6767";}
+ if(indicator){indicator.textContent=active?"● Conectado":"● Desconectado";indicator.style.color=active?"#65d887":"#ff6767";}
  for(const id of ["exportDatabaseBtn","importDatabaseBtn"]){
   const el=$(id);if(!el)continue;
   el.disabled=busy;
