@@ -1158,4 +1158,72 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     const first=normalizePdfReport(reports[0]),client=(pdfSafeText(first.fields.cliente)||"cliente").replace(/[^\w\-]+/g,"_"),date=(pdfSafeText(first.fields.fecha)||new Date().toISOString().slice(0,10)).replace(/[^\d\-]+/g,"");
     downloadPdfDoc(doc,`Remito_${client}_${date}.pdf`);toast("REMITO GENERADO");
   };
+
+  // Rev21.4 — Budget-only detail pages: BEFORE photo at left, assessment at right.
+  // The final report and remito renderers above are intentionally unchanged.
+  function appendBudgetDetailPages(doc,rawReport){
+    const report=normalizePdfReport(rawReport);
+    const details=(rawReport?.restorationDetails||[]).filter(d=>d&&(d.before||String(d.text||"").trim()));
+    if(!details.length)return;
+    const perPage=2,total=Math.ceil(details.length/perPage);
+    for(let p=0;p<total;p++){
+      const items=details.slice(p*perPage,p*perPage+perPage);
+      const rows=items.map(d=>{
+        doc.setFont("courier","bold");doc.setFontSize(6.3);
+        const lines=doc.splitTextToSize(pdfSafeText(d.text||"Sin observaciones adicionales"),91);
+        return {detail:d,lines,height:Math.max(88,Math.ceil(lines.length*4.3+28))};
+      });
+      const pageH=42+rows.reduce((sum,row)=>sum+row.height+8,0)+2;
+      doc.addPage([210,pageH],"portrait");
+      paintPdfBackground(doc,210,pageH);
+      drawBattleFrame(doc,8,10,194,24);
+      drawCenteredFrameTitle(doc,8,10,194,"DETALLES DEL ESTADO INICIAL");
+      doc.setFont("courier","bold");doc.setFontSize(6);doc.setTextColor(150,150,145);
+      doc.text(`${pdfSafeText(report.fields?.carta)||"Carta"} - ${p+1}/${total}`,105,29,{align:"center"});
+      let y=42;
+      rows.forEach(({detail,lines,height},i)=>{
+        drawBattleFrame(doc,8,y,194,height);
+        doc.setFont("courier","bold");doc.setFontSize(6.5);doc.setTextColor(242,165,26);
+        doc.text(`DETALLE ${p*perPage+i+1}`,110,y+10);
+        doc.text("ANTES",56,y+10,{align:"center"});
+        addImageContain(doc,detail.before,14,y+15,84,63);
+        doc.setFont("courier","bold");doc.setFontSize(6.3);doc.setTextColor(242,242,235);
+        doc.text(lines,110,y+21,{lineHeightFactor:1.15});
+        y+=height+8;
+      });
+    }
+  }
+
+  generateBudgetPdf=async function(){
+    if(!window.jspdf?.jsPDF){alert("El motor PDF todavía no terminó de cargar. Revisá la conexión y probá nuevamente.");return;}
+    autosaveDraft();
+    const {jsPDF}=window.jspdf,assets=await loadReportPdfAssets(),report=collect();
+    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,620],compress:true});
+    renderBudgetPage(doc,report,assets);
+    appendBudgetDetailPages(doc,report);
+    const disclaimerLayout=getDisclaimerLayout(doc);
+    doc.addPage([210,disclaimerLayout.pageH],"portrait");renderDisclaimerPage(doc);
+    const f=report.fields||{},card=(pdfSafeText(f.carta)||"carta").replace(/[^\\w\\-]+/g,"_"),date=(pdfSafeText(f.fecha)||new Date().toISOString().slice(0,10)).replace(/[^\\d\\-]+/g,"");
+    downloadPdfDoc(doc,`Presupuesto_${card}_${date}.pdf`);toast("PRESUPUESTO GENERADO");
+  };
+
+  generateBatchBudget=async function(rawReports,discountPercent=0){
+    if(!window.jspdf?.jsPDF){alert("El motor PDF todavía no terminó de cargar. Revisá la conexión y probá nuevamente.");return;}
+    const reports=(rawReports||[]).filter(Boolean);
+    if(!reports.length){toast("NO HAY REPORTES SELECCIONADOS");return;}
+    const {jsPDF}=window.jspdf,assets=await loadReportPdfAssets();
+    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,620],compress:true});
+    reports.forEach((report,idx)=>{
+      if(idx>0)doc.addPage([210,620],"portrait");
+      renderBudgetPage(doc,report,assets);
+      appendBudgetDetailPages(doc,report);
+    });
+    const summaryLayout=getBatchBudgetSummaryLayout(reports);
+    doc.addPage([210,summaryLayout.pageH],"portrait");
+    renderBatchBudgetSummaryPage(doc,reports,discountPercent,assets);
+    const disclaimerLayout=getDisclaimerLayout(doc);
+    doc.addPage([210,disclaimerLayout.pageH],"portrait");renderDisclaimerPage(doc);
+    const first=normalizePdfReport(reports[0]),client=(pdfSafeText(first.fields.cliente)||"cliente").replace(/[^\\w\\-]+/g,"_"),date=new Date().toISOString().slice(0,10);
+    downloadPdfDoc(doc,`Presupuesto_Lote_${client}_${date}.pdf`);toast("PRESUPUESTO POR LOTE GENERADO");
+  };
 })();
