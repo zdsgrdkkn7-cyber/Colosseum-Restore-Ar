@@ -23,7 +23,7 @@
 @media(max-width:650px){#historyList .history-item{grid-template-columns:22px minmax(0,1fr) auto!important}#historyList .history-item .history-cost{grid-column:2}#historyList .history-item .folder-trash{grid-column:3;grid-row:1 / span 2}#historyList .history-item button:not(.folder-trash){grid-column:2;justify-self:start}}
 
 /* Rev19.6 — importación y exportación compactas, siempre en dos columnas */
-#historyDialog .history-backup-bar{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;align-items:stretch}
+#historyDialog .history-backup-bar{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 34px!important;gap:5px!important;align-items:stretch}
 #historyDialog .history-backup-bar #exportDatabaseBtn,
 #historyDialog .history-backup-bar #importDatabaseBtn{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;white-space:normal!important;overflow-wrap:break-word!important;text-align:center!important;font-size:clamp(9px,2.4vw,12px)!important;line-height:1.25!important;padding:9px 5px!important;border-radius:9px!important}
 #historyDialog .history-backup-bar small{grid-column:1/-1!important;flex-basis:auto!important;font-size:clamp(10px,2.7vw,12px)!important;line-height:1.4!important;letter-spacing:0!important}
@@ -32,3 +32,8 @@
 #historyDialog .history-backup-bar #exportDatabaseBtn,
 #historyDialog .history-backup-bar #importDatabaseBtn{color:#111!important;-webkit-text-fill-color:#111!important}
 #historyDialog .history-backup-bar small{display:none!important}
+
+/* Rev20.7.1 — exclusivamente barra de respaldo en PRUEBAS */
+#historyDialog .history-backup-bar #exportDatabaseBtn,
+#historyDialog .history-backup-bar #importDatabaseBtn{padding:8px 2px!important;letter-spacing:0!important}
+#historyDialog .history-backup-bar #clearTestDatabaseBtn{grid-column:3!important;grid-row:1!important;width:34px!important;min-width:34px!important;max-width:34px!important;height:100%!important;padding:5px!important;box-sizing:border-box!important}
