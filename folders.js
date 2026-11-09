@@ -42,7 +42,7 @@ window.renderFolderHistory=function(root,reports){
  if(!filterLot){const addLot=btn('＋ NUEVO LOTE',()=>document.querySelector('#createLotFolder')?.click());addLot.classList.add('folder-text-action');root.append(addLot);lots.forEach(l=>{const rs=reports.filter(r=>clientOf(r)===filterClient&&lotOf(r)===l);const row=node('div','folder-entry folder-lot');row.append(btn('📁 '+l+' ('+rs.length+')',()=>{filterLot=l;renderHistory()}));row.append(btn('RENOMBRAR',async()=>{const next=prompt('Nuevo nombre del lote:',l);if(!next||!norm(next)||norm(next)===l)return;for(const r of rs){r.lotFolder=norm(next);r.fields=r.fields||{};r.fields.lote=norm(next);await putReport(r)}const p=folderPrefs();p.lots=(p.lots||[]).map(x=>x[0]===filterClient&&x[1]===l?[filterClient,norm(next)]:x);localStorage.setItem('colosseumFoldersV1',JSON.stringify(p));await renderHistory()}));root.append(row)});return;}
  const addReport=btn('＋ NUEVO REPORTE',()=>newReportInLot(filterClient,filterLot));addReport.classList.add('folder-text-action');root.append(addReport);
  const actions=node('div','folder-bulk-actions');
- actions.append(btn('SELECCIONAR TODAS LAS DEL LOTE',()=>{
+ actions.append(btn('SELECCIONAR TODAS',()=>{
   const visible=reports.filter(r=>clientOf(r)===filterClient&&lotOf(r)===filterLot);
   visible.forEach(r=>selectedReportIds.add(r.id));
   renderHistory();
