@@ -187,6 +187,25 @@
     alert("Importación finalizada.\nNuevos: "+added+"\nActualizados: "+updated+"\nSin cambios: "+unchanged+"\n\nVolvé a abrir Historial.");
   }
   window.ColosseumImportRecords=(records,folders)=>importBackup({directRecords:records,directFolders:folders});
+  async function clearAllLocalData() {
+    const records=await allReports();
+    if(!confirm("ATENCIÓN: VERSIÓN OFICIAL\\n\\nSe eliminarán definitivamente "+records.length+" reportes, sus fotos, carpetas y borrador SOLO DE ESTE DISPOSITIVO. Google Drive no se modifica.\\n\\n¿Querés continuar?"))return;
+    if(prompt("Para confirmar el borrado de la base OFICIAL escribí exactamente: BORRAR OFICIAL")!=="BORRAR OFICIAL")return;
+    const db=await openDB();
+    try{
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(STORE,"readwrite");
+        tx.objectStore(STORE).clear();
+        tx.oncomplete=resolve;
+        tx.onerror=()=>reject(tx.error||Error("No se pudo borrar la base"));
+        tx.onabort=()=>reject(tx.error||Error("Se canceló el borrado"));
+      });
+    }finally{db.close();}
+    localStorage.removeItem("cr_draft");
+    localStorage.removeItem("colosseumFoldersV1");
+    alert("Se borraron los datos locales oficiales. Se recargará la página.");
+    location.reload();
+  }
   function init() {
     const exportBtn=$("exportDatabaseBtn"), importBtn=$("importDatabaseBtn"), input=$("databaseFileInput");
     if(!exportBtn || !importBtn || !input) return;
@@ -195,6 +214,8 @@
       try{if(window.ColosseumDrive?.connected())await window.ColosseumDrive.upload();else await exportBackup();}catch(e){alert("No se pudo exportar: "+e.message);}
       finally{exportBtn.disabled=false;}
     });
+    const clearBtn=$("clearDatabaseBtn");
+    if(clearBtn)clearBtn.addEventListener("click",async()=>{clearBtn.disabled=true;try{await clearAllLocalData();}catch(e){alert("No se pudo borrar: "+e.message);}finally{clearBtn.disabled=false;}});
     importBtn.addEventListener("click",()=>{if(window.ColosseumDrive?.connected())window.ColosseumDrive.download();else input.click();});
     input.addEventListener("change",async()=>{
       const file=input.files && input.files[0];input.value="";
