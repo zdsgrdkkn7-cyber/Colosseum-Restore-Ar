@@ -99,7 +99,9 @@
   async function importBackup(file) {
     if(!file)return;
     let records,folders=null;
-    if(file.name.toLowerCase().endsWith(".zip")){
+    if(Array.isArray(file.directRecords)){
+      records=file.directRecords;folders=file.directFolders||null;
+    }else if(file.name.toLowerCase().endsWith(".zip")){
       if(!window.zip?.ZipReader)throw Error("No se cargó el módulo ZIP.");
       const reader=new zip.ZipReader(new zip.BlobReader(file));
       try{
@@ -184,6 +186,7 @@
     }
     alert("Importación finalizada.\nNuevos: "+added+"\nActualizados: "+updated+"\nSin cambios: "+unchanged+"\n\nVolvé a abrir Historial.");
   }
+  window.ColosseumImportRecords=(records,folders)=>importBackup({directRecords:records,directFolders:folders});
   function init() {
     const exportBtn=$("exportDatabaseBtn"), importBtn=$("importDatabaseBtn"), input=$("databaseFileInput");
     if(!exportBtn || !importBtn || !input) return;
