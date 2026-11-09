@@ -44,26 +44,26 @@ input, textarea, select { font-size: max(16px, 1em); }
 }
 </style>
 <link rel="stylesheet" href="folders.css?v=20.8.1">
-<link rel="stylesheet" href="nav-preview.css?v=1">
+<link rel="stylesheet" href="nav-preview.css?v=2">
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
   <button id="crMenuToggle" type="button" aria-expanded="false" aria-controls="crNavMenu" aria-label="Abrir menú">☰</button>
   <div class="cr-topbar-brand">
-    <img src="assets/ho-oh.png" alt="">
+    <img src="assets/ho-oh.png" alt="Ho-Oh">
     <img class="cr-topbar-logo" src="assets/title-jp.png" alt="Pokémon Colosseum">
-    <img src="assets/lugia.png" alt="">
+    <img src="assets/lugia.png" alt="Lugia">
   </div>
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
   <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
-  <button type="button" data-cr-target="historyBtn">▤ HISTORIAL · CLIENTES Y LOTES</button>
+  <button id="historyBtn" type="button">▤ HISTORIAL · CLIENTES Y LOTES</button>
   <div class="cr-nav-divider">REPORTE ACTUAL</div>
-  <button type="button" data-cr-target="budgetPdfBtn">◇ PRESUPUESTO</button>
-  <button type="button" data-cr-target="pdfBtn">▶ GENERAR REPORTE</button>
-  <button type="button" data-cr-target="saveBtn">▣ GUARDAR REPORTE</button>
-  <button type="button" data-cr-target="newBtn">＋ NUEVO REPORTE</button>
+  <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
+  <button id="pdfBtn" type="button">▶ GENERAR REPORTE</button>
+  <button id="saveBtn" type="button">▣ GUARDAR REPORTE</button>
+  <button id="newBtn" type="button">＋ NUEVO REPORTE</button>
 </nav>
 <div class="app-shell">
 <main id="report" class="report">
@@ -86,12 +86,7 @@ input, textarea, select { font-size: max(16px, 1em); }
     <span class="brand-ig">IG: @colosseum.ar</span>
   </div>
 </header>
-<section class="cr-quick-actions no-print" aria-label="Acciones del reporte">
-  <button id="budgetPdfBtn" class="menu-button budget-button" type="button">◇ PRESUPUESTO</button>
-  <button id="pdfBtn" class="menu-button" type="button">▶ GENERAR REPORTE</button>
-  <button id="saveBtn" class="menu-button" type="button">▣ GUARDAR REPORTE</button>
-  <button id="newBtn" class="menu-button" type="button">＋ NUEVO REPORTE</button>
-</section>
+
 <section class="pixel-panel section">
   <h2>▶ DATOS DE LA CARTA</h2>
   <div class="form-grid card-data-grid">
@@ -219,7 +214,7 @@ input, textarea, select { font-size: max(16px, 1em); }
     </div>
   </div>
 </section>
-<div class="cr-hidden-history no-print"><button id="historyBtn" type="button">▤ HISTORIAL</button></div>
+
 </main>
 </div>
 
@@ -274,6 +269,6 @@ input, textarea, select { font-size: max(16px, 1em); }
 <script src="https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.62/dist/zip.min.js"></script>
 <script src="media-format-v20-1.js?v=20.1.0"></script>
 
-<script src="nav-preview.js?v=1"></script>
+<script src="nav-preview.js?v=2"></script>
 </body>
 </html>
