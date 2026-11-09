@@ -46,6 +46,24 @@ input, textarea, select { font-size: max(16px, 1em); }
 <link rel="stylesheet" href="folders.css?v=20.8.1">
 </head>
 <body>
+<div class="cr-topbar no-print" id="crTopbar">
+  <button id="crMenuToggle" type="button" aria-expanded="false" aria-controls="crNavMenu" aria-label="Abrir menú">☰</button>
+  <div class="cr-topbar-brand">
+    <img src="assets/ho-oh.png" alt="">
+    <img class="cr-topbar-logo" src="assets/title-jp.png" alt="Pokémon Colosseum">
+    <img src="assets/lugia.png" alt="">
+  </div>
+</div>
+<div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
+<nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
+  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <button type="button" data-cr-target="historyBtn">▤ HISTORIAL · CLIENTES Y LOTES</button>
+  <div class="cr-nav-divider">REPORTE ACTUAL</div>
+  <button type="button" data-cr-target="budgetPdfBtn">◇ PRESUPUESTO</button>
+  <button type="button" data-cr-target="pdfBtn">▶ GENERAR REPORTE</button>
+  <button type="button" data-cr-target="saveBtn">▣ GUARDAR REPORTE</button>
+  <button type="button" data-cr-target="newBtn">＋ NUEVO REPORTE</button>
+</nav>
 <div class="app-shell">
 <main id="report" class="report">
 <header class="hero pixel-panel">
@@ -67,6 +85,12 @@ input, textarea, select { font-size: max(16px, 1em); }
     <span class="brand-ig">IG: @colosseum.ar</span>
   </div>
 </header>
+<section class="cr-quick-actions no-print" aria-label="Acciones del reporte">
+  <button id="budgetPdfBtn" class="menu-button budget-button" type="button">◇ PRESUPUESTO</button>
+  <button id="pdfBtn" class="menu-button" type="button">▶ GENERAR REPORTE</button>
+  <button id="saveBtn" class="menu-button" type="button">▣ GUARDAR REPORTE</button>
+  <button id="newBtn" class="menu-button" type="button">＋ NUEVO REPORTE</button>
+</section>
 <section class="pixel-panel section">
   <h2>▶ DATOS DE LA CARTA</h2>
   <div class="form-grid card-data-grid">
@@ -194,19 +218,7 @@ input, textarea, select { font-size: max(16px, 1em); }
     </div>
   </div>
 </section>
-<footer class="bottom-grid">
-  <div class="pixel-panel status-box">
-    <strong>¡CARTA RESTAURADA!</strong>
-    <span>¡LISTA PARA LA SIGUIENTE BATALLA!</span>
-  </div>
-  <div class="action-stack no-print">
-    <button id="budgetPdfBtn" class="menu-button budget-button" type="button">◇ PRESUPUESTO</button>
-    <button id="pdfBtn" class="menu-button" type="button">▶ GENERAR REPORTE</button>
-    <button id="saveBtn" class="menu-button" type="button">▣ GUARDAR REPORTE</button>
-    <button id="newBtn" class="menu-button" type="button">＋ NUEVO REPORTE</button>
-    <button id="historyBtn" class="menu-button" type="button">▤ HISTORIAL</button>
-  </div>
-</footer>
+<div class="cr-hidden-history no-print"><button id="historyBtn" type="button">▤ HISTORIAL</button></div>
 </main>
 </div>
 
@@ -261,5 +273,6 @@ input, textarea, select { font-size: max(16px, 1em); }
 <script src="https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.62/dist/zip.min.js"></script>
 <script src="media-format-v20-1.js?v=20.1.0"></script>
 
+<script src="nav-preview.js?v=1"></script>
 </body>
 </html>
