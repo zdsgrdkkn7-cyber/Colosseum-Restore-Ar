@@ -405,45 +405,60 @@ window.addEventListener("resize",fitMobile);
 document.addEventListener("DOMContentLoaded",()=>{
  const fecha=$("#fecha");if(fecha&&!fecha.value)fecha.value=new Date().toISOString().slice(0,10);
  buildRatings();addPanelCorners();initControls();
- // Rev21.2: recover only drafts that have not already been saved.
- // Never discard a draft if local database lookup fails.
+ // Rev21.3: reconcile startup drafts against the persisted reports before displaying them.
  (async()=>{
+  const stored=localStorage.getItem("cr_draft");
+  if(!stored){updateBudgetPreview({force:true});return;}
   try{
-   const draft=JSON.parse(localStorage.getItem("cr_draft")||"null");
-   if(!draft){updateBudgetPreview({force:true});return;}
-   if(!draft.id){ // New unsaved report: restore only if it contains actual work.
-    const hasContent=Object.entries(draft.fields||{}).some(([key,value])=>key!=="fecha"&&String(value||"").trim())||
-      Object.values(draft.photos||{}).some(Boolean)||
-      Object.values(draft.work||{}).some(Boolean)||
-      Object.values(draft.ratings?.before||{}).some(Boolean)||
-      Object.values(draft.ratings?.after||{}).some(Boolean);
-    if(hasContent)apply(draft);else updateBudgetPreview({force:true});
-    return;
-   }
+   const draft=JSON.parse(stored);
+   if(!draft||typeof draft!=="object"){updateBudgetPreview({force:true});return;}
+   const fieldsData=draft.fields||{};
+   const hasWork=Object.entries(fieldsData).some(([key,value])=>key!=="fecha"&&String(value??"").trim())||
+    Object.values(draft.photos||{}).some(Boolean)||Object.values(draft.work||{}).some(Boolean)||
+    Object.values(draft.ratings?.before||{}).some(Boolean)||Object.values(draft.ratings?.after||{}).some(Boolean);
+   if(!hasWork){localStorage.removeItem("cr_draft");updateBudgetPreview({force:true});return;}
    const database=await db();
-   const saved=await new Promise((resolve,reject)=>{
-    const req=database.transaction("reports","readonly").objectStore("reports").get(draft.id);
+   const reports=await new Promise((resolve,reject)=>{
+    const req=database.transaction("reports","readonly").objectStore("reports").getAll();
     req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
    });
-   if(!saved){apply(draft);return;}
-   const stable=value=>Array.isArray(value)?value.map(stable):value&&typeof value==="object"&&!(value instanceof Blob)?Object.fromEntries(Object.keys(value).sort().map(key=>[key,stable(value[key])])):value;
-   // Compare only editable report data, not timestamps or legacy metadata.
+   const saved=draft.id?reports.find(record=>String(record.id)===String(draft.id)):null;
+   const normalizeText=value=>String(value??"").trim().toLocaleLowerCase();
+   const sameCard=record=>{
+    const a=record.fields||{},b=fieldsData;
+    const card=normalizeText(b.carta),number=normalizeText(b.numero);
+    const client=normalizeText(b.cliente||draft.clientFolder);
+    return !!card&&!!number&&!!client&&card===normalizeText(a.carta)&&number===normalizeText(a.numero)&&
+     client===normalizeText(a.cliente||record.clientFolder);
+   };
+   const matchingWithoutId=!draft.id?reports.find(sameCard):null;
+   const stable=value=>Array.isArray(value)?value.map(stable):value&&typeof value==="object"&&!(value instanceof Blob)?
+    Object.fromEntries(Object.keys(value).sort().map(key=>[key,stable(value[key])])):value;
    const keys=["fields","ratings","photos","work","budgetManualOverride","finalManualOverride","clientFolder","lotFolder"];
-   const normalized=(value)=>Object.fromEntries(keys.map(key=>[key,value[key]??(key==="fields"||key==="ratings"||key==="photos"||key==="work"?{}:key==="clientFolder"||key==="lotFolder"?"":false)]));
-   if(JSON.stringify(stable(normalized(draft)))===JSON.stringify(stable(normalized(saved)))){
+   const comparable=value=>Object.fromEntries(keys.map(key=>[key,value[key]??null]));
+   if(saved&&JSON.stringify(stable(comparable(draft)))===JSON.stringify(stable(comparable(saved)))){
     localStorage.removeItem("cr_draft");updateBudgetPreview({force:true});return;
    }
-   // Keep the draft until the user explicitly decides what to do with it.
-   if(confirm("Encontramos modificaciones sin guardar de un reporte anterior. ¿Querés recuperarlas?\\n\\nAceptar: recuperar borrador.\\nCancelar: empezar un reporte nuevo.")){
-    apply(draft);
-   }else{
-    localStorage.removeItem("cr_draft");updateBudgetPreview({force:true});
+   if(saved||matchingWithoutId){
+    // Never automatically display a stale partial copy of an already saved report.
+    const recover=confirm("Encontramos un borrador de una carta que ya figura en Historial.\\n\\n¿Querés recuperar sus cambios pendientes?\\n\\nAceptar: recuperar borrador.\\nCancelar: abrir un reporte nuevo en blanco.");
+    if(recover)apply(draft);
+    else{localStorage.removeItem("cr_draft");updateBudgetPreview({force:true});}
+    return;
    }
+   // Unsaved report: resume only when there is no saved version of the same report.
+   apply(draft);
   }catch(error){
-   console.error("No se pudo verificar el borrador; se conserva para evitar pérdidas",error);
-   try{const draft=JSON.parse(localStorage.getItem("cr_draft")||"null");if(draft)apply(draft);}catch(_){}
+   console.error("No se pudo verificar el borrador; se conserva sin abrirlo automáticamente",error);
+   updateBudgetPreview({force:true});
   }
  })();
+ // Visible release identifier, independent of cached report contents.
+ const version=document.createElement("span");
+ version.textContent="Rev 21.3";
+ version.setAttribute("aria-label","Versión de Colosseum Restore");
+ Object.assign(version.style,{position:"fixed",right:"8px",bottom:"6px",zIndex:"1000",fontSize:"10px",color:"#999",background:"#111",padding:"3px 5px",borderRadius:"3px",pointerEvents:"none"});
+ document.body.appendChild(version);
  fitMobile();
  if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
 });
