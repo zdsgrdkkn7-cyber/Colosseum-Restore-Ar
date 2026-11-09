@@ -738,3 +738,7 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
  box-sizing:border-box;
 }
 .hero .title-logo-jp{max-width:540px;max-height:105px}
+
+/* Rev20.9.1 — acercar sprites al logo, sin modificar tamaños ni distribución */
+.hero .title-sprite-hooh{transform:translateX(18px)}
+.hero .title-sprite-lugia{transform:translateX(-18px)}
