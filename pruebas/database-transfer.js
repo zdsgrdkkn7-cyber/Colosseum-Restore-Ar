@@ -192,10 +192,10 @@
     if(!exportBtn || !importBtn || !input) return;
     exportBtn.addEventListener("click",async()=>{
       exportBtn.disabled=true;
-      try{await exportBackup();}catch(e){alert("No se pudo exportar: "+e.message);}
+      try{if(window.ColosseumDrive?.connected())await window.ColosseumDrive.upload();else await exportBackup();}catch(e){alert("No se pudo exportar: "+e.message);}
       finally{exportBtn.disabled=false;}
     });
-    importBtn.addEventListener("click",()=>input.click());
+    importBtn.addEventListener("click",()=>{if(window.ColosseumDrive?.connected())window.ColosseumDrive.download();else input.click();});
     input.addEventListener("change",async()=>{
       const file=input.files && input.files[0];input.value="";
       if(!file)return;
