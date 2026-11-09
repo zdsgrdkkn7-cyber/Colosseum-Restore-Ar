@@ -8,7 +8,7 @@ const lotOf=r=>norm(r.lotFolder)||DEFAULT_LOT;
 let filterClient='',filterLot='',currentClient='',currentLot='';
 function navigate(c,l){
  if(filterClient!==c||filterLot!==l)selectedReportIds.clear();
- filterClient=c;navigate(filterClient,l);
+ filterClient=c;filterLot=l;renderHistory();
 }
 window.getActiveLotReports=function(){
  if(!filterClient||!filterLot)return [];
