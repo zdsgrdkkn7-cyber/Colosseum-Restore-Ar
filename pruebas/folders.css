@@ -70,3 +70,25 @@
 #historyDialog #folderToolbar{padding:7px 3px!important;gap:5px!important}
 #historyDialog #folderToolbar button{padding:6px 10px!important;font-size:11px!important}
 #historyDialog #historyList .folder-entry{padding:8px 9px!important}
+
+/* Rev20.8.1 — únicamente encabezado Google Drive de PRUEBAS */
+#historyDialog #driveSyncPanel .drive-compact-header{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ flex-wrap:nowrap!important;gap:5px!important;min-width:0!important;
+}
+#historyDialog #driveSyncPanel .drive-compact-title{
+ color:#f5d35a!important;font-size:clamp(12px,3.0vw,16px)!important;
+ white-space:nowrap!important;flex:0 1 auto!important;
+}
+#historyDialog #driveSyncPanel .drive-compact-status{
+ font-size:clamp(9px,2.35vw,12px)!important;white-space:nowrap!important;
+ flex:0 1 auto!important;min-width:0!important;
+}
+#historyDialog #driveSyncPanel #driveConnectBtn.drive-compact-toggle{
+ flex:0 0 auto!important;min-width:0!important;max-width:none!important;
+ width:auto!important;margin:0!important;padding:5px 7px!important;
+ font-size:clamp(9px,2.2vw,11px)!important;line-height:1.1!important;
+ background:#777!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #999!important;border-radius:7px!important;
+ box-shadow:none!important;white-space:nowrap!important;
+}
