@@ -1,6 +1,6 @@
 /* Colosseum Rev20.2 — respaldo manual en Drive, solo base PRUEBAS.
    Publica el manifiesto AL FINAL; no sobrescribe reportes locales.
-   Descarga un ZIP compatible con IMPORTAR BASE DE DATOS. */
+   Recupera reportes y fotos directamente en IndexedDB, con confirmaciones. */
 (()=>{
 "use strict";
 const DB="colosseumRestoration_PRUEBAS",STORE="reports",FOLDER="Colosseum Restore - PRUEBAS",PHOTO_FOLDER="photos",MANIFEST="database.json";
@@ -78,26 +78,37 @@ async function download(){
  if(manifest.format!=="colosseum-split-backup"||manifest.version!==1||!Array.isArray(manifest.records))throw Error("Formato de respaldo incompatible.");
  if(manifest.records.length>10000)throw Error("Demasiados reportes.");
  const names=new Set();
- for(const r of manifest.records)for(const key of ["frontBefore","frontAfter","backBefore","backAfter"]){const ref=r.photos?.[key];if(ref?.filename){if(!/^[a-f0-9]{64}\.(jpg|png|webp|gif|bin)$/.test(ref.filename)||ref.sha256!==ref.filename.split(".")[0])throw Error("Referencia de fotografía inválida");names.add(ref.filename);}}
- if(!window.zip?.ZipWriter)throw Error("No cargó el módulo ZIP.");
- if(!confirm("Descargar "+manifest.records.length+" reportes y "+names.size+" fotografías desde Drive en un ZIP?\n\nNo se modificará ningún reporte local. Después usá IMPORTAR BASE DE DATOS."))return;
- const writer=new zip.ZipWriter(new zip.BlobWriter("application/zip"),{level:0});
- try{
-  let i=0;
-  for(const name of names){
-   status("Descargando foto "+(++i)+"/"+names.size+"…");
-   const found=await list(photos,name);if(!found.length)throw Error("Falta en Drive: "+name);
-   const blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
-   const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",await blob.arrayBuffer()));
-   const hash=Array.from(digest,x=>x.toString(16).padStart(2,"0")).join("");
-   if(hash!==name.split(".")[0])throw Error("Foto dañada: "+name);
-   await writer.add("photos/"+name,new zip.BlobReader(blob),{level:0});
+ for(const r of manifest.records)for(const key of ["frontBefore","frontAfter","backBefore","backAfter"]){
+  const ref=r.photos?.[key];if(!ref)continue;
+  if(!ref.filename||!ref.sha256||!/^[a-f0-9]{64}\\.(jpg|png|webp|gif|bin)$/.test(ref.filename)||ref.sha256!==ref.filename.split(".")[0])throw Error("Referencia de fotografía inválida.");
+  names.add(ref.filename);
+ }
+ if(typeof window.ColosseumImportRecords!=="function")throw Error("No cargó el módulo de importación.");
+ if(!confirm("RECUPERAR DESDE DRIVE\\n\\n"+manifest.records.length+" reportes y "+names.size+" fotografías.\\n\\nSe descargarán directamente a Colosseum PRUEBAS, sin generar ZIP. Se verificará cada fotografía y podrás confirmar los cambios antes de importarlos.\\n\\n¿Continuar?"))return;
+ const cache=new Map();let i=0;
+ for(const name of names){
+  status("Descargando y verificando foto "+(++i)+"/"+names.size+"…");
+  const found=await list(photos,name);if(!found.length)throw Error("Falta en Drive: "+name);
+  const blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
+  const bytes=new Uint8Array(await blob.arrayBuffer());
+  const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",bytes));
+  const hash=Array.from(digest,x=>x.toString(16).padStart(2,"0")).join("");
+  if(hash!==name.split(".")[0])throw Error("Foto dañada: "+name);
+  let binary="";for(let j=0;j<bytes.length;j+=8192)binary+=String.fromCharCode(...bytes.subarray(j,j+8192));
+  cache.set(name,btoa(binary));
+ }
+ const records=manifest.records.map(original=>{
+  const record={...original,photos:{...(original.photos||{})}};
+  for(const key of ["frontBefore","frontAfter","backBefore","backAfter"]){
+   const ref=record.photos[key];if(!ref)continue;
+   if(!cache.has(ref.filename))throw Error("Foto no descargada: "+ref.filename);
+   record.photos[key]="data:"+(ref.mime||"application/octet-stream")+";base64,"+cache.get(ref.filename);
   }
-  await writer.add("database.json",new zip.TextReader(JSON.stringify(manifest)),{level:0});
-  const blob=await writer.close(),url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download="Colosseum_Drive_Pruebas_"+new Date().toISOString().slice(0,10)+".zip";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),120000);
-  status("ZIP descargado. Usá IMPORTAR BASE DE DATOS para recuperarlo.");
- }catch(e){try{await writer.close();}catch{}throw e;}
+  return record;
+ });
+ status("Fotografías verificadas. Preparando importación…");
+ await window.ColosseumImportRecords(records,manifest.folderPreferences);
+ status("Recuperación de Drive finalizada o cancelada. Revisá Historial.");
 }
 async function run(action){if(busy)return;busy=true;buttons();try{await action();}catch(e){status("Error: "+e.message);alert("Google Drive: "+e.message);}finally{busy=false;buttons();}}
 function init(){
