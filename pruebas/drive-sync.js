@@ -80,11 +80,11 @@ async function download(){
  const names=new Set();
  for(const r of manifest.records)for(const key of ["frontBefore","frontAfter","backBefore","backAfter"]){
   const ref=r.photos?.[key];if(!ref)continue;
-  if(!ref.filename||!ref.sha256||!/^[a-f0-9]{64}\\.(jpg|png|webp|gif|bin)$/.test(ref.filename)||ref.sha256!==ref.filename.split(".")[0])throw Error("Referencia de fotografía inválida.");
+  if(!ref.filename||!ref.sha256||!/^[a-f0-9]{64}\.(jpg|png|webp|gif|bin)$/.test(ref.filename)||ref.sha256!==ref.filename.split(".")[0])throw Error("Referencia de fotografía inválida.");
   names.add(ref.filename);
  }
  if(typeof window.ColosseumImportRecords!=="function")throw Error("No cargó el módulo de importación.");
- if(!confirm("RECUPERAR DESDE DRIVE\\n\\n"+manifest.records.length+" reportes y "+names.size+" fotografías.\\n\\nSe descargarán directamente a Colosseum PRUEBAS, sin generar ZIP. Se verificará cada fotografía y podrás confirmar los cambios antes de importarlos.\\n\\n¿Continuar?"))return;
+ if(!confirm("RECUPERAR DESDE DRIVE\n\n"+manifest.records.length+" reportes y "+names.size+" fotografías.\n\nSe descargarán directamente a Colosseum PRUEBAS, sin generar ZIP. Se verificará cada fotografía y podrás confirmar los cambios antes de importarlos.\n\n¿Continuar?"))return;
  const cache=new Map();let i=0;
  for(const name of names){
   status("Descargando y verificando foto "+(++i)+"/"+names.size+"…");
