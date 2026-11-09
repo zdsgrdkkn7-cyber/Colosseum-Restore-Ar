@@ -93,7 +93,7 @@ async function upload(){
  status("Respaldo subido: "+reports.length+" reportes, "+done.size+" fotografías. Carpeta: "+FOLDER+".");
 }
 // Rev20.9.5: sincronización puntual y no destructiva al guardar un reporte.
-let autoPending=null,autoRunning=false;
+const autoPending=new Set();let autoRunning=false;
 async function silentRefresh(){
  if(connected())return true;
  try{auth();}catch{return false;}
@@ -149,14 +149,14 @@ async function processAutoQueue(){
  if(autoRunning)return;
  autoRunning=true;
  try{
-  while(autoPending!==null){
-   const id=autoPending;autoPending=null;
+  while(autoPending.size){
+   const id=autoPending.values().next().value;autoPending.delete(id);
    try{await syncOneReport(id);}
    catch(e){status("Guardado local correcto. Drive pendiente: "+e.message);}
   }
  }finally{autoRunning=false;}
 }
-function onReportSaved(id){autoPending=id;void processAutoQueue();}
+function onReportSaved(id){autoPending.add(id);void processAutoQueue();}
 async function download(){
  status("Consultando database.json…");
  const root=await folder(FOLDER,null,false);
