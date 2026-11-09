@@ -238,7 +238,7 @@ input, textarea, select { font-size: max(16px, 1em); }
   <input type="file" id="databaseFileInput" accept=".zip,.json,application/zip,application/json" hidden>
   <small style="flex-basis:100%;opacity:.8">Exporta un ZIP con database.json y photos/. Importa ZIP o JSON antiguo; permite actualizar reportes existentes con confirmación y respaldo previo.</small>
 </div>
-<section id="driveSyncPanel" style="margin:12px 0;padding:12px;border:1px solid #555;background:#171717;color:#fff"><strong style="color:#f5d35a">GOOGLE DRIVE · REV20.3 PRUEBAS</strong><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="driveConnectBtn">CONECTAR GOOGLE DRIVE</button><button type="button" id="driveDisconnectBtn" hidden>DESCONECTAR</button><button type="button" id="driveUploadBtn" disabled>↑ SUBIR RESPALDO A DRIVE</button><button type="button" id="driveDownloadBtn" disabled>↓ RECUPERAR DE DRIVE</button></div><small id="driveConnectionStatus" style="display:block;margin-top:8px">Conectá Google Drive para habilitar la subida y descarga manual de PRUEBAS. No hay sincronización automática.</small><small style="display:block;margin-top:5px;opacity:.75">Recuperar importa directamente reportes y fotos, con confirmación y respaldo de versiones reemplazadas. No altera la versión oficial.</small></section><div id="folderToolbar" class="folder-toolbar"><button type="button" id="createClientFolder">＋ CLIENTE</button><button type="button" id="createLotFolder">＋ LOTE</button><button type="button" id="showAllFolders">VER TODOS</button></div><div id="historyList"></div>
+<section id="driveSyncPanel" style="margin:12px 0;padding:12px;border:1px solid #555;background:#171717;color:#fff"><strong style="color:#f5d35a">GOOGLE DRIVE · REV20.4 PRUEBAS</strong><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="driveConnectBtn">CONECTAR GOOGLE DRIVE</button><button type="button" id="driveDisconnectBtn" hidden>DESCONECTAR</button><button type="button" id="driveUploadBtn" disabled>↑ SUBIR RESPALDO A DRIVE</button><button type="button" id="driveDownloadBtn" disabled>↓ RECUPERAR DE DRIVE</button></div><small id="driveConnectionStatus" style="display:block;margin-top:8px">Conectá Google Drive para habilitar la subida y descarga manual de PRUEBAS. No hay sincronización automática.</small><small style="display:block;margin-top:5px;opacity:.75">Recuperar importa directamente reportes y fotos, con confirmación y respaldo de versiones reemplazadas. No altera la versión oficial.</small></section><div id="folderToolbar" class="folder-toolbar"><button type="button" id="createClientFolder">＋ CLIENTE</button><button type="button" id="createLotFolder">＋ LOTE</button><button type="button" id="showAllFolders">VER TODOS</button></div><div id="historyList"></div>
 </dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.3/dist/jspdf.umd.min.js"></script>
@@ -251,7 +251,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 <script src="clear-test-db-v20-1.js?v=20.1.0"></script>
 <script src="folders.js?v=19.5"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="drive-sync.js?v=20.3.1"></script>
+<script src="drive-sync.js?v=20.4.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.62/dist/zip.min.js"></script>
 <script src="media-format-v20-1.js?v=20.1.0"></script>
 
