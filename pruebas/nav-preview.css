@@ -18,3 +18,21 @@
 @media print{.cr-topbar,.cr-nav-backdrop,.cr-nav-menu,.cr-quick-actions{display:none!important}}
 
 .cr-nav-menu[hidden],.cr-nav-backdrop[hidden]{display:none!important}
+
+/* Preview v2: one logo/header, side drawer only. */
+@media screen{
+  .hero .hero-title{display:none!important}
+  .hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px!important;padding:12px 18px!important}
+  .hero .header-left,.hero .header-right{min-width:0}
+  .hero .header-right{align-items:flex-end!important}
+  .cr-topbar{position:sticky;top:0;z-index:1005}
+  .cr-topbar-brand{padding-right:44px}
+  .cr-nav-menu>button{background:#171717;color:#f3f3f3;border:1px solid #777;font-family:inherit}
+  .cr-nav-menu>button:first-of-type{border-left:4px solid #ff3434}
+  .cr-nav-menu>button:active{background:#6a1515}
+}
+@media(max-width:550px){
+  .hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;padding:9px!important}
+  .hero .header-meta{font-size:11px!important}
+  .hero .brand-label,.hero .brand-ig{font-size:10px!important}
+}
