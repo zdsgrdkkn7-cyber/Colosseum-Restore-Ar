@@ -16,3 +16,5 @@
 .cr-hidden-history{display:none}
 @media(max-width:450px){.cr-topbar{height:58px;padding:6px 9px}.cr-topbar-brand{gap:4px;padding-right:44px}.cr-topbar-brand img{width:27px;height:34px}.cr-topbar-brand .cr-topbar-logo{width:min(46vw,175px);height:37px}.cr-quick-actions{gap:6px}.cr-quick-actions .menu-button{min-height:54px}}
 @media print{.cr-topbar,.cr-nav-backdrop,.cr-nav-menu,.cr-quick-actions{display:none!important}}
+
+.cr-nav-menu[hidden],.cr-nav-backdrop[hidden]{display:none!important}
