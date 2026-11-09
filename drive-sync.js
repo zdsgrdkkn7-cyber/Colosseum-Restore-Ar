@@ -5,10 +5,11 @@
 "use strict";
 const DB="colosseumRestoration",STORE="reports",FOLDER="Colosseum Restore - OFICIAL",PHOTO_FOLDER="photos",MANIFEST="database.json";
 const CLIENT_ID="406713503360-1sgm1cu6c4rm1gujse69basbh6s9h5o0.apps.googleusercontent.com";
-const SCOPE="https://www.googleapis.com/auth/drive.file";
+// drive.file mantiene la escritura de respaldos propios; drive.readonly permite recuperar fotos cargadas externamente.
+const SCOPE="https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.readonly";
 const $=id=>document.getElementById(id);
 let client=null,token=null,expires=0,busy=false;
-const SESSION_KEY="colosseum_drive_token_OFICIAL_v1";
+const SESSION_KEY="colosseum_drive_token_OFICIAL_v2";
 function restoreSession(){
  try{
   const saved=JSON.parse(sessionStorage.getItem(SESSION_KEY)||"null");
