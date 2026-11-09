@@ -234,13 +234,17 @@ function formatHistoryCost(value){
 }
 
 function updateRemitoControls(){
-  const count=selectedReportIds.size;
+  const scoped=typeof getActiveLotReports==="function"?getActiveLotReports():historyReports;
+  const count=scoped.filter(r=>selectedReportIds.has(r.id)).length;
   const countEl=$("#selectedReportCount");
   const btn=$("#remitoBtn");
   const allBtn=$("#selectAllReports");
   if(countEl)countEl.textContent=`${count} ${count===1?"reporte seleccionado":"reportes seleccionados"}`;
   if(btn)btn.disabled=count===0;
-  if(allBtn)allBtn.textContent=(historyReports.length>0 && count===historyReports.length)?"DESELECCIONAR TODO":"SELECCIONAR TODO";
+  if(allBtn){
+    allBtn.textContent=(count>0 && count===scoped.length)?"DESELECCIONAR TODO":"SELECCIONAR TODO";
+    allBtn.disabled=scoped.length===0;
+  }
 }
 
 function db(){return new Promise((resolve,reject)=>{const r=indexedDB.open("colosseumRestoration",1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains("reports"))r.result.createObjectStore("reports",{keyPath:"id"})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
@@ -335,7 +339,7 @@ async function renderHistory(){
 }
 
 async function createSelectedRemito(){
- const reports=historyReports.filter(r=>selectedReportIds.has(r.id));
+ const reports=(typeof getActiveLotReports==="function"?getActiveLotReports():historyReports).filter(r=>selectedReportIds.has(r.id));
  if(!reports.length){
    toast("SELECCIONÁ AL MENOS UN REPORTE");
    return;
@@ -371,8 +375,9 @@ function initControls(){
    try{await createSelectedRemito()}catch(e){console.error(e);toast("ERROR AL GENERAR REMITO")}
  };
  if(selectAllReports)selectAllReports.onclick=()=>{
-   if(historyReports.length && selectedReportIds.size===historyReports.length)selectedReportIds.clear();
-   else historyReports.forEach(r=>selectedReportIds.add(r.id));
+   const scoped=typeof getActiveLotReports==="function"?getActiveLotReports():historyReports;
+   if(scoped.length && scoped.every(r=>selectedReportIds.has(r.id)))scoped.forEach(r=>selectedReportIds.delete(r.id));
+   else scoped.forEach(r=>selectedReportIds.add(r.id));
    document.querySelectorAll(".history-check").forEach(ch=>{ch.checked=selectedReportIds.has(ch.closest(".history-item")?.dataset?.reportId)});
    renderHistory().catch(console.error);
  };

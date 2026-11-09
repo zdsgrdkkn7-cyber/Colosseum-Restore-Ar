@@ -1,7 +1,7 @@
 // Rev17 — presupuesto por lote sin modificar IndexedDB ni el esquema de reportes.
 (function(){
   function selectedReports(){
-    try{return historyReports.filter(r=>selectedReportIds.has(r.id));}catch(e){return [];}
+    try{return (typeof getActiveLotReports==="function"?getActiveLotReports():historyReports).filter(r=>selectedReportIds.has(r.id));}catch(e){return [];}
   }
   function refreshBatchButton(){
     const btn=document.getElementById("batchBudgetBtn"); if(!btn)return;
