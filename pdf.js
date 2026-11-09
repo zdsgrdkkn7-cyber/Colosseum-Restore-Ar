@@ -1176,7 +1176,7 @@ async function generateBatchBudget(rawReports,discountPercent=0){
       // jsPDF normalizes portrait pages with height < width by swapping dimensions.
       // Keep the custom page portrait even when only one detail remains.
       const contentH=42+rows.reduce((sum,row)=>sum+row.height+8,0)+2;
-      const pageH=Math.max(211,contentH);
+      const pageH=Math.max(300,contentH);
       doc.addPage([210,pageH],"portrait");
       paintPdfBackground(doc,210,pageH);
       drawBattleFrame(doc,8,10,194,24);
