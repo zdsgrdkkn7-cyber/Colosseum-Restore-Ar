@@ -1,4 +1,4 @@
-/* Colosseum Rev20.2 — respaldo manual en Drive, solo base PRUEBAS.
+/* Colosseum Rev20.4 — respaldo manual en Drive, solo base PRUEBAS.
    Publica el manifiesto AL FINAL; no sobrescribe reportes locales.
    Recupera reportes y fotos directamente en IndexedDB, con confirmaciones. */
 (()=>{
@@ -8,10 +8,22 @@ const CLIENT_ID="406713503360-1sgm1cu6c4rm1gujse69basbh6s9h5o0.apps.googleuserco
 const SCOPE="https://www.googleapis.com/auth/drive.file";
 const $=id=>document.getElementById(id);
 let client=null,token=null,expires=0,busy=false;
+const SESSION_KEY="colosseum_drive_token_PRUEBAS_v1";
+function restoreSession(){
+ try{
+  const saved=JSON.parse(sessionStorage.getItem(SESSION_KEY)||"null");
+  if(saved&&typeof saved.token==="string"&&Number(saved.expires)>Date.now()+60000){
+   token=saved.token;expires=Number(saved.expires);
+   status("Conexión con Drive restaurada en esta sesión.");
+  }else sessionStorage.removeItem(SESSION_KEY);
+ }catch{sessionStorage.removeItem(SESSION_KEY);}
+}
+function saveSession(){try{sessionStorage.setItem(SESSION_KEY,JSON.stringify({token,expires}));}catch{}}
+function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);}catch{}}
 function status(s){if($("driveConnectionStatus"))$("driveConnectionStatus").textContent=s;}
 function connected(){return !!token&&Date.now()<expires-60000;}
 function buttons(){if($("driveConnectBtn"))$("driveConnectBtn").textContent=connected()?"RENOVAR CONEXIÓN":"CONECTAR GOOGLE DRIVE";if($("driveDisconnectBtn"))$("driveDisconnectBtn").hidden=!token;for(const id of ["driveUploadBtn","driveDownloadBtn"])if($(id))$(id).disabled=!connected()||busy;}
-function auth(){if(!window.google?.accounts?.oauth2)throw Error("No cargó Google Identity Services");if(client)return;client=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:r=>{if(r.error){status("Autorización fallida: "+r.error);return;}token=r.access_token;expires=Date.now()+(Number(r.expires_in)||3600)*1000;status("Conectado. Podés subir o recuperar un respaldo de PRUEBAS.");buttons();}});}
+function auth(){if(!window.google?.accounts?.oauth2)throw Error("No cargó Google Identity Services");if(client)return;client=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:r=>{if(r.error){status("Autorización fallida: "+r.error);return;}token=r.access_token;expires=Date.now()+(Number(r.expires_in)||3600)*1000;saveSession();status("Conectado. Podés subir o recuperar un respaldo de PRUEBAS.");buttons();}});}
 async function api(url,opts={}){
  if(!connected())throw Error("La sesión de Google venció. Tocá CONECTAR GOOGLE DRIVE.");
  const res=await fetch(url,{...opts,headers:{Authorization:"Bearer "+token,...opts.headers}});
@@ -112,9 +124,10 @@ async function download(){
 }
 async function run(action){if(busy)return;busy=true;buttons();try{await action();}catch(e){status("Error: "+e.message);alert("Google Drive: "+e.message);}finally{busy=false;buttons();}}
 function init(){
+ restoreSession();
  const connect=$("driveConnectBtn");if(!connect)return;
  connect.onclick=()=>{try{auth();client.requestAccessToken({prompt:connected()?"":"consent"});}catch(e){status(e.message);}};
- $("driveDisconnectBtn").onclick=()=>{if(token&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(token,()=>{});token=null;expires=0;status("Desconectado. Datos locales intactos.");buttons();};
+ $("driveDisconnectBtn").onclick=()=>{if(token&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(token,()=>{});token=null;expires=0;clearSession();status("Desconectado. Datos locales intactos.");buttons();};
  $("driveUploadBtn").onclick=()=>run(upload);
  $("driveDownloadBtn").onclick=()=>run(download);
  buttons();
