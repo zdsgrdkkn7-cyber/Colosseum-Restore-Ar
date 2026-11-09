@@ -8,7 +8,7 @@ const lotOf=r=>norm(r.lotFolder)||DEFAULT_LOT;
 let filterClient='',filterLot='',currentClient='',currentLot='';
 function navigate(c,l){
  if(filterClient!==c||filterLot!==l)selectedReportIds.clear();
- filterClient=c;filterLot=l;renderHistory();
+ filterClient=c;navigate(filterClient,l);
 }
 window.getActiveLotReports=function(){
  if(!filterClient||!filterLot)return [];
@@ -74,6 +74,6 @@ window.renderFolderHistory=function(root,reports){
  const matching=reports.filter(r=>clientOf(r)===filterClient&&lotOf(r)===filterLot);if(!matching.length)root.append(node('p','small','Este lote todavía no tiene reportes.'));
  matching.forEach(r=>{const item=node('div','history-item');item.dataset.reportId=r.id;const check=node('input','history-check');check.type='checkbox';check.checked=selectedReportIds.has(r.id);check.setAttribute('aria-label','Seleccionar '+(r.fields?.carta||'reporte'));check.onchange=()=>{if(check.checked)selectedReportIds.add(r.id);else selectedReportIds.delete(r.id);updateRemitoControls();updateBulk()};const detail=node('div','');detail.innerHTML='<strong>'+escapeHTML(r.fields?.carta||'Sin nombre')+'</strong><div class="small">'+escapeHTML(r.fields?.fecha||'')+'</div>';const cost=node('div','history-cost',formatHistoryCost(r.fields?.precioTrabajo));item.append(check,detail,cost,btn('ABRIR',()=>{currentClient=filterClient;currentLot=filterLot;apply(r);document.querySelector('#historyDialog').close();autosaveDraft()}),Object.assign(btn('🗑',()=>{if(confirm('¿Eliminar este reporte? Esta acción no se puede deshacer.'))deleteReport(r.id)}),{className:'folder-button folder-trash',title:'Eliminar reporte'}));root.append(item)});
 };
-function setup(){const toolbar=document.querySelector('#folderToolbar');if(!toolbar)return;document.querySelector('#createClientFolder').onclick=()=>{const c=prompt('Nombre del nuevo cliente:');if(!norm(c))return;remember(norm(c),null);navigate(norm(c),'')};document.querySelector('#createLotFolder').onclick=()=>{const c=filterClient||norm(prompt('Cliente para este lote:'));if(!c)return;const l=prompt('Nombre del lote:');if(!norm(l))return;remember(c,norm(l));currentClient=c;currentLot=norm(l);navigate(c,norm(l))};document.querySelector('#showAllFolders').onclick=()=>{filterClient='';filterLot='';renderHistory()};}
+function setup(){const toolbar=document.querySelector('#folderToolbar');if(!toolbar)return;document.querySelector('#createClientFolder').onclick=()=>{const c=prompt('Nombre del nuevo cliente:');if(!norm(c))return;remember(norm(c),null);navigate(norm(c),'')};document.querySelector('#createLotFolder').onclick=()=>{const c=filterClient||norm(prompt('Cliente para este lote:'));if(!c)return;const l=prompt('Nombre del lote:');if(!norm(l))return;remember(c,norm(l));currentClient=c;currentLot=norm(l);navigate(c,norm(l))};document.querySelector('#showAllFolders').onclick=()=>{navigate('','')};}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
