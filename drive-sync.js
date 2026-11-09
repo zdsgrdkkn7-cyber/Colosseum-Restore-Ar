@@ -269,6 +269,7 @@ function init(){
  };
  buttons();
  if(connected())scheduleAutomaticImport(800);
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&connected())scheduleAutomaticImport(1200);});
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
