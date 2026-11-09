@@ -705,3 +705,36 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
   font-weight:bold;
   font-size:22px;
 }
+
+/* Rev20.9 — solo encabezado del reporte de PRUEBAS.
+   Cliente/Lote a izquierda, fecha arriba de IG a derecha,
+   más espacio para el logo central sin cambiar la altura del encabezado. */
+.hero{
+ grid-template-columns:205px minmax(0,1fr) 205px;
+ gap:12px;
+}
+.hero .header-right{
+ align-self:stretch;
+ justify-content:space-between;
+ gap:6px;
+ text-align:right;
+ align-items:flex-end;
+}
+.hero .header-right .header-date-label{
+ width:100%;
+ display:grid;
+ justify-items:end;
+ gap:4px;
+ text-align:right;
+ color:var(--yellow);
+ font-size:12px;
+}
+.hero .header-right #fecha{
+ width:100%;
+ max-width:185px;
+ min-width:0;
+ text-align:right;
+ text-align-last:right;
+ box-sizing:border-box;
+}
+.hero .title-logo-jp{max-width:540px;max-height:105px}
