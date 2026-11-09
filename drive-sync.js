@@ -120,7 +120,7 @@ async function syncOneReport(reportId){
  }
  const reports=await readDB(),report=reports.find(r=>String(r.id)===String(reportId));
  if(!report)return;
- status("Sincronizando reporte con Google Drive…");
+ status("Guardado local. Comprobando versión remota para sincronizar…");
  // No crear carpetas ni manifiestos automáticamente: evitamos usar otra cuenta por error.
  const root=await folder(FOLDER,null,false);
  const files=await list(root,MANIFEST);
@@ -156,7 +156,7 @@ async function processAutoQueue(){
   while(autoPending.size){
    const id=autoPending.values().next().value;autoPending.delete(id);
    try{await syncOneReport(id);}
-   catch(e){status("Guardado local correcto. Drive pendiente: "+e.message);}
+   catch(e){status("Guardado local correcto. Sincronización pendiente (reintentos agotados): "+e.message);}
   }
  }finally{autoRunning=false;}
 }
