@@ -9,6 +9,10 @@ const CLIENT_ID="406713503360-1sgm1cu6c4rm1gujse69basbh6s9h5o0.apps.googleuserco
 const SCOPE="https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.readonly";
 const $=id=>document.getElementById(id);
 let client=null,token=null,expires=0,busy=false;
+let automaticTimer=null,autoRetry=0;
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function retryNetwork(fn){let error;for(let attempt=0;attempt<3;attempt++){try{return await fn();}catch(e){error=e;if(attempt<2&&(/Load failed|Failed to fetch|NetworkError|fetch|HTTP 429|HTTP 5\d\d/i.test(String(e)))){await sleep(700*(attempt+1));continue;}throw e;}}throw error;}
+function scheduleAutomaticImport(delay=400){if(automaticTimer)clearTimeout(automaticTimer);automaticTimer=setTimeout(()=>{automaticTimer=null;if(!connected()||busy)return;void run(()=>download(true),true);},delay);}
 const SESSION_KEY="colosseum_drive_token_OFICIAL_v2";
 function restoreSession(){
  try{
@@ -33,10 +37,10 @@ function buttons(){
   el.title=active?(id==="exportDatabaseBtn"?"Subir base a Google Drive":"Recuperar base desde Google Drive"):(id==="exportDatabaseBtn"?"Exportar ZIP al dispositivo":"Importar ZIP o JSON del dispositivo");
  }
 }
-function auth(){if(!window.google?.accounts?.oauth2)throw Error("No cargó Google Identity Services");if(client)return;client=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:r=>{if(r.error){status("Autorización fallida: "+r.error);return;}token=r.access_token;expires=Date.now()+(Number(r.expires_in)||3600)*1000;saveSession();status("Conectado. Podés subir o recuperar un respaldo de la versión OFICIAL.");buttons();}});}
+function auth(){if(!window.google?.accounts?.oauth2)throw Error("No cargó Google Identity Services");if(client)return;client=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:r=>{if(r.error){status("Autorización fallida: "+r.error);return;}token=r.access_token;expires=Date.now()+(Number(r.expires_in)||3600)*1000;saveSession();status("Conectado. Revisando cambios en Drive…");buttons();scheduleAutomaticImport();}});}
 async function api(url,opts={}){
  if(!connected())throw Error("La sesión de Google venció. Tocá CONECTAR GOOGLE DRIVE.");
- const res=await fetch(url,{...opts,headers:{Authorization:"Bearer "+token,...opts.headers}});
+ const res=await retryNetwork(()=>fetch(url,{...opts,headers:{Authorization:"Bearer "+token,...opts.headers}}));
  if(!res.ok){let details="";try{details=(await res.text()).slice(0,250);}catch{}throw Error("Drive HTTP "+res.status+": "+details);}
  return res;
 }
@@ -157,7 +161,7 @@ async function processAutoQueue(){
  }finally{autoRunning=false;}
 }
 function onReportSaved(id){autoPending.add(id);void processAutoQueue();}
-async function download(){
+async function download(automatic=false){
  status("Consultando database.json…");
  const root=await folder(FOLDER,null,false);
  const m=await list(root,MANIFEST);if(!m.length)throw Error("No se encontró database.json.");
@@ -203,6 +207,7 @@ async function download(){
    if(ref&&!photoCache.has(ref.sha256))needed.set(ref.filename,ref);
   }
   if(localCopy&&JSON.stringify(stable(localCopy))===JSON.stringify(stable(remoteCopy)))continue;
+  if(automatic&&previous){const remoteTime=Date.parse(remote.updatedAt||"")||0,localTime=Date.parse(previous.updatedAt||"")||0;if(!remoteTime||remoteTime<=localTime)continue;}
   pending.push(remote);
  }
  const newCount=pending.filter(r=>!byId.has(r.id)).length,updated=pending.length-newCount,unchanged=manifest.records.length-pending.length;
@@ -213,16 +218,16 @@ async function download(){
  }
  if(!pending.length){
   status("Drive actualizado: "+unchanged+" reportes sin cambios. No se descargaron fotografías.");
-  alert("La base ya está actualizada.\n"+unchanged+" reportes sin cambios.\n0 fotografías descargadas.");
+  if(!automatic)alert("La base ya está actualizada.\n"+unchanged+" reportes sin cambios.\n0 fotografías descargadas.");
   return;
  }
- if(!confirm("RECUPERAR CAMBIOS DE DRIVE\n\nNuevos: "+newCount+"\nActualizados: "+updated+"\nSin cambios: "+unchanged+"\nFotos para descargar: "+missing.size+"\n\n¿Continuar?"))return;
+ if(!automatic&&!confirm("RECUPERAR CAMBIOS DE DRIVE\n\nNuevos: "+newCount+"\nActualizados: "+updated+"\nSin cambios: "+unchanged+"\nFotos para descargar: "+missing.size+"\n\n¿Continuar?"))return;
  if(missing.size){
   const photos=await folder(PHOTO_FOLDER,root,false);let i=0;
   for(const [name,ref] of missing){
    status("Descargando foto necesaria "+(++i)+"/"+missing.size+"…");
    const found=await list(photos,name);if(!found.length)throw Error("Falta en Drive: "+name);
-   const blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
+   const blob=await retryNetwork(async()=> (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob());
    const bytes=new Uint8Array(await blob.arrayBuffer());
    if(await hash(bytes)!==ref.sha256)throw Error("Foto dañada: "+name);
    let binary="";for(let j=0;j<bytes.length;j+=8192)binary+=String.fromCharCode(...bytes.subarray(j,j+8192));
@@ -239,10 +244,16 @@ async function download(){
   return record;
  });
  status("Importando únicamente los cambios…");
- await window.ColosseumImportRecords(records,manifest.folderPreferences);
+ if(automatic){
+  // Only new records or strictly newer remote revisions are applied automatically.
+  // Existing local revisions are kept if they are as new as the remote copy.
+  const db=await new Promise((resolve,reject)=>{const req=indexedDB.open(DB,1);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
+  try{await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readwrite"),store=tx.objectStore(STORE);for(const record of records)store.put(record);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}finally{db.close();}
+  status("Sincronización automática: "+newCount+" nuevos, "+updated+" actualizados.");
+ }else await window.ColosseumImportRecords(records,manifest.folderPreferences);
  status("Comparación completa: "+unchanged+" sin cambios; "+missing.size+" fotos descargadas.");
 }
-async function run(action){if(busy)return;busy=true;buttons();try{await action();}catch(e){status("Error: "+e.message);alert("Google Drive: "+e.message);}finally{busy=false;buttons();}}
+async function run(action,automatic=false){if(busy)return;busy=true;buttons();try{await action();autoRetry=0;}catch(e){status("Error de Drive: "+e.message);if(automatic){if(connected()&&autoRetry<2){autoRetry++;scheduleAutomaticImport(2500*autoRetry);}}else alert("Google Drive: "+e.message);}finally{busy=false;buttons();}}
 window.ColosseumDrive=Object.freeze({connected,upload:()=>run(upload),download:()=>run(download),onReportSaved});
 function init(){
  restoreSession();
@@ -257,6 +268,8 @@ function init(){
   }
  };
  buttons();
+ if(connected())scheduleAutomaticImport(800);
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&connected())scheduleAutomaticImport(1200);});
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
