@@ -303,7 +303,7 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
 
 /* REV14.2 — título gráfico japonés + subtítulo */
 .hero{
-  grid-template-columns:200px minmax(0,1fr) 200px;
+  grid-template-columns:250px minmax(0,1fr) 250px;
   gap:18px;
 }
 
@@ -706,23 +706,39 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
   font-size:22px;
 }
 
-/* Rev19.7.3 — devolver protagonismo al logo sin quitar Cliente/Lote/Fecha */
-.hero{grid-template-columns:160px minmax(0,1fr) 160px;column-gap:12px}
-.hero-title-line{grid-template-columns:68px minmax(0,1fr) 68px;column-gap:4px}
-.title-logo-jp{width:100%;max-width:none;max-height:108px}
-.hero-title-line .title-sprite{max-width:64px;max-height:64px;object-fit:contain}
+/* Rev20.9 — encabezado del reporte oficial.
+   Cliente/Lote a izquierda, fecha arriba de IG a derecha,
+   más espacio para el logo central sin cambiar la altura del encabezado. */
+.hero{
+ grid-template-columns:205px minmax(0,1fr) 205px;
+ gap:12px;
+}
+.hero .header-right{
+ align-self:stretch;
+ justify-content:space-between;
+ gap:6px;
+ text-align:right;
+ align-items:flex-end;
+}
+.hero .header-right .header-date-label{
+ width:100%;
+ display:grid;
+ justify-items:end;
+ gap:4px;
+ text-align:right;
+ color:var(--yellow);
+ font-size:12px;
+}
+.hero .header-right #fecha{
+ width:100%;
+ max-width:185px;
+ min-width:0;
+ text-align:right;
+ text-align-last:right;
+ box-sizing:border-box;
+}
+.hero .title-logo-jp{max-width:540px;max-height:105px}
 
-/* Rev19.7.4 — conjunto del logo más compacto y sprites más grandes */
-.hero{grid-template-columns:180px minmax(0,1fr) 180px;column-gap:12px}
-.hero-title-line{width:min(100%,560px);margin-inline:auto;grid-template-columns:90px minmax(0,1fr) 90px;column-gap:6px}
-.hero-title-line .title-sprite-hooh,
-.hero-title-line .title-sprite-lugia{width:86px!important;height:86px!important;max-width:86px!important;max-height:86px!important;object-fit:contain}
-
-/* Rev19.7.5 — trio centrado con dimensiones propias: sin columnas flexibles */
-.hero{grid-template-columns:180px minmax(0,1fr) 180px;column-gap:12px}
-.hero-title{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0}
-.hero-title-line{display:flex!important;flex-wrap:nowrap;align-items:center;justify-content:center;gap:2px!important;width:max-content!important;max-width:none!important;margin-inline:auto!important;grid-template-columns:none!important}
-.hero-title-line .title-logo-jp{display:block;flex:0 0 auto;width:390px!important;max-width:none!important;height:auto!important;max-height:none!important;object-fit:contain}
-.hero-title-line .title-sprite-hooh,
-.hero-title-line .title-sprite-lugia{display:block;flex:0 0 100px;width:100px!important;height:100px!important;max-width:none!important;max-height:none!important;object-fit:contain}
-.hero-subtitle{align-self:center}
+/* Rev20.9.1 — acercar sprites al logo, sin modificar tamaños ni distribución */
+.hero .title-sprite-hooh{transform:translateX(38px)}
+.hero .title-sprite-lugia{transform:translateX(-38px)}
