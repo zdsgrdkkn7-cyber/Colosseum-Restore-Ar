@@ -1,0 +1,18 @@
+
+/* Navigation layout preview — /pruebas/ only. Original form styling unchanged. */
+.cr-topbar{position:sticky;top:0;z-index:1005;display:flex;align-items:center;gap:12px;height:64px;padding:7px 14px;background:#050505;border-bottom:2px solid #ff3434;box-shadow:0 3px 12px #000a}
+.cr-topbar #crMenuToggle{flex:0 0 44px;width:44px;height:44px;border:1px solid #e8e8e8;background:#141414;color:#fff;font-size:25px;cursor:pointer}
+.cr-topbar-brand{flex:1;min-width:0;display:flex;justify-content:center;align-items:center;gap:9px;padding-right:44px}
+.cr-topbar-brand img{width:35px;height:39px;object-fit:contain}
+.cr-topbar-brand .cr-topbar-logo{width:min(45vw,220px);height:44px;object-fit:contain}
+.cr-nav-backdrop{position:fixed;inset:0;background:#000a;z-index:1100}
+.cr-nav-menu{position:fixed;top:0;left:0;bottom:0;z-index:1101;width:min(330px,88vw);padding:22px 15px;overflow-y:auto;background:#080808;border-right:2px solid #e8e8e8;box-shadow:8px 0 20px #000b}
+.cr-nav-head{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#ff3434;font-size:16px;padding-bottom:18px;border-bottom:1px solid #888;margin-bottom:12px}
+.cr-nav-head button{width:38px;height:38px;background:#222;color:white;border:1px solid #aaa;font-size:19px}
+.cr-nav-menu>button{display:block;width:100%;margin:7px 0;padding:15px 10px;text-align:left;background:#efefef;color:#111;border:2px solid #aaa;font-family:inherit;font-weight:bold;font-size:13px;cursor:pointer}
+.cr-nav-divider{font-size:12px;letter-spacing:1px;color:#ffe95b;padding:17px 4px 5px}
+.cr-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 16px}
+.cr-quick-actions .menu-button{min-width:0;min-height:58px;padding:10px 5px;font-size:clamp(11px,2.5vw,16px);line-height:1.25;white-space:normal}
+.cr-hidden-history{display:none}
+@media(max-width:450px){.cr-topbar{height:58px;padding:6px 9px}.cr-topbar-brand{gap:4px;padding-right:44px}.cr-topbar-brand img{width:27px;height:34px}.cr-topbar-brand .cr-topbar-logo{width:min(46vw,175px);height:37px}.cr-quick-actions{gap:6px}.cr-quick-actions .menu-button{min-height:54px}}
+@media print{.cr-topbar,.cr-nav-backdrop,.cr-nav-menu,.cr-quick-actions{display:none!important}}
