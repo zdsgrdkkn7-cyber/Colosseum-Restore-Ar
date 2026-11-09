@@ -43,7 +43,7 @@ input, textarea, select { font-size: max(16px, 1em); }
   .history-remito-actions button { font-size:11px; min-width:0 !important; }
 }
 </style>
-<link rel="stylesheet" href="folders.css?v=20.8.0">
+<link rel="stylesheet" href="folders.css?v=20.8.1">
 </head>
 <body>
 <div class="app-shell">
@@ -238,11 +238,11 @@ input, textarea, select { font-size: max(16px, 1em); }
   <input type="file" id="databaseFileInput" accept=".zip,.json,application/zip,application/json" hidden>
 </div>
 <section id="driveSyncPanel" style="margin:8px 0 12px;padding:12px;border:1px solid #555;background:#171717;color:#fff">
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:nowrap">
-    <strong style="color:#f5d35a;white-space:nowrap">GOOGLE DRIVE</strong>
-    <span id="driveConnectionStatus" style="color:#ff6767;font-size:clamp(11px,2.8vw,14px);white-space:nowrap">● Desconectado</span>
+  <div class="drive-compact-header">
+    <strong class="drive-compact-title">GOOGLE DRIVE</strong>
+    <span id="driveConnectionStatus" class="drive-compact-status" style="color:#ff6767">● Desconectado</span>
+    <button type="button" id="driveConnectBtn" class="drive-compact-toggle">CONECTAR</button>
   </div>
-  <div class="drive-toggle-wrap"><button type="button" id="driveConnectBtn">CONECTAR</button></div>
   <small id="driveActivityStatus" style="display:block;margin-top:9px;line-height:1.4;color:#c9c9c9"></small>
 </section><div id="folderToolbar" class="folder-toolbar"><button type="button" id="createClientFolder">＋ CLIENTE</button><button type="button" id="createLotFolder">＋ LOTE</button><button type="button" id="showAllFolders">VER TODOS</button></div><div id="historyList"></div>
 </dialog>
