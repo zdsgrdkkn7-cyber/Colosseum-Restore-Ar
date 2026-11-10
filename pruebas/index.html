@@ -430,6 +430,60 @@ input, textarea, select { font-size: max(16px, 1em); }
  }
 }
 </style>
+<style id="crMobileV88">
+/* Mobile V8.8: match General to front/back; center and enlarge branding */
+@media screen and (max-width:700px){
+ .cr-general-card{
+   box-sizing:border-box!important;width:100%!important;
+   background:#0d0d0d!important;border:1px solid #252525!important;
+   border-radius:17px!important;padding:20px 14px 24px!important;
+   margin:0 0 14px!important;overflow:visible!important;
+ }
+ .cr-general-heading{
+   display:block!important;font-size:19px!important;font-weight:650!important;
+   margin:0 0 16px!important;color:#f6f6f6!important;
+ }
+ .cr-general-heading::before{
+   content:"▶"!important;color:#e53935!important;
+   margin-right:11px!important;font-size:18px!important;
+ }
+ .cr-general-card .compact-ratings{
+   background:transparent!important;border:0!important;
+   border-radius:0!important;box-shadow:none!important;
+   width:100%!important;max-width:100%!important;
+   padding:0!important;margin:0!important;
+ }
+ .cr-general-card #ratings-extra{padding:14px 0 18px!important}
+ .cr-general-card .rating-head{padding:0 5px!important;margin:0 0 8px!important}
+ .cr-general-card .rating-row{padding:0 13px!important;margin-bottom:5px!important;gap:24px!important}
+ .cr-general-card .rating-row>.scale{margin:0!important;max-width:none!important}
+ .cr-topbar{
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   padding:8px 12px!important;height:94px!important;
+ }
+ .cr-topbar-brand{
+   position:absolute!important;left:50%!important;top:50%!important;
+   transform:translate(-50%,-50%)!important;
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   gap:10px!important;padding:0!important;margin:0!important;
+   width:max-content!important;max-width:calc(100% - 95px)!important;
+ }
+ .cr-topbar-brand img{
+   width:43px!important;height:48px!important;object-fit:contain!important;
+   flex:0 0 43px!important;
+ }
+ .cr-topbar-brand .cr-topbar-logo{
+   width:min(46vw,210px)!important;height:48px!important;max-width:none!important;
+   flex:0 1 auto!important;object-fit:contain!important;
+ }
+ .cr-nav-head{display:flex!important;align-items:center!important;gap:10px!important}
+ .cr-nav-brand-logo{
+   display:block!important;object-fit:contain!important;
+   width:155px!important;max-width:55%!important;height:54px!important;
+ }
+ .cr-nav-head small{font-size:10px!important;letter-spacing:0!important}
+}
+</style>
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -442,7 +496,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8.7</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8.8</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <button id="historyBtn" type="button">◷ Historial · Clientes y lotes</button>
   <div class="cr-nav-divider">REPORTE ACTUAL</div>
   <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
@@ -526,10 +580,10 @@ input, textarea, select { font-size: max(16px, 1em); }
     <div id="ratings-back"></div>
   </div>
 
-  <div class="rating-block compact-ratings">
+  <div class="cr-general-card"><h3 class="cr-card-heading cr-general-heading">General</h3><div class="rating-block compact-ratings">
     <div class="rating-head"><h2>ANTES</h2><div class="block-title">GENERAL</div><h2>DESPUÉS</h2></div>
     <div id="ratings-extra"></div>
-  </div>
+  </div></div>
 </section>
 <section class="notes-grid">
   <div class="pixel-panel note-box">
