@@ -6,7 +6,7 @@ const criteria={
 const state={
  id:null,ratings:{before:{},after:{}},
  photos:{frontBefore:null,frontAfter:null,backBefore:null,backAfter:null},
- work:{limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false,otro:false},
+ work:{limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false,indents:false,otro:false},
  budgetManualOverride:false,
  finalManualOverride:false
 };
@@ -58,7 +58,7 @@ function getResponsibilityFactor(){
 }
 
 function getSelectedWorkCount(){
-  return Object.entries(state.work).filter(([k,v])=>v && ["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","otro"].includes(k)).length;
+  return Object.entries(state.work).filter(([k,v])=>v && ["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","indents","otro"].includes(k)).length;
 }
 
 function updateFinalCost({force=false}={}){
@@ -108,7 +108,7 @@ function buildRatings(){
  });
 }
 function makeScale(side,group,item){
- const wrap=document.createElement("div");wrap.className="scale";wrap.dataset.criterion=item;const key=keyFor(group,item);
+ const wrap=document.createElement("div");wrap.className="scale";wrap.dataset.criterion=item;const key=keyFor(group,item);const score=document.createElement("span");score.className="cr-score-value";score.setAttribute("aria-label","Puntuación");wrap.appendChild(score);
  if(state.ratings[side][key]==null)state.ratings[side][key]=0;
  for(let i=1;i<=10;i++){
   const b=document.createElement("button");b.type="button";b.title=`${i}/10`;
@@ -121,9 +121,9 @@ function makeScale(side,group,item){
     autosaveDraft();
   };
   wrap.appendChild(b);
- }return wrap;
+ }refreshScale(wrap,Number(state.ratings[side][key]||0));return wrap;
 }
-function refreshScale(wrap,val){[...wrap.querySelectorAll("button")].forEach((b,i)=>b.querySelector(".ball").classList.toggle("on",i<val))}
+function refreshScale(wrap,val){[...wrap.querySelectorAll("button")].forEach((b,i)=>b.querySelector(".ball").classList.toggle("on",i<val));const score=wrap.querySelector(".cr-score-value");if(score)score.textContent=`[${val}/10]`}
 function toast(msg){const t=$("#toast");if(!t)return;t.textContent=msg;t.style.display="block";clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display="none",1700)}
 function resizeImage(file,max=1400,quality=.82){return new Promise((resolve,reject)=>{const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{let{width,height}=img;const sc=Math.min(1,max/Math.max(width,height));width=Math.round(width*sc);height=Math.round(height*sc);const c=document.createElement("canvas");c.width=width;c.height=height;c.getContext("2d").drawImage(img,0,0,width,height);URL.revokeObjectURL(url);resolve(c.toDataURL("image/jpeg",quality))};img.onerror=reject;img.src=url})}
 
@@ -155,7 +155,7 @@ function apply(data){
  state.clientFolder=data.clientFolder||data.fields?.cliente||"";state.lotFolder=data.lotFolder||data.fields?.lote||"General";
  state.ratings=data.ratings||{before:{},after:{}};
  state.photos=data.photos||{};
- state.work={limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false,otro:false,...(data.work||{})};
+ state.work={limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false,indents:false,otro:false,...(data.work||{})};
  state.budgetManualOverride=!!data.budgetManualOverride;
  state.finalManualOverride=!!data.finalManualOverride;
 
@@ -178,7 +178,7 @@ function apply(data){
  updateBudgetPreview();
 }
 function clearForm(){
- state.id=null;state.ratings={before:{},after:{}};state.photos={frontBefore:null,frontAfter:null,backBefore:null,backAfter:null};state.work={limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false,otro:false};state.budgetManualOverride=false;state.finalManualOverride=false;
+ state.id=null;state.ratings={before:{},after:{}};state.photos={frontBefore:null,frontAfter:null,backBefore:null,backAfter:null};state.work={limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false,indents:false,otro:false};state.budgetManualOverride=false;state.finalManualOverride=false;
  fields.forEach(id=>{const el=$("#"+id);if(el)el.value=id==="fecha"?new Date().toISOString().slice(0,10):""});buildRatings();
  document.querySelectorAll(".work-item").forEach(b=>{b.classList.remove("active");b.querySelector(".ball").classList.remove("on")});
  document.querySelectorAll(".photo-box").forEach(box=>{box.classList.remove("has-photo");const img=box.querySelector("img");img.hidden=true;img.removeAttribute("src");box.querySelector("input").value=""});
