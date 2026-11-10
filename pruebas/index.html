@@ -680,6 +680,20 @@ input, textarea, select { font-size: max(16px, 1em); }
  }
 }
 </style>
+<style id="crMobileV92">
+/* General: put each criterion's Pokéballs immediately beneath its label. */
+@media screen and (max-width:700px){
+ .cr-general-section #ratings-extra .rating-row .scale{
+   padding-top:25px!important;
+ }
+ .cr-general-section #ratings-extra .rating-row .scale .cr-score-value{
+   top:0!important;line-height:1.2!important;
+ }
+ .cr-general-section #ratings-extra .rating-row{
+   margin-bottom:8px!important;
+ }
+}
+</style>
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -692,7 +706,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V9.1</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V9.2</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <button id="historyBtn" type="button">◷ Historial · Clientes y lotes</button>
   <div class="cr-nav-divider">REPORTE ACTUAL</div>
   <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
