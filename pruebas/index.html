@@ -46,7 +46,100 @@ input, textarea, select { font-size: max(16px, 1em); }
 <link rel="stylesheet" href="folders.css?v=20.8.1">
 <link rel="stylesheet" href="nav-preview.css?v=2">
 <link rel="stylesheet" href="collectr-preview.css?v=7.4">
-<link rel="stylesheet" href="menus-v7-5.css?v=1">
+<style id="crMenusV76Inline">
+/* V7.5 test-only navigation and history refresh. Existing layout and behavior preserved. */
+@media screen {
+.cr-nav-backdrop{background:rgba(0,0,0,.38)!important;z-index:1100!important}
+.cr-nav-menu{
+ background:#121212!important;border-right:1px solid #353535!important;
+ box-shadow:10px 0 28px rgba(0,0,0,.36)!important;
+ width:min(310px,88vw)!important;
+}
+.cr-nav-head{color:#f4f4f4!important}
+.cr-nav-menu>button{border:0!important;background:transparent!important;color:#f2f2f2!important}
+.cr-nav-menu>button:first-of-type{border-left:3px solid #e53935!important;background:#202020!important}
+.cr-nav-menu>button:active{background:#282828!important}
+#historyDialog{
+ background:#090909!important;color:#f5f5f5!important;
+ border:1px solid #303030!important;border-radius:20px!important;
+ box-shadow:0 14px 50px rgba(0,0,0,.55)!important;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important;
+ padding:14px!important;
+ width:min(860px,calc(100vw - 24px))!important;
+ max-height:calc(100dvh - 24px)!important;
+}
+#historyDialog::backdrop{background:rgba(0,0,0,.57)!important}
+#historyDialog .dialog-head{border:0!important;margin-bottom:8px!important}
+#historyDialog .dialog-head h2{font-size:23px!important;letter-spacing:0!important;color:#f5f5f5!important;font-weight:650!important}
+#historyDialog .dialog-head h2::before{
+ content:"";display:inline-block;margin-right:10px;
+ border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid #e53935;
+}
+#historyDialog .dialog-head button{
+ background:#222!important;border:0!important;border-radius:50%!important;
+ width:38px!important;height:38px!important;padding:0!important;
+ display:grid!important;place-items:center!important;font-size:18px!important;
+}
+#historyDialog .history-remito-bar{
+ background:#151515!important;border:0!important;border-radius:13px!important;
+ padding:12px!important;margin:10px 0!important;
+}
+#historyDialog .history-selection-status strong{color:#f1d74b!important;font-weight:650!important}
+#historyDialog .lot-discount{color:#aaa!important}
+#historyDialog .discount-input-wrap{color:#f1d74b!important}
+#historyDialog #lotDiscount{
+ background:#262626!important;border:0!important;border-radius:9px!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+#historyDialog .history-remito-actions button{
+ background:#292929!important;color:#f3f3f3!important;-webkit-text-fill-color:#f3f3f3!important;
+ border:0!important;border-radius:9px!important;
+ font-family:inherit!important;font-weight:550!important;box-shadow:none!important;
+}
+#historyDialog .history-remito-actions button:disabled{opacity:.4!important}
+#historyDialog .history-remito-actions button:not(:disabled):active{background:#373737!important}
+#historyDialog .history-backup-bar{
+ border-top:0!important;border:0!important;
+ background:#151515!important;border-radius:13px!important;
+ padding:9px!important;margin:10px 0!important;
+}
+#historyDialog .history-backup-bar #exportDatabaseBtn,
+#historyDialog .history-backup-bar #importDatabaseBtn{
+ background:#292929!important;color:#f3f3f3!important;-webkit-text-fill-color:#f3f3f3!important;
+ border:0!important;border-radius:9px!important;font-weight:550!important;
+}
+#historyDialog .history-backup-bar #clearTestDatabaseBtn{
+ background:#3a191b!important;color:#ff6c6c!important;border:0!important;
+ border-radius:9px!important;
+}
+#historyDialog #driveSyncPanel{
+ background:#151515!important;border:0!important;border-radius:13px!important;
+ padding:12px!important;margin:10px 0!important;
+}
+#historyDialog #driveSyncPanel .drive-compact-title{color:#f1d74b!important}
+#historyDialog #driveSyncPanel #driveConnectBtn.drive-compact-toggle{
+ background:#292929!important;border:0!important;border-radius:9px!important;
+ color:#f3f3f3!important;-webkit-text-fill-color:#f3f3f3!important;
+}
+#historyDialog #folderToolbar{border:0!important;padding:12px 0!important}
+#historyDialog #folderToolbar button{
+ background:#252525!important;border:0!important;border-radius:10px!important;
+ color:#eee!important;font-family:inherit!important;font-weight:550!important;
+}
+#historyDialog #historyList{border:0!important}
+#historyDialog #historyList .folder-entry,
+#historyDialog #historyList .history-item{
+ background:#181818!important;border:0!important;border-radius:10px!important;
+ margin:7px 0!important;
+}
+#historyDialog #historyList .folder-breadcrumb{border:0!important}
+#historyDialog #historyList .folder-breadcrumb button,
+#historyDialog #historyList .folder-text-action{color:#f1d74b!important}
+#historyDialog #historyList button:not(.folder-trash){font-family:inherit!important}
+#historyDialog button:focus-visible{outline:2px solid #e53935!important;outline-offset:2px}
+}
+
+</style>
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -59,7 +152,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS V7.6</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <button id="historyBtn" type="button">◷ Historial · Clientes y lotes</button>
   <div class="cr-nav-divider">REPORTE ACTUAL</div>
   <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
