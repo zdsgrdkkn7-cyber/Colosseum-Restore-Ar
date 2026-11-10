@@ -771,7 +771,7 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .history-selection-status strong{display:none!important}
 }
 </style><style id="crMobileV98">
-/* Mobile V9.8 — criterion label above, compact balls and numeric score at right. */
+/* Mobile V9.9 — criterion label above, compact balls and numeric score at right. */
 @media screen and (max-width:700px){
  #ratings-front .rating-row>.scale,
  #ratings-back .rating-row>.scale,
@@ -832,6 +832,34 @@ input, textarea, select { font-size: max(16px, 1em); }
    transform:none!important;
  }
 }
+</style><style id="crMobileV99">
+/* Slightly larger active and inactive Pokeballs; keep compact inline scores. */
+@media screen and (max-width:700px){
+ #ratings-front .rating-row>.scale,
+ #ratings-back .rating-row>.scale,
+ #ratings-extra .rating-row>.scale{column-gap:2px!important}
+ #ratings-front .rating-row>.scale button,
+ #ratings-back .rating-row>.scale button,
+ #ratings-extra .rating-row>.scale button{
+  flex:0 0 10px!important;width:10px!important;min-width:10px!important;
+  height:13px!important;min-height:13px!important
+ }
+ #ratings-front .rating-row>.scale .ball,
+ #ratings-back .rating-row>.scale .ball,
+ #ratings-extra .rating-row>.scale .ball,
+ #ratings-front .rating-row>.scale .ball.on,
+ #ratings-back .rating-row>.scale .ball.on,
+ #ratings-extra .rating-row>.scale .ball.on{
+  width:10px!important;height:10px!important;
+  min-width:10px!important;min-height:10px!important;
+  flex:0 0 10px!important;transform:none!important
+ }
+ #ratings-front .rating-row>.scale .cr-score-value,
+ #ratings-back .rating-row>.scale .cr-score-value,
+ #ratings-extra .rating-row>.scale .cr-score-value{
+  margin-left:2px!important;font-size:10px!important
+ }
+}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -844,7 +872,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.8</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.9</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
