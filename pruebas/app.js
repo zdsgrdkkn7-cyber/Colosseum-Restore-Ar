@@ -240,6 +240,8 @@ function updateRemitoControls(){
   const allBtn=$("#selectAllReports");
   if(countEl)countEl.textContent=`${count} ${count===1?"reporte seleccionado":"reportes seleccionados"}`;
   if(btn)btn.disabled=count===0;
+  const batchBtn=$("#batchBudgetBtn");
+  if(batchBtn)batchBtn.disabled=count===0;
   if(allBtn)allBtn.textContent=(historyReports.length>0 && count===historyReports.length)?"DESELECCIONAR TODO":"SELECCIONAR TODO";
 }
 
