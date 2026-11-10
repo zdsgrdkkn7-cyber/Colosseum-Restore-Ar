@@ -149,7 +149,7 @@
           <button type="button" class="detail-photo" data-side="before"><img ${d.before?`src="${d.before}"`:""} ${d.before?"":"hidden"}><span>${d.before?"CAMBIAR FOTO":"+ AGREGAR FOTO"}</span><input type="file" accept="image/*" hidden></button>
           <button type="button" class="detail-photo" data-side="after"><img ${d.after?`src="${d.after}"`:""} ${d.after?"":"hidden"}><span>${d.after?"CAMBIAR FOTO":"+ AGREGAR FOTO"}</span><input type="file" accept="image/*" hidden></button>
         </div>
-        <div class="detail-description"><input maxlength="180" type="text" value="${escapeAttr(d.text||"")}" placeholder="Descripción del arreglo..."><button type="button" class="detail-delete no-print">ELIMINAR</button></div>`;
+        <div class="detail-description"><input maxlength="180" type="text" value="${escapeAttr(d.text||"")}" placeholder="Descripción del arreglo..."><button type="button" class="detail-delete no-print" aria-label="Eliminar detalle" title="Eliminar detalle"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg></button></div>`;
       row.querySelectorAll(".detail-photo").forEach(btn=>{
         const input=btn.querySelector("input"); btn.onclick=()=>input.click();
         input.onchange=async()=>{const f=input.files?.[0];if(!f)return;d[btn.dataset.side]=await loadDetailPhoto(f);renderDetails();autosaveDraft();};
