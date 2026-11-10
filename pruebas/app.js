@@ -108,7 +108,7 @@ function buildRatings(){
  });
 }
 function makeScale(side,group,item){
- const wrap=document.createElement("div");wrap.className="scale";const key=keyFor(group,item);
+ const wrap=document.createElement("div");wrap.className="scale";wrap.dataset.criterion=item;const key=keyFor(group,item);
  if(state.ratings[side][key]==null)state.ratings[side][key]=0;
  for(let i=1;i<=10;i++){
   const b=document.createElement("button");b.type="button";b.title=`${i}/10`;
@@ -383,7 +383,7 @@ function addPanelCorners(){
   ["tl","tr","bl","br"].forEach(pos=>{const c=document.createElement("span");c.className=`panel-corner ${pos}`;c.setAttribute("aria-hidden","true");panel.appendChild(c)});
  });
 }
-function fitMobile(){const report=$(".report");const shell=$(".app-shell");if(window.innerWidth<1180){const scale=Math.min(1,(window.innerWidth-16)/1180);report.style.transform=`scale(${scale})`;shell.style.width=`${1180*scale+16}px`}else{report.style.transform="";shell.style.width=""}}
+function fitMobile(){const report=$(".report");const shell=$(".app-shell");if(window.innerWidth<=700){report.style.transform="none";report.style.width="100%";report.style.minWidth="0";shell.style.width="100%";return}report.style.width="1180px";report.style.minWidth="1180px";if(window.innerWidth<1180){const scale=Math.min(1,(window.innerWidth-16)/1180);report.style.transform=`scale(${scale})`;shell.style.width=`${1180*scale+16}px`}else{report.style.transform="";shell.style.width=""}}
 window.addEventListener("resize",fitMobile);
 document.addEventListener("DOMContentLoaded",()=>{
  const fecha=$("#fecha");if(fecha&&!fecha.value)fecha.value=new Date().toISOString().slice(0,10);
