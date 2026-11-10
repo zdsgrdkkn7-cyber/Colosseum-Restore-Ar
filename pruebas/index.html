@@ -236,6 +236,19 @@ input, textarea, select { font-size: max(16px, 1em); }
  .card-data-grid>label input{width:100%!important;min-width:0!important;box-sizing:border-box!important}
 }
 </style>
+
+<style id="crMobileV83">
+@media screen and (max-width:700px){
+ .cr-compare-card .rating-block::after,.compact-ratings::after{content:none!important;display:none!important}
+ #ratings-front,#ratings-back,#ratings-extra{position:relative!important}
+ #ratings-front::before,#ratings-back::before,#ratings-extra::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#343434;pointer-events:none;z-index:0}
+ #ratings-front .rating-row,#ratings-back .rating-row,#ratings-extra .rating-row{position:relative;z-index:1}
+ .cr-compare-card .rating-row>.scale:last-child,.compact-ratings .rating-row>.scale:last-child{padding-left:0!important;margin-left:0!important}
+ .cr-compare-card .rating-row>.scale:last-child .cr-score-value,.compact-ratings .rating-row>.scale:last-child .cr-score-value{left:0!important}
+ .cr-compare-card .centering-row{display:block!important;width:100%!important;box-sizing:border-box!important;margin-top:20px!important}
+ .cr-compare-card .centering-row button,.cr-compare-card .centering-row .centering-btn,.cr-compare-card .centering-row [type="button"]{display:block!important;width:100%!important;max-width:none!important;box-sizing:border-box!important;text-align:center!important}
+}
+</style>
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -248,7 +261,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8.2</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8.3</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <button id="historyBtn" type="button">◷ Historial · Clientes y lotes</button>
   <div class="cr-nav-divider">REPORTE ACTUAL</div>
   <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
