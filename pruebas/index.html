@@ -771,7 +771,7 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .history-selection-status strong{display:none!important}
 }
 </style><style id="crMobileV98">
-/* Mobile V9.31 — criterion label above, compact balls and numeric score at right. */
+/* Mobile V9.32 — criterion label above, compact balls and numeric score at right. */
 @media screen and (max-width:700px){
  #ratings-front .rating-row>.scale,
  #ratings-back .rating-row>.scale,
@@ -1345,6 +1345,31 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
    margin-top:9px!important;text-align:center!important;
  }
 }
+</style><style id="crMobileV932">
+/* Use the exact same SVG Pokeballs as the criterion ratings. */
+.centering-balls .centering-ball{
+  display:inline-block!important;position:relative!important;
+  width:13px!important;height:13px!important;min-width:0!important;
+  flex:0 1 13px!important;aspect-ratio:1/1!important;
+  border:0!important;border-radius:0!important;overflow:hidden!important;
+  background:url("assets/pokeball-inactive.svg") center/contain no-repeat!important;
+}
+.centering-balls .centering-ball.full{
+  background:url("assets/pokeball-active.svg") center/contain no-repeat!important;
+}
+.centering-balls .centering-ball.half::before{
+  content:""!important;position:absolute!important;inset:0 50% 0 0!important;
+  background:url("assets/pokeball-active.svg") left center/26px 13px no-repeat!important;
+}
+.centering-balls .centering-ball:not(.half)::before{content:none!important}
+@media(max-width:700px){
+ .cr-compare-card .centering-balls .centering-ball{
+   width:11px!important;height:11px!important;flex:0 1 11px!important;
+ }
+ .cr-compare-card .centering-balls .centering-ball.half::before{
+   background-size:22px 11px!important;
+ }
+}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -1357,7 +1382,7 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><img class="cr-v916-menu-lugia" src="assets/lugia.png" alt="Lugia"><div class="cr-v915-wordmark cr-v917-wordmark"><span class="cr-v917-name">COLOSSEUM</span><span class="cr-v917-jp cr-v918-japanese" lang="ja">ポケモンコロシアム</span></div><div class="cr-v923-update-tools"><button id="crCheckUpdates" type="button" aria-label="Buscar actualizaciones" title="Buscar actualizaciones"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg></button><small>V9.31</small></div></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><img class="cr-v916-menu-lugia" src="assets/lugia.png" alt="Lugia"><div class="cr-v915-wordmark cr-v917-wordmark"><span class="cr-v917-name">COLOSSEUM</span><span class="cr-v917-jp cr-v918-japanese" lang="ja">ポケモンコロシアム</span></div><div class="cr-v923-update-tools"><button id="crCheckUpdates" type="button" aria-label="Buscar actualizaciones" title="Buscar actualizaciones"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg></button><small>V9.32</small></div></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
@@ -1583,7 +1608,7 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
 <script src="collectr-preview.js?v=1"></script>
 <script>
 (function(){
-  const current="9.31",btn=document.getElementById("crCheckUpdates");
+  const current="9.32",btn=document.getElementById("crCheckUpdates");
   if(!btn)return;
   let checking=false;
   const versionUrl=new URL("version.json",document.baseURI);
