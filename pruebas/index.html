@@ -771,7 +771,7 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .history-selection-status strong{display:none!important}
 }
 </style><style id="crMobileV98">
-/* Mobile V9.21 — criterion label above, compact balls and numeric score at right. */
+/* Mobile V9.22 — criterion label above, compact balls and numeric score at right. */
 @media screen and (max-width:700px){
  #ratings-front .rating-row>.scale,
  #ratings-back .rating-row>.scale,
@@ -1142,6 +1142,26 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
 @media screen and (max-width:700px){
  body.cr-ios-standalone .cr-topbar{padding-bottom:0!important;margin-bottom:-52px!important}
 }
+</style><style id="crMobileV922">
+/* iPhone home-screen: no overlapping header/fields; leave breathing room below island. */
+@media screen and (max-width:700px) and (display-mode:standalone){
+ .cr-topbar{
+   padding-top:calc(env(safe-area-inset-top, 0px) + 112px)!important;
+   padding-bottom:0!important;
+   margin-bottom:0!important;
+   height:auto!important;min-height:0!important;
+   background:transparent!important;
+ }
+}
+@media screen and (max-width:700px){
+ body.cr-ios-standalone .cr-topbar{
+   padding-top:calc(env(safe-area-inset-top, 0px) + 112px)!important;
+   padding-bottom:0!important;
+   margin-bottom:0!important;
+   height:auto!important;min-height:0!important;
+   background:transparent!important;
+ }
+}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -1154,7 +1174,7 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><img class="cr-v916-menu-lugia" src="assets/lugia.png" alt="Lugia"><div class="cr-v915-wordmark cr-v917-wordmark"><span class="cr-v917-name">COLOSSEUM</span><span class="cr-v917-jp cr-v918-japanese" lang="ja">ポケモンコロシアム</span></div><small>V9.21</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><img class="cr-v916-menu-lugia" src="assets/lugia.png" alt="Lugia"><div class="cr-v915-wordmark cr-v917-wordmark"><span class="cr-v917-name">COLOSSEUM</span><span class="cr-v917-jp cr-v918-japanese" lang="ja">ポケモンコロシアム</span></div><small>V9.22</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
