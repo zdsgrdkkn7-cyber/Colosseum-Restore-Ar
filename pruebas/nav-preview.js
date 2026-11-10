@@ -1,4 +1,4 @@
-/* Mobile V9.3: preserve existing IDs and handlers, relocate history controls into drawer. */
+/* Mobile V9.4: preserve existing IDs and handlers, relocate history controls into drawer. */
 (()=>{
  const menu=document.getElementById('crNavMenu');
  const backdrop=document.getElementById('crNavBackdrop');
@@ -12,6 +12,7 @@
    if(node&&dest)dest.appendChild(node);
  };
  move('driveSyncPanel','crV93Drive');
+ move('driveConnectBtn','crV94DriveButton');
  move('history-backup-placeholder','crV93Backup');
  move('history-remito-placeholder','crV93History');
  move('folderToolbar','crV93Folders');
