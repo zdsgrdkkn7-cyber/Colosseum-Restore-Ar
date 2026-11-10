@@ -211,7 +211,7 @@ function normalizePdfReport(report){
       backBefore:r.photos?.backBefore||null,
       backAfter:r.photos?.backAfter||null
     },
-    work:{limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false,otro:false,...(r.work||{})}
+    work:{limpieza:false,bordes:false,pliegues:false,relaminado:false,prensado:false,pulido:false,lustrado:false,indents:false,otro:false,...(r.work||{})}
   };
 }
 
@@ -275,7 +275,7 @@ function paintPdfBackground(doc,W=210,H=620){
 
 function getFinalReportLayout(rawReport){
   const report=normalizePdfReport(rawReport);
-  const selectedCount=["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","otro"]
+  const selectedCount=["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","indents","otro"]
     .filter(k=>!!report.work?.[k]).length;
   const f=report.fields||{};
   const discountPercent=Math.max(0,Math.min(100,parsePdfMoney(f.descuentoResultado)));
@@ -412,7 +412,7 @@ function renderReportPage(doc,rawReport,assets){
   const workLabels=[
     ["limpieza","Limpieza"],["bordes","Limpieza de bordes"],
     ["pliegues","Reparacion pliegues / creases"],["relaminado","Pegado / relaminado"],
-    ["prensado","Prensado"],["pulido","Pulido"],["lustrado","Lustrado"],["otro","Otro"]
+    ["prensado","Prensado"],["pulido","Pulido"],["lustrado","Lustrado"],["indents","Reparacion de indents"],["otro","Otro"]
   ];
   doc.setFontSize(7.1);doc.setFont("courier","bold");
   workLabels.forEach(([k,label],i)=>{
@@ -447,6 +447,7 @@ function renderReportPage(doc,rawReport,assets){
     ["prensado","Prensado"],
     ["pulido","Pulido"],
     ["lustrado","Lustrado"],
+    ["indents","Reparacion de indents"],
     ["otro","Otro"]
   ].filter(([k])=>!!report.work[k]);
 
@@ -542,14 +543,14 @@ function getBudgetFactorForValue(rawValue){
 }
 
 function getReportWorkCount(report){
-  return ["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","otro"]
+  return ["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","indents","otro"]
     .filter(k=>!!report.work?.[k]).length;
 }
 function getReportWorkPrice(key){
   return key === "pliegues" ? 10 : 5;
 }
 function getReportWorkSubtotal(report){
-  return ["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","otro"]
+  return ["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","indents","otro"]
     .reduce((sum,k)=>sum+(report.work?.[k]?getReportWorkPrice(k):0),0);
 }
 
@@ -633,7 +634,7 @@ function renderBudgetPage(doc,rawReport,assets){
   const workLabels=[
     ["limpieza","Limpieza"],["bordes","Limpieza de bordes"],
     ["pliegues","Reparacion pliegues / creases"],["relaminado","Pegado / relaminado"],
-    ["prensado","Prensado"],["pulido","Pulido"],["lustrado","Lustrado"],["otro","Otro"]
+    ["prensado","Prensado"],["pulido","Pulido"],["lustrado","Lustrado"],["indents","Reparacion de indents"],["otro","Otro"]
   ];
   doc.setFont("courier","bold");doc.setFontSize(6.8);
   workLabels.forEach(([k,label],i)=>{
