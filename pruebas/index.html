@@ -755,6 +755,14 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu #historyList .folder-breadcrumb{padding:5px 0!important}
  .cr-v93-menu .cr-v93-list-title{margin-bottom:4px!important}
 }
+</style><style id="crMobileV95">
+@media screen {
+ .cr-v93-menu .cr-v95-client-actions{display:grid!important;grid-template-columns:40px minmax(0,1fr)!important;gap:6px!important;align-items:stretch!important;margin:5px 0 7px!important}
+ .cr-v93-menu .cr-v95-client-actions #crV93SelectAll{display:flex!important;align-items:stretch!important}
+ .cr-v93-menu .cr-v95-client-actions #selectAllReports{width:40px!important;min-width:40px!important;height:39px!important;min-height:39px!important;border-radius:7px!important}
+ .cr-v93-menu .cr-v95-client-actions #folderToolbar{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;margin:0!important}
+ .cr-v93-menu .cr-v95-client-actions #folderToolbar button{height:39px!important;min-height:39px!important;box-sizing:border-box!important}
+}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -767,11 +775,11 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.4</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.5</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
-  <div class="cr-v93-section"><div class="cr-v93-list-title"><span>CLIENTES</span><span id="crV93SelectAll"></span></div><div id="crV93Folders"></div><div id="crV93List"></div></div>
+  <div class="cr-v93-section"><div class="cr-v93-list-title"><span>CLIENTES</span></div><div class="cr-v95-client-actions"><span id="crV93SelectAll"></span><div id="crV93Folders"></div></div><div id="crV93List"></div></div>
 </nav>
 <div class="cr-v93-fab no-print">
   <button id="saveBtn" class="cr-v93-fab-action" type="button" aria-label="Guardar reporte" title="Guardar reporte" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h14l3 3v15H3V3h1zm3 0v7h10V3M7 21v-8h10v8M9 3v5h6"/></svg></button>
@@ -989,7 +997,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 <script src="https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.62/dist/zip.min.js"></script>
 <script src="media-format-v20-1.js?v=20.1.0"></script>
 
-<script src="nav-preview.js?v=94"></script>
+<script src="nav-preview.js?v=95"></script>
 <script src="collectr-preview.js?v=1"></script>
 </body>
 </html>
