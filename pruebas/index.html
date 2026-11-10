@@ -771,7 +771,7 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .history-selection-status strong{display:none!important}
 }
 </style><style id="crMobileV98">
-/* Mobile V9.14 — criterion label above, compact balls and numeric score at right. */
+/* Mobile V9.15 — criterion label above, compact balls and numeric score at right. */
 @media screen and (max-width:700px){
  #ratings-front .rating-row>.scale,
  #ratings-back .rating-row>.scale,
@@ -973,6 +973,79 @@ input, textarea, select { font-size: max(16px, 1em); }
    flex:0 0 auto!important;object-fit:contain!important
  }
 }
+</style><style id="crMobileV915">
+/* Compact consistent mobile form typography, without shrinking final result notes. */
+@media screen and (max-width:700px){
+ .cr-topbar{
+   padding-top:66px!important;
+   padding-bottom:24px!important;
+   margin-top:0!important;
+   height:auto!important;
+   min-height:0!important;
+   overflow:visible!important;
+ }
+ .hero .header-meta input,
+ .hero .header-date-label #fecha,
+ .card-data-grid>label>input,
+ .report input[type="text"]:not(.result-input),
+ .report input[type="date"],
+ .report input[inputmode="decimal"]{
+   height:36px!important;min-height:36px!important;max-height:36px!important;
+   padding:5px 9px!important;line-height:24px!important;
+   font-size:16px!important;font-weight:400!important;
+   box-sizing:border-box!important;
+ }
+ .hero .header-meta label,.hero .header-date-label,
+ .card-data-grid>label,
+ .pricing-input-row>span:first-child,
+ .pricing-row>span,
+ .report .pricing-help,
+ .report .observations-label{
+   font-size:12px!important;line-height:1.35!important;
+   font-weight:400!important;letter-spacing:0!important;
+ }
+ .hero .header-meta label,.hero .header-date-label,
+ .card-data-grid>label{gap:5px!important}
+ .card-data-grid{gap:11px 9px!important}
+ .report .pricing-panel .money-input,
+ .report .pricing-panel .percent-input{
+   min-height:36px!important;height:36px!important;
+   box-sizing:border-box!important;
+ }
+ .report .pricing-panel .money-input input,
+ .report .pricing-panel .percent-input input{
+   min-height:32px!important;height:32px!important;max-height:32px!important;
+   font-size:16px!important;
+ }
+ .report .pricing-panel .money-input b,
+ .report .pricing-panel .percent-input b,
+ .report .pricing-row strong{font-size:13px!important}
+ .report #otroTrabajo{height:36px!important;min-height:36px!important;max-height:36px!important;font-size:16px!important}
+ /* The two final result grades and multiline notes deliberately retain their size. */
+ .report input.result-input{font-size:inherit!important}
+ .report #observaciones{min-height:150px!important;height:auto!important;font-size:inherit!important}
+ .cr-v93-menu .cr-v93-title,.cr-v93-menu .cr-v93-list-title{
+   font-size:12px!important;line-height:1.35!important;letter-spacing:0!important
+ }
+ .cr-v93-menu .history-selection-status,
+ .cr-v93-menu .lot-discount,
+ .cr-v93-menu #driveConnectionStatus,
+ .cr-v93-menu #historyList,
+ .cr-v93-menu #historyList button{font-size:12px!important}
+ .cr-v93-menu .history-backup-bar button,
+ .cr-v93-menu .history-remito-actions button,
+ .cr-v93-menu #folderToolbar button,
+ .cr-v93-menu #driveConnectBtn{font-size:12px!important}
+ .cr-v93-menu .cr-v915-brand{display:flex!important;align-items:end!important;gap:9px!important}
+ .cr-v93-menu .cr-v915-wordmark{
+   display:flex!important;flex-direction:column!important;
+   color:#d94643!important;font-size:22px!important;
+   line-height:.99!important;letter-spacing:.4px!important;
+   font-weight:850!important;
+ }
+ .cr-v93-menu .cr-v915-wordmark span{display:block!important}
+ .cr-v93-menu .cr-v915-brand small{font-size:10px!important;padding-bottom:2px!important}
+}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -985,7 +1058,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.14</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><div class="cr-v915-wordmark">COLOSSEUM<span>RESTORE</span></div><small>V9.15</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
