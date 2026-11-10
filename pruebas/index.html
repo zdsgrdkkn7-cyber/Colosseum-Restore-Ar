@@ -196,6 +196,30 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-topbar #crMenuToggle{top:calc(env(safe-area-inset-top,0px) + 10px)!important}
 }
 </style>
+<style id="crMobileV81">
+@media screen and (max-width:700px){
+ .card-data-grid>label:nth-child(n){grid-column:span 3!important}
+ .card-data-grid>label:nth-child(-n+4){grid-column:span 3!important}
+ .card-data-grid>label:nth-child(1),.card-data-grid>label:nth-child(2),.card-data-grid>label:nth-child(3),.card-data-grid>label:nth-child(4){grid-column:span 3!important}
+ .card-data-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:15px 10px!important}
+ .card-data-grid>label:nth-child(-n+4){grid-column:span 3!important}
+ .card-data-grid>label:nth-child(n+5){grid-column:span 2!important}
+ .cr-compare-card .rating-block,.compact-ratings{position:relative!important}
+ .cr-compare-card .rating-block::after,.compact-ratings::after{content:"";position:absolute;left:50%;top:44px;bottom:8px;width:1px;background:#343434;pointer-events:none}
+ .cr-compare-card .rating-row>.scale:last-child,.compact-ratings .rating-row>.scale:last-child{border:0!important;padding-left:12px!important}
+ .cr-compare-card .rating-row>.scale::before,.compact-ratings .rating-row>.scale::before{display:none!important}
+ .cr-compare-card .rating-row>.scale,.compact-ratings .rating-row>.scale{padding-top:24px!important}
+ .cr-compare-card .rating-row>.scale .cr-score-value,.compact-ratings .rating-row>.scale .cr-score-value{position:absolute;left:0;top:0;font-size:10px;color:#e53935;font-weight:650}
+ .cr-compare-card .rating-row>.scale .cr-score-value::before,.compact-ratings .rating-row>.scale .cr-score-value::before{content:attr(data-criterion)}
+ .cr-compare-card .rating-row>.scale,.compact-ratings .rating-row>.scale{--unused:0}
+ .cr-compare-card .rating-row>.scale .cr-score-value,.compact-ratings .rating-row>.scale .cr-score-value{display:flex;align-items:center;gap:5px}
+ .cr-compare-card .rating-row>.scale .cr-score-value::before,.compact-ratings .rating-row>.scale .cr-score-value::before{content:attr(data-criterion);color:#bbb;font-weight:400}
+ .cr-other-work{display:flex!important;align-items:center!important;gap:10px!important;margin-top:12px!important}
+ .cr-other-work>.work-item{flex:0 0 auto!important;white-space:nowrap!important}
+ .cr-other-work>.other-work{flex:1!important;min-width:0!important;margin:0!important}
+ .cr-other-work input{width:100%!important;box-sizing:border-box!important;font-size:16px!important}
+}
+</style>
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -208,7 +232,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8.1</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <button id="historyBtn" type="button">◷ Historial · Clientes y lotes</button>
   <div class="cr-nav-divider">REPORTE ACTUAL</div>
   <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
@@ -300,15 +324,15 @@ input, textarea, select { font-size: max(16px, 1em); }
     <h2>▶ TRABAJO REALIZADO</h2>
     <div class="work-checklist">
       <button type="button" class="work-item" data-work="limpieza"><span class="ball"></span><span>Limpieza</span></button>
-      <button type="button" class="work-item" data-work="bordes"><span class="ball"></span><span>Limpieza de bordes</span></button>
-      <button type="button" class="work-item" data-work="pliegues"><span class="ball"></span><span>Reparación pliegues / creases</span></button>
       <button type="button" class="work-item" data-work="relaminado"><span class="ball"></span><span>Pegado / relaminado</span></button>
-      <button type="button" class="work-item" data-work="prensado"><span class="ball"></span><span>Prensado</span></button>
+      <button type="button" class="work-item" data-work="pliegues"><span class="ball"></span><span>Reparación de pliegues / creases</span></button>
+      <button type="button" class="work-item" data-work="bordes"><span class="ball"></span><span>Limpieza de bordes</span></button>
+      <button type="button" class="work-item" data-work="indents"><span class="ball"></span><span>Reparación de indents</span></button>
       <button type="button" class="work-item" data-work="pulido"><span class="ball"></span><span>Pulido</span></button>
+      <button type="button" class="work-item" data-work="prensado"><span class="ball"></span><span>Prensado</span></button>
       <button type="button" class="work-item" data-work="lustrado"><span class="ball"></span><span>Lustrado</span></button>
-      <button type="button" class="work-item" data-work="otro"><span class="ball"></span><span>Otro</span></button>
     </div>
-    <label class="other-work">Detalle de otro:<input id="otroTrabajo" type="text" placeholder="Especificar..."></label>
+    <div class="cr-other-work"><button type="button" class="work-item" data-work="otro"><span class="ball"></span><span>Otros</span></button><label class="other-work"><input id="otroTrabajo" type="text" placeholder="Describir otro trabajo..."></label></div>
   </div>
   <div class="pixel-panel note-box result-box">
     <h2>▶ RESULTADO</h2>
@@ -408,8 +432,8 @@ input, textarea, select { font-size: max(16px, 1em); }
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.3/dist/jspdf.umd.min.js"></script>
 <script src="pdf.js?v=18.8.1"></script>
-<script src="app.js?v=mobile8"></script>
-<script src="pricing-v17-2.js"></script>
+<script src="app.js?v=mobile81"></script>
+<script src="pricing-v17-2.js?v=mobile81"></script>
 <script src="rev18.js?v=18.8.1"></script>
 <script src="batch-budget-v17.js"></script>
 <script src="database-transfer.js?v=20.6.0"></script>
