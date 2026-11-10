@@ -108,7 +108,7 @@ function buildRatings(){
  });
 }
 function makeScale(side,group,item){
- const wrap=document.createElement("div");wrap.className="scale";wrap.dataset.criterion=item;const key=keyFor(group,item);const score=document.createElement("span");score.className="cr-score-value";score.setAttribute("aria-label","Puntuación");wrap.appendChild(score);
+ const wrap=document.createElement("div");wrap.className="scale";wrap.dataset.criterion=item;const key=keyFor(group,item);const score=document.createElement("span");score.className="cr-score-value";score.dataset.criterion=item;score.setAttribute("aria-label","Puntuación");wrap.appendChild(score);
  if(state.ratings[side][key]==null)state.ratings[side][key]=0;
  for(let i=1;i<=10;i++){
   const b=document.createElement("button");b.type="button";b.title=`${i}/10`;
