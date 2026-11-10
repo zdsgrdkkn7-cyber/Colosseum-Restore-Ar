@@ -177,7 +177,7 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-compare-card .rating-row>.scale button,.compact-ratings .rating-row>.scale button{flex:0 0 auto!important;padding:0!important;min-width:0!important}
  .cr-compare-card .rating-row>.scale .ball,.compact-ratings .rating-row>.scale .ball{width:clamp(7px,2.05vw,11px)!important;height:clamp(7px,2.05vw,11px)!important;min-width:0!important;min-height:0!important;display:block!important}
  .cr-compare-card .rating-block,.compact-ratings{position:relative!important}
- .cr-compare-card .rating-row::after,.compact-ratings .rating-row::after{content:"";position:absolute;left:50%;transform:translateX(-50%);width:1px;height:calc(100% - 48px);top:35px;background:#333;pointer-events:none}
+ .cr-compare-card .rating-row>.scale:last-child,.compact-ratings .rating-row>.scale:last-child{border-left:1px solid #333!important;padding-left:8px!important;box-sizing:border-box!important}
  .cr-compare-card .centering-row{padding-top:12px!important}
  .compact-ratings .rating-head{margin-bottom:14px!important}
  .notes-grid{display:flex!important;flex-direction:column!important;gap:14px!important;margin-bottom:14px!important}
@@ -408,7 +408,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.3/dist/jspdf.umd.min.js"></script>
 <script src="pdf.js?v=18.8.1"></script>
-<script src="app.js?v=19.1"></script>
+<script src="app.js?v=mobile8"></script>
 <script src="pricing-v17-2.js"></script>
 <script src="rev18.js?v=18.8.1"></script>
 <script src="batch-budget-v17.js"></script>
