@@ -771,7 +771,7 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .history-selection-status strong{display:none!important}
 }
 </style><style id="crMobileV98">
-/* Mobile V9.22 — criterion label above, compact balls and numeric score at right. */
+/* Mobile V9.23 — criterion label above, compact balls and numeric score at right. */
 @media screen and (max-width:700px){
  #ratings-front .rating-row>.scale,
  #ratings-back .rating-row>.scale,
@@ -1162,6 +1162,11 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
    background:transparent!important;
  }
 }
+</style><style id="crMobileV923">
+.cr-v93-menu .cr-v923-update-tools{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;margin-left:auto;flex:0 0 auto}
+.cr-v93-menu #crCheckUpdates{display:flex!important;align-items:center!important;justify-content:center!important;background:transparent!important;border:1px solid #555!important;border-radius:50%!important;width:31px!important;height:31px!important;min-width:31px!important;padding:0!important;color:#e7e7e7!important}
+.cr-v93-menu #crCheckUpdates:disabled{opacity:.5!important}
+.cr-v93-menu .cr-v923-update-tools small{white-space:nowrap!important;font-size:10px!important;color:#aaa!important}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -1174,7 +1179,7 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><img class="cr-v916-menu-lugia" src="assets/lugia.png" alt="Lugia"><div class="cr-v915-wordmark cr-v917-wordmark"><span class="cr-v917-name">COLOSSEUM</span><span class="cr-v917-jp cr-v918-japanese" lang="ja">ポケモンコロシアム</span></div><small>V9.22</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><img class="cr-v916-menu-lugia" src="assets/lugia.png" alt="Lugia"><div class="cr-v915-wordmark cr-v917-wordmark"><span class="cr-v917-name">COLOSSEUM</span><span class="cr-v917-jp cr-v918-japanese" lang="ja">ポケモンコロシアム</span></div><div class="cr-v923-update-tools"><button id="crCheckUpdates" type="button" aria-label="Buscar actualizaciones" title="Buscar actualizaciones"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg></button><small>V9.23</small></div></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
@@ -1398,5 +1403,43 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
 
 <script src="nav-preview.js?v=95"></script>
 <script src="collectr-preview.js?v=1"></script>
+<script>
+(function(){
+  const current="9.23",btn=document.getElementById("crCheckUpdates");
+  if(!btn)return;
+  let checking=false;
+  const versionUrl=new URL("version.json",document.baseURI);
+  async function check(manual){
+    if(checking)return;
+    checking=true;btn.disabled=true;
+    try{
+      const url=new URL(versionUrl.href);url.searchParams.set("_",Date.now().toString());
+      const response=await fetch(url.href,{cache:"no-store",headers:{"Cache-Control":"no-cache"}});
+      if(!response.ok)throw new Error("No se pudo consultar la versión");
+      const remote=await response.json();
+      if(!/^\d+\.\d+$/.test(remote.version||""))throw new Error("Versión inválida");
+      if(remote.version!==current){
+        const key="cr-update-attempt-"+remote.version;
+        if(sessionStorage.getItem(key)==="1"){
+          if(manual)alert("La actualización sigue pendiente. Cerrá la app y volvé a abrirla.");
+          return;
+        }
+        sessionStorage.setItem(key,"1");
+        const dest=new URL(location.href);
+        dest.searchParams.set("v","mobile"+remote.version.replace(".",""));
+        dest.searchParams.set("refresh",Date.now().toString());
+        location.replace(dest.href);
+        return;
+      }
+      if(manual)alert("Ya tenés la última versión (V"+current+").");
+    }catch(err){if(manual)alert("No se pudo comprobar la actualización. Revisá la conexión e intentá de nuevo.");}
+    finally{checking=false;btn.disabled=false;}
+  }
+  btn.addEventListener("click",()=>check(true));
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)check(false)});
+  window.addEventListener("pageshow",()=>check(false));
+  check(false);
+})();
+</script>
 </body>
 </html>
