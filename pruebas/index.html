@@ -220,6 +220,22 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-other-work input{width:100%!important;box-sizing:border-box!important;font-size:16px!important}
 }
 </style>
+
+<style id="crMobileV82">
+@media screen and (max-width:700px){
+ .hero .header-meta.header-left{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;align-items:end!important;width:100%!important}
+ .hero .header-meta.header-left>label{min-width:0!important;box-sizing:border-box!important;width:100%!important;grid-row:1!important}
+ .hero .header-meta.header-left>label:first-child{grid-column:span 2!important}
+ .hero .header-meta.header-left>label:nth-child(2){grid-column:span 1!important}
+ .hero .header-meta.header-left input{width:100%!important;min-width:0!important;box-sizing:border-box!important}
+ .card-data-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+ .card-data-grid>label:nth-child(1),.card-data-grid>label:nth-child(3){grid-column:span 4!important}
+ .card-data-grid>label:nth-child(2),.card-data-grid>label:nth-child(4){grid-column:span 2!important}
+ .card-data-grid>label:nth-child(n+5){grid-column:span 2!important}
+ .card-data-grid>label{min-width:0!important}
+ .card-data-grid>label input{width:100%!important;min-width:0!important;box-sizing:border-box!important}
+}
+</style>
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -232,7 +248,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8.1</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8.2</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <button id="historyBtn" type="button">◷ Historial · Clientes y lotes</button>
   <div class="cr-nav-divider">REPORTE ACTUAL</div>
   <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
