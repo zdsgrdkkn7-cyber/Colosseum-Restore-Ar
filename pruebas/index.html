@@ -45,6 +45,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </style>
 <link rel="stylesheet" href="folders.css?v=20.8.1">
 <link rel="stylesheet" href="nav-preview.css?v=2">
+<link rel="stylesheet" href="collectr-preview.css?v=1">
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -58,7 +59,9 @@ input, textarea, select { font-size: max(16px, 1em); }
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
   <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
-  <button id="historyBtn" type="button">▤ HISTORIAL · CLIENTES Y LOTES</button>
+  <button id="historyBtn" type="button">◷ Historial · Clientes y lotes</button>
+  <button id="crDriveMenuBtn" type="button">☁ Sincronizar Drive</button>
+  <button id="crClearMenuBtn" type="button">♧ Borrar datos de prueba</button>
   <div class="cr-nav-divider">REPORTE ACTUAL</div>
   <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
   <button id="pdfBtn" type="button">▶ GENERAR REPORTE</button>
@@ -270,5 +273,6 @@ input, textarea, select { font-size: max(16px, 1em); }
 <script src="media-format-v20-1.js?v=20.1.0"></script>
 
 <script src="nav-preview.js?v=2"></script>
+<script src="collectr-preview.js?v=1"></script>
 </body>
 </html>
