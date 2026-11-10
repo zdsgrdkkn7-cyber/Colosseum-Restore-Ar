@@ -771,7 +771,7 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .history-selection-status strong{display:none!important}
 }
 </style><style id="crMobileV98">
-/* Mobile V9.15 — criterion label above, compact balls and numeric score at right. */
+/* Mobile V9.16 — criterion label above, compact balls and numeric score at right. */
 @media screen and (max-width:700px){
  #ratings-front .rating-row>.scale,
  #ratings-back .rating-row>.scale,
@@ -1046,6 +1046,59 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .cr-v915-wordmark span{display:block!important}
  .cr-v93-menu .cr-v915-brand small{font-size:10px!important;padding-bottom:2px!important}
 }
+</style><style id="crMobileV916">
+@media screen and (max-width:700px){
+ /* Section headings: quieter scale while keeping hierarchy. */
+ .report .pixel-panel h2,.report .section h2,
+ .report .note-box h2,.report .pricing-box h2,
+ .report .work-box h2{
+   font-size:17px!important;line-height:1.25!important;
+   font-weight:700!important;letter-spacing:0!important
+ }
+ /* Field values match labels, including placeholders and price inputs. */
+ .hero .header-meta input,
+ .hero .header-date-label #fecha,
+ .card-data-grid>label>input,
+ .report input[type="text"]:not(.result-input),
+ .report input[inputmode="decimal"],
+ .report .pricing-panel .money-input input,
+ .report .pricing-panel .percent-input input,
+ .report #otroTrabajo{
+   font-size:12px!important;font-weight:400!important;
+   line-height:18px!important
+ }
+ .hero .header-meta input::placeholder,
+ .card-data-grid input::placeholder,
+ .report input::placeholder{font-size:12px!important}
+ /* iOS date control: constrain intrinsic width and internal date fields. */
+ .hero .header-date-label{min-width:0!important;width:100%!important;max-width:100%!important;overflow:hidden!important}
+ .hero .header-date-label #fecha,
+ .hero .header-meta #fecha,
+ #fecha{
+   display:block!important;width:100%!important;max-width:100%!important;
+   min-width:0!important;height:36px!important;min-height:36px!important;
+   max-height:36px!important;padding:4px 9px!important;
+   box-sizing:border-box!important;overflow:hidden!important;
+   font-size:12px!important;line-height:18px!important;
+   -webkit-appearance:none!important;appearance:none!important;
+   border-radius:7px!important
+ }
+ #fecha::-webkit-date-and-time-value{min-width:0!important;text-align:left!important}
+ #fecha::-webkit-datetime-edit{padding:0!important;min-width:0!important}
+ #fecha::-webkit-calendar-picker-indicator{margin:0!important;max-width:16px!important}
+ /* The final result and multi-line notes retain their established sizes. */
+ .report input.result-input,.report #observaciones{font-size:inherit!important}
+ .cr-v93-menu .cr-v915-brand{align-items:center!important;gap:9px!important;min-width:0!important}
+ .cr-v93-menu .cr-v916-menu-lugia{
+   display:block!important;width:48px!important;height:55px!important;
+   min-width:48px!important;object-fit:contain!important
+ }
+ .cr-v93-menu .cr-v915-wordmark{
+   font-size:25px!important;line-height:1.0!important;
+   letter-spacing:0!important;white-space:nowrap!important
+ }
+ .cr-v93-menu .cr-v915-brand small{font-size:10px!important;align-self:end!important}
+}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -1058,7 +1111,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><div class="cr-v915-wordmark">COLOSSEUM<span>RESTORE</span></div><small>V9.15</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><img class="cr-v916-menu-lugia" src="assets/lugia.png" alt="Lugia"><div class="cr-v915-wordmark">COLOSSEUM<span>RESTORE</span></div><small>V9.16</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
