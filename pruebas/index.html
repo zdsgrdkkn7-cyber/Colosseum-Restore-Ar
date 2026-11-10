@@ -248,6 +248,63 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-compare-card .centering-row{display:block!important;width:100%!important;box-sizing:border-box!important;margin-top:20px!important}
  .cr-compare-card .centering-row button,.cr-compare-card .centering-row .centering-btn,.cr-compare-card .centering-row [type="button"]{display:block!important;width:100%!important;max-width:none!important;box-sizing:border-box!important;text-align:center!important}
 }
+<style id="crMobileV84">
+/* Mobile V8.4: two independent rounded rating panels, without touching desktop/PDF. */
+@media screen and (max-width:700px){
+ .cr-compare-card .rating-block,.compact-ratings{
+   --rating-card-gap:10px;
+   position:relative!important;
+   isolation:isolate;
+   padding:12px 0 0!important;
+ }
+ .cr-compare-card .rating-block::before,.cr-compare-card .rating-block::after,
+ .compact-ratings::before,.compact-ratings::after{
+   content:""!important;display:block!important;position:absolute!important;
+   top:0!important;bottom:0!important;width:calc(50% - 5px)!important;
+   background:#242424!important;border-radius:13px!important;
+   pointer-events:none!important;z-index:-1!important;
+ }
+ .cr-compare-card .rating-block::before,.compact-ratings::before{left:0!important}
+ .cr-compare-card .rating-block::after,.compact-ratings::after{right:0!important}
+ .cr-compare-card .rating-block:has(.centering-row)::before,
+ .cr-compare-card .rating-block:has(.centering-row)::after{bottom:94px!important}
+ .cr-compare-card .rating-head,.compact-ratings .rating-head,
+ .cr-compare-card .rating-row,.compact-ratings .rating-row{
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+   gap:10px!important;
+ }
+ .cr-compare-card .rating-head,.compact-ratings .rating-head{
+   margin:0 0 13px!important;padding:0 9px!important;
+ }
+ .cr-compare-card .rating-head h2,.compact-ratings .rating-head h2{
+   margin:0!important;text-align:center!important;
+ }
+ #ratings-front,#ratings-back,#ratings-extra{padding:0 9px 12px!important}
+ #ratings-front::before,#ratings-back::before,#ratings-extra::before{content:none!important;display:none!important}
+ .cr-compare-card .rating-row>.scale,.compact-ratings .rating-row>.scale{
+   min-width:0!important;width:100%!important;gap:0!important;
+ }
+ .cr-compare-card .rating-row>.scale .ball,.compact-ratings .rating-row>.scale .ball{
+   width:clamp(7px,1.85vw,10px)!important;height:clamp(7px,1.85vw,10px)!important;
+ }
+ .cr-compare-card .centering-row{
+   margin:18px 0 0!important;width:100%!important;
+   padding:12px 0 0!important;position:relative!important;z-index:1!important;
+ }
+ /* Red top, warm ivory bottom, black center ring: ratings only. */
+ .cr-compare-card .rating-row .ball.on,.compact-ratings .rating-row .ball.on{
+   background:linear-gradient(to bottom,#d94a43 0 43%,#151515 43% 57%,#e5d8ba 57% 100%)!important;
+   border-radius:50%!important;border:1px solid #272727!important;
+   position:relative!important;box-sizing:border-box!important;
+ }
+ .cr-compare-card .rating-row .ball.on::after,.compact-ratings .rating-row .ball.on::after{
+   content:""!important;display:block!important;position:absolute!important;
+   width:32%!important;height:32%!important;left:50%!important;top:50%!important;
+   transform:translate(-50%,-50%)!important;border:1px solid #111!important;
+   border-radius:50%!important;background:#e5d8ba!important;box-sizing:border-box!important;
+ }
+}
+</style>
 </style>
 </head>
 <body>
