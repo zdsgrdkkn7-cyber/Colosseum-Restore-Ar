@@ -771,7 +771,7 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .history-selection-status strong{display:none!important}
 }
 </style><style id="crMobileV98">
-/* Mobile V9.27 — criterion label above, compact balls and numeric score at right. */
+/* Mobile V9.28 — criterion label above, compact balls and numeric score at right. */
 @media screen and (max-width:700px){
  #ratings-front .rating-row>.scale,
  #ratings-back .rating-row>.scale,
@@ -1231,6 +1231,26 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
 @media screen and (max-width:700px){
  body.cr-ios-standalone .cr-topbar{margin-bottom:-28px!important}
 }
+</style><style id="crMobileV928">
+/* Consistent borderless section cards and input-tone rating panels. */
+@media screen and (max-width:700px){
+ .report .pixel-panel,
+ .report .cr-compare-card,
+ .report .cr-general-section,
+ .report .note-box,
+ .report .pricing-box,
+ .report .restoration-details{
+   border:0!important;
+   outline:0!important;
+ }
+ .cr-compare-card .rating-block::before,
+ .cr-compare-card .rating-block::after,
+ .compact-ratings::before,
+ .compact-ratings::after{
+   background:#202020!important;
+   border:0!important;
+ }
+}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -1243,7 +1263,7 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><img class="cr-v916-menu-lugia" src="assets/lugia.png" alt="Lugia"><div class="cr-v915-wordmark cr-v917-wordmark"><span class="cr-v917-name">COLOSSEUM</span><span class="cr-v917-jp cr-v918-japanese" lang="ja">ポケモンコロシアム</span></div><div class="cr-v923-update-tools"><button id="crCheckUpdates" type="button" aria-label="Buscar actualizaciones" title="Buscar actualizaciones"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg></button><small>V9.27</small></div></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand cr-v915-brand"><img class="cr-v916-menu-lugia" src="assets/lugia.png" alt="Lugia"><div class="cr-v915-wordmark cr-v917-wordmark"><span class="cr-v917-name">COLOSSEUM</span><span class="cr-v917-jp cr-v918-japanese" lang="ja">ポケモンコロシアム</span></div><div class="cr-v923-update-tools"><button id="crCheckUpdates" type="button" aria-label="Buscar actualizaciones" title="Buscar actualizaciones"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg></button><small>V9.28</small></div></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
@@ -1469,7 +1489,7 @@ if(window.navigator.standalone===true){document.documentElement.classList.add('c
 <script src="collectr-preview.js?v=1"></script>
 <script>
 (function(){
-  const current="9.27",btn=document.getElementById("crCheckUpdates");
+  const current="9.28",btn=document.getElementById("crCheckUpdates");
   if(!btn)return;
   let checking=false;
   const versionUrl=new URL("version.json",document.baseURI);
