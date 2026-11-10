@@ -771,7 +771,7 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .history-selection-status strong{display:none!important}
 }
 </style><style id="crMobileV98">
-/* Mobile V9.13 — criterion label above, compact balls and numeric score at right. */
+/* Mobile V9.14 — criterion label above, compact balls and numeric score at right. */
 @media screen and (max-width:700px){
  #ratings-front .rating-row>.scale,
  #ratings-back .rating-row>.scale,
@@ -945,6 +945,34 @@ input, textarea, select { font-size: max(16px, 1em); }
    flex:0 1 auto!important;object-fit:contain!important
  }
 }
+</style><style id="crMobileV914">
+/* Balanced mobile brand: natural-height container, room above, equal visual heights. */
+@media screen and (max-width:700px){
+ .cr-topbar{
+   position:relative!important;top:auto!important;
+   height:auto!important;min-height:0!important;max-height:none!important;
+   padding:32px 14px 22px!important;overflow:visible!important;
+   box-sizing:border-box!important
+ }
+ .cr-topbar .cr-topbar-brand{
+   width:100%!important;max-width:100%!important;
+   height:auto!important;min-height:0!important;max-height:none!important;
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   gap:clamp(8px,3vw,16px)!important;
+   padding:0!important;margin:0!important;
+   overflow:visible!important;box-sizing:border-box!important
+ }
+ .cr-topbar .cr-topbar-brand .cr-topbar-logo{
+   width:min(55vw,218px)!important;max-width:218px!important;
+   height:auto!important;max-height:70px!important;
+   flex:0 1 auto!important;object-fit:contain!important
+ }
+ .cr-topbar .cr-topbar-brand img:not(.cr-topbar-logo){
+   width:clamp(49px,14vw,58px)!important;
+   height:58px!important;max-height:58px!important;
+   flex:0 0 auto!important;object-fit:contain!important
+ }
+}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -957,7 +985,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.13</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.14</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
