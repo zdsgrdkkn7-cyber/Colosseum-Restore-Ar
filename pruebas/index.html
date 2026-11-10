@@ -694,10 +694,54 @@ input, textarea, select { font-size: max(16px, 1em); }
  }
 }
 </style>
+<style id="crMobileV93">
+@media screen {
+ .cr-topbar #crMenuToggle{position:static!important}
+ .cr-v93-fab{position:fixed;right:calc(13px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:1200;display:flex;flex-direction:column;gap:9px;align-items:center}
+ .cr-v93-fab button{display:grid!important;place-items:center!important;position:static!important;inset:auto!important;margin:0!important;width:49px!important;height:49px!important;min-width:49px!important;min-height:49px!important;padding:0!important;border-radius:50%!important;border:1px solid #666!important;background:#282828!important;color:white!important;box-shadow:0 3px 13px #000a!important;font-size:23px!important;line-height:1!important;cursor:pointer}
+ .cr-v93-fab button[hidden]{display:none!important}
+ .cr-v93-fab #crV93Plus{background:#a92c30!important;font-size:30px!important}
+ .cr-v93-fab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+ .cr-v93-menu{left:auto!important;right:0!important;width:min(340px,90vw)!important;max-width:90vw!important;box-sizing:border-box!important;border-right:0!important;border-left:1px solid #454545!important;box-shadow:-12px 0 28px #0008!important;padding:15px 13px 95px!important;background:#101010!important}
+ .cr-v93-menu .cr-nav-head{padding-bottom:12px!important;margin-bottom:8px!important;gap:7px!important}
+ .cr-v93-menu .cr-nav-head .cr-nav-brand-logo{max-width:185px!important}
+ .cr-v93-menu .cr-v93-section{padding:10px 0 11px;border-bottom:1px solid #393939}
+ .cr-v93-menu .cr-v93-title,.cr-v93-menu .cr-v93-list-title{color:#e8ce68;font-size:12px;font-weight:750;letter-spacing:.5px;margin-bottom:7px}
+ .cr-v93-menu .cr-v93-list-title{display:flex;align-items:center;justify-content:space-between}
+ .cr-v93-menu button{font-family:inherit!important;box-shadow:none!important}
+ .cr-v93-menu #driveSyncPanel{margin:0!important;padding:0!important;background:transparent!important;border:0!important}
+ .cr-v93-menu .drive-compact-header{display:grid!important;grid-template-columns:1fr auto!important;gap:6px!important;align-items:center}
+ .cr-v93-menu .drive-compact-title{display:none!important}
+ .cr-v93-menu #driveConnectionStatus{font-size:11px!important}
+ .cr-v93-menu #driveConnectBtn{grid-column:1/-1;width:100%!important;text-align:left!important;padding:8px 4px!important;background:transparent!important;color:#f5f5f5!important;border:0!important;font-size:13px!important}
+ .cr-v93-menu #driveConnectBtn:before{content:"☁  ";font-size:16px}
+ .cr-v93-menu #driveActivityStatus{font-size:10px!important}
+ .cr-v93-menu .history-backup-bar{display:grid!important;grid-template-columns:1fr 1fr 38px!important;gap:4px!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important}
+ .cr-v93-menu .history-backup-bar button{height:39px!important;min-height:39px!important;padding:5px 3px!important;border:0!important;border-radius:7px!important;background:#282828!important;color:#eee!important;font-size:11px!important;white-space:nowrap!important}
+ .cr-v93-menu #clearTestDatabaseBtn{background:#632024!important}
+ .cr-v93-menu .history-remito-bar{display:grid!important;grid-template-columns:1fr auto!important;gap:8px!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important}
+ .cr-v93-menu .history-selection-status{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:3px!important;font-size:12px!important}
+ .cr-v93-menu .history-selection-status strong{color:#e8ce68!important}
+ .cr-v93-menu .lot-discount{display:flex!important;align-items:center!important;gap:5px!important;font-size:12px!important}
+ .cr-v93-menu #lotDiscount{width:39px!important;height:30px!important;padding:3px!important;font-size:15px!important}
+ .cr-v93-menu .history-remito-actions{grid-column:1/-1;display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;margin:2px 0 0!important}
+ .cr-v93-menu .history-remito-actions button{min-height:39px!important;height:39px!important;padding:6px 3px!important;background:#292929!important;border:0!important;border-radius:7px!important;color:#fff!important;font-size:12px!important;line-height:1!important}
+ .cr-v93-menu #folderToolbar{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;padding:0!important;border:0!important}
+ .cr-v93-menu #folderToolbar button{min-width:0!important;padding:9px 3px!important;font-size:11px!important;border:0!important;border-radius:7px!important;background:#272727!important}
+ .cr-v93-menu #historyList{max-height:none!important;min-height:0!important;overflow:visible!important;font-size:12px!important}
+ .cr-v93-menu #historyList .folder-entry{margin:5px 0!important;padding:5px!important;gap:4px!important}
+ .cr-v93-menu #historyList .folder-entry button{font-size:11px!important}
+ .cr-v93-menu #historyList .history-item{min-width:0!important}
+ .cr-v93-menu #selectAllReports{width:34px!important;height:32px!important;padding:0!important;background:#282828!important;color:#fff!important;border:1px solid #505050!important;border-radius:7px!important;font-size:0!important}
+ .cr-v93-menu #selectAllReports:before{content:"✓";font-size:20px!important}
+ .cr-v93-menu #showAllFolders{display:none!important}
+}
+@media print{.cr-v93-fab{display:none!important}}
+</style>
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
-  <button id="crMenuToggle" type="button" aria-expanded="false" aria-controls="crNavMenu" aria-label="Abrir menú">☰</button>
+  
   <div class="cr-topbar-brand">
     <img src="assets/ho-oh.png" alt="Ho-Oh">
     <img class="cr-topbar-logo" src="assets/title-jp.png" alt="Pokémon Colosseum">
@@ -705,15 +749,21 @@ input, textarea, select { font-size: max(16px, 1em); }
   </div>
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
-<nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V9.2</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
-  <button id="historyBtn" type="button">◷ Historial · Clientes y lotes</button>
-  <div class="cr-nav-divider">REPORTE ACTUAL</div>
-  <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
-  <button id="pdfBtn" type="button">▶ GENERAR REPORTE</button>
-  <button id="saveBtn" type="button">▣ GUARDAR REPORTE</button>
-  <button id="newBtn" type="button">＋ NUEVO REPORTE</button>
+<nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
+  <div class="cr-nav-head"><div><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V9.3</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-v93-section"><div class="cr-v93-title">GOOGLE DRIVE</div><div id="crV93Drive"></div></div>
+  <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
+  <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
+  <div class="cr-v93-section"><div class="cr-v93-title">CLIENTES Y LOTES</div><div id="crV93Folders"></div></div>
+  <div class="cr-v93-section"><div class="cr-v93-list-title"><span>LISTA DE CLIENTES</span><span id="crV93SelectAll"></span></div><div id="crV93List"></div></div>
 </nav>
+<div class="cr-v93-fab no-print">
+  <button id="saveBtn" class="cr-v93-fab-action" type="button" aria-label="Guardar reporte" title="Guardar reporte" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h14l3 3v15H3V3h1zm3 0v7h10V3M7 21v-8h10v8M9 3v5h6"/></svg></button>
+  <button id="newBtn" class="cr-v93-fab-action" type="button" aria-label="Nuevo reporte" title="Nuevo reporte" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h14v-9M13 3l6 6M13 3v6h6M16 15v6M13 18h6"/></svg></button>
+  <button id="crV93Plus" type="button" aria-label="Mostrar acciones de reporte" aria-expanded="false">＋</button>
+  <button id="crMenuToggle" type="button" aria-expanded="false" aria-controls="crNavMenu" aria-label="Abrir menú">☰</button>
+</div>
+<div hidden><button id="historyBtn" type="button">Historial</button><button id="budgetPdfBtn" type="button">Presupuesto individual</button><button id="pdfBtn" type="button">Generar reporte</button></div>
 <div class="app-shell">
 <main id="report" class="report">
 <header class="hero pixel-panel">
