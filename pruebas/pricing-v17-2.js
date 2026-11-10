@@ -2,7 +2,7 @@
 (function(){
   const BASE_WORK_PRICE=5;
   const CREASE_WORK_PRICE=10;
-  const keys=["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","otro"];
+  const keys=["limpieza","bordes","pliegues","relaminado","prensado","pulido","lustrado","indents","otro"];
   function selectedWorkSubtotal(){
     return keys.reduce((sum,k)=>sum+(state.work?.[k]?(k==="pliegues"?CREASE_WORK_PRICE:BASE_WORK_PRICE):0),0);
   }
