@@ -738,7 +738,24 @@ input, textarea, select { font-size: max(16px, 1em); }
 }
 @media print{.cr-v93-fab{display:none!important}}
 </style>
-</head>
+<style id="crMobileV94">
+@media screen{
+ .cr-v93-menu .cr-nav-head{align-items:center!important;padding-bottom:9px!important}
+ .cr-v93-menu .cr-v94-brand{display:flex;align-items:center;gap:7px;min-width:0}
+ .cr-v93-menu .cr-v94-brand .cr-nav-brand-logo{max-width:185px!important;width:min(45vw,185px)!important;height:auto!important}
+ .cr-v93-menu .cr-v94-brand small{font-size:10px!important;color:#999!important;white-space:nowrap}
+ .cr-v93-menu .cr-v94-drive-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+ .cr-v93-menu .cr-v94-drive-title .cr-v93-title{margin:0!important}
+ .cr-v93-menu #driveConnectBtn{display:inline-flex!important;align-items:center;justify-content:center;width:auto!important;min-width:94px!important;height:33px!important;padding:5px 9px!important;background:#292929!important;border:1px solid #555!important;border-radius:7px!important;font-size:11px!important;font-weight:700!important;color:#fff!important;white-space:nowrap!important}
+ .cr-v93-menu #driveConnectBtn:before{content:"☁  ";font-size:13px}
+ .cr-v93-menu #driveSyncPanel .drive-compact-header{display:block!important}
+ .cr-v93-menu #driveConnectionStatus{display:block!important;margin-top:4px!important}
+ .cr-v93-menu #folderToolbar{margin:5px 0 7px!important}
+ .cr-v93-menu #historyList .folder-breadcrumb:not(:has(span)){display:none!important}
+ .cr-v93-menu #historyList .folder-breadcrumb{padding:5px 0!important}
+ .cr-v93-menu .cr-v93-list-title{margin-bottom:4px!important}
+}
+</style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
   
@@ -750,12 +767,11 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V9.3</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
-  <div class="cr-v93-section"><div class="cr-v93-title">GOOGLE DRIVE</div><div id="crV93Drive"></div></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.4</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
-  <div class="cr-v93-section"><div class="cr-v93-title">CLIENTES Y LOTES</div><div id="crV93Folders"></div></div>
-  <div class="cr-v93-section"><div class="cr-v93-list-title"><span>LISTA DE CLIENTES</span><span id="crV93SelectAll"></span></div><div id="crV93List"></div></div>
+  <div class="cr-v93-section"><div class="cr-v93-list-title"><span>CLIENTES</span><span id="crV93SelectAll"></span></div><div id="crV93Folders"></div><div id="crV93List"></div></div>
 </nav>
 <div class="cr-v93-fab no-print">
   <button id="saveBtn" class="cr-v93-fab-action" type="button" aria-label="Guardar reporte" title="Guardar reporte" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h14l3 3v15H3V3h1zm3 0v7h10V3M7 21v-8h10v8M9 3v5h6"/></svg></button>
@@ -973,7 +989,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 <script src="https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.62/dist/zip.min.js"></script>
 <script src="media-format-v20-1.js?v=20.1.0"></script>
 
-<script src="nav-preview.js?v=93"></script>
+<script src="nav-preview.js?v=94"></script>
 <script src="collectr-preview.js?v=1"></script>
 </body>
 </html>
