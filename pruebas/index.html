@@ -770,6 +770,68 @@ input, textarea, select { font-size: max(16px, 1em); }
  .cr-v93-menu .history-selection-status strong{color:#f3f3f3!important}
  .cr-v93-menu .history-selection-status strong{display:none!important}
 }
+</style><style id="crMobileV98">
+/* Mobile V9.8 — criterion label above, compact balls and numeric score at right. */
+@media screen and (max-width:700px){
+ #ratings-front .rating-row>.scale,
+ #ratings-back .rating-row>.scale,
+ #ratings-extra .rating-row>.scale{
+   position:relative!important;display:flex!important;
+   justify-content:flex-start!important;align-items:center!important;
+   flex-wrap:nowrap!important;column-gap:2px!important;
+   padding-top:24px!important;min-width:0!important;
+ }
+ #ratings-front .rating-row>.scale::before,
+ #ratings-back .rating-row>.scale::before,
+ #ratings-extra .rating-row>.scale::before{
+   content:attr(data-criterion)!important;display:block!important;
+   position:absolute!important;top:0!important;left:0!important;
+   width:100%!important;color:#bdbdbd!important;
+   font-size:11px!important;font-weight:400!important;
+   line-height:16px!important;white-space:nowrap!important;
+   overflow:hidden!important;text-overflow:ellipsis!important;
+ }
+ #ratings-front .rating-row>.scale[data-criterion="Brillo"]::before,
+ #ratings-back .rating-row>.scale[data-criterion="Brillo"]::before,
+ #ratings-extra .rating-row>.scale[data-criterion="Brillo"]::before{
+   color:#e6cb69!important;font-weight:650!important;
+ }
+ #ratings-front .rating-row>.scale .cr-score-value,
+ #ratings-back .rating-row>.scale .cr-score-value,
+ #ratings-extra .rating-row>.scale .cr-score-value{
+   position:static!important;order:99!important;display:inline-block!important;
+   flex:0 0 auto!important;width:auto!important;min-width:0!important;
+   margin:0 0 0 3px!important;padding:0!important;
+   color:#e24b47!important;font-size:10px!important;
+   line-height:12px!important;white-space:nowrap!important;
+ }
+ #ratings-front .rating-row>.scale .cr-score-value::before,
+ #ratings-back .rating-row>.scale .cr-score-value::before,
+ #ratings-extra .rating-row>.scale .cr-score-value::before{
+   content:none!important;display:none!important;
+ }
+ #ratings-front .rating-row>.scale button,
+ #ratings-back .rating-row>.scale button,
+ #ratings-extra .rating-row>.scale button{
+   flex:0 0 8px!important;width:8px!important;min-width:8px!important;
+   height:12px!important;min-height:12px!important;
+   padding:0!important;margin:0!important;
+ }
+ #ratings-front .rating-row>.scale .ball,
+ #ratings-back .rating-row>.scale .ball,
+ #ratings-extra .rating-row>.scale .ball{
+   width:8px!important;height:8px!important;min-width:8px!important;
+   min-height:8px!important;flex:0 0 8px!important;
+   transform:none!important;
+ }
+ #ratings-front .rating-row>.scale .ball.on,
+ #ratings-back .rating-row>.scale .ball.on,
+ #ratings-extra .rating-row>.scale .ball.on{
+   width:8px!important;height:8px!important;min-width:8px!important;
+   min-height:8px!important;flex:0 0 8px!important;
+   transform:none!important;
+ }
+}
 </style></head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -782,7 +844,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print cr-v93-menu" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.7</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><div class="cr-v94-brand"><img class="cr-nav-brand-logo" src="assets/title-jp.png" alt="Pokémon Colosseum"><small>V9.8</small></div><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <div class="cr-v93-section"><div class="cr-v94-drive-title"><span class="cr-v93-title">GOOGLE DRIVE</span><span id="crV94DriveButton"></span></div><div id="crV93Drive"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">BASE DE DATOS</div><div id="crV93Backup"></div></div>
   <div class="cr-v93-section"><div class="cr-v93-title">HISTORIAL</div><div id="crV93History"></div></div>
