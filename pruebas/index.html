@@ -346,6 +346,76 @@ input, textarea, select { font-size: max(16px, 1em); }
  }
 }
 </style>
+<style id="crMobileV86">
+/* V8.6: independent cards, real inner padding and headings outside rating panels */
+@media screen and (max-width:700px){
+ .cr-photo-column-headings{
+   display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));
+   gap:9px!important;margin:0 0 9px!important;
+ }
+ .cr-photo-column-headings span{
+   padding-left:5px;color:#e53935;font-size:12px;font-weight:700;text-align:left;
+ }
+ .cr-compare-card .rating-block,.compact-ratings{
+   padding:0!important;margin-top:14px!important;isolation:auto!important;
+ }
+ .cr-compare-card .rating-block::before,.cr-compare-card .rating-block::after,
+ .compact-ratings::before,.compact-ratings::after{
+   content:none!important;display:none!important;
+ }
+ .cr-compare-card .rating-head,.compact-ratings .rating-head{
+   margin:0 0 8px!important;padding:0 5px!important;gap:10px!important;
+ }
+ .cr-compare-card .rating-head h2,.compact-ratings .rating-head h2{
+   text-align:left!important;padding:0!important;font-size:12px!important;
+ }
+ #ratings-front,#ratings-back,#ratings-extra{
+   position:relative!important;isolation:isolate!important;
+   display:block!important;padding:14px 0 18px!important;
+ }
+ #ratings-front::before,#ratings-back::before,#ratings-extra::before,
+ #ratings-front::after,#ratings-back::after,#ratings-extra::after{
+   content:""!important;display:block!important;position:absolute!important;
+   top:0!important;bottom:0!important;width:calc(50% - 5px)!important;
+   border-radius:13px!important;background:#242424!important;
+   pointer-events:none!important;z-index:-1!important;
+ }
+ #ratings-front::before,#ratings-back::before,#ratings-extra::before{left:0!important}
+ #ratings-front::after,#ratings-back::after,#ratings-extra::after{right:0!important}
+ #ratings-front .rating-row,#ratings-back .rating-row,#ratings-extra .rating-row{
+   padding:0 13px!important;box-sizing:border-box!important;
+   gap:24px!important;margin-bottom:5px!important;
+ }
+ #ratings-front .rating-row:last-child,#ratings-back .rating-row:last-child,
+ #ratings-extra .rating-row:last-child{margin-bottom:0!important}
+ #ratings-front .rating-row>.scale,#ratings-back .rating-row>.scale,
+ #ratings-extra .rating-row>.scale{
+   min-width:0!important;width:100%!important;justify-content:space-between!important;
+   padding-top:20px!important;overflow:visible!important;
+ }
+ #ratings-front .rating-row>.scale button,#ratings-back .rating-row>.scale button,
+ #ratings-extra .rating-row>.scale button{
+   flex:0 0 8px!important;width:8px!important;height:11px!important;
+   min-width:8px!important;min-height:11px!important;
+ }
+ #ratings-front .rating-row>.scale .ball,#ratings-back .rating-row>.scale .ball,
+ #ratings-extra .rating-row>.scale .ball{
+   width:8px!important;height:11px!important;min-width:8px!important;
+   min-height:11px!important;flex:0 0 8px!important;
+   background-size:100% 100%!important;
+ }
+ #ratings-front .rating-row>.scale .ball.on,#ratings-back .rating-row>.scale .ball.on,
+ #ratings-extra .rating-row>.scale .ball.on{
+   width:10px!important;height:12px!important;min-width:10px!important;
+   min-height:12px!important;transform:translateX(-1px)!important;
+   background:linear-gradient(to bottom,#d94a43 0 43%,#151515 43% 57%,#e5d8ba 57% 100%)!important;
+   border-radius:50%!important;box-shadow:inset 0 0 0 .65px #282828!important;
+ }
+ .cr-compare-card .centering-row{
+   margin:8px 0 0!important;padding:0!important;
+ }
+}
+</style>
 </head>
 <body>
 <div class="cr-topbar no-print" id="crTopbar">
@@ -358,7 +428,7 @@ input, textarea, select { font-size: max(16px, 1em); }
 </div>
 <div id="crNavBackdrop" class="cr-nav-backdrop no-print" hidden></div>
 <nav id="crNavMenu" class="cr-nav-menu no-print" aria-label="Menú principal" hidden>
-  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8.5</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
+  <div class="cr-nav-head"><strong>COLOSSEUM RESTORE</strong><small style="display:block;color:#999;font-size:11px;margin-top:8px">PRUEBAS MOBILE V8.6</small><button id="crMenuClose" type="button" aria-label="Cerrar menú">✕</button></div>
   <button id="historyBtn" type="button">◷ Historial · Clientes y lotes</button>
   <div class="cr-nav-divider">REPORTE ACTUAL</div>
   <button id="budgetPdfBtn" type="button">◇ PRESUPUESTO</button>
@@ -407,6 +477,7 @@ input, textarea, select { font-size: max(16px, 1em); }
   </div>
   <div class="photo-pair-block">
     <div class="block-title">FRENTE</div>
+    <div class="cr-photo-column-headings" aria-hidden="true"><span>ANTES</span><span>DESPUÉS</span></div>
     <div class="photo-pair">
       <button class="photo-box" data-photo="frontBefore" type="button">
         <img alt="Frente antes" hidden><span>+ AGREGAR FOTO</span>
@@ -424,6 +495,7 @@ input, textarea, select { font-size: max(16px, 1em); }
   </div>
   <div class="photo-pair-block second-photo-block">
     <div class="block-title">DORSO</div>
+    <div class="cr-photo-column-headings" aria-hidden="true"><span>ANTES</span><span>DESPUÉS</span></div>
     <div class="photo-pair">
       <button class="photo-box" data-photo="backBefore" type="button">
         <img alt="Dorso antes" hidden><span>+ AGREGAR FOTO</span>
