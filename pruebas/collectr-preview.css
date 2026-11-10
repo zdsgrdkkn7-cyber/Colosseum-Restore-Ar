@@ -1,0 +1,85 @@
+/* Collectr-inspired visual prototype. Only /pruebas/, no PDF styles changed. */
+@media screen {
+:root{--bg:#000;--panel:#0d0d0d;--line:#252525;--red:#e53935;--yellow:#f4dc48;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+html,body{background:#000!important;color:#f3f3f3!important;font-family:var(--font)!important;font-weight:400!important}
+.app-shell{background:#000!important;padding:18px 20px!important;overflow-x:hidden!important}
+.report{background:#000!important;border:0!important;box-shadow:none!important;padding:0!important;width:1180px;min-width:1180px}
+.pixel-panel,.section,.note-box,.pricing-box{border:0!important;box-shadow:none!important;clip-path:none!important;background:#0d0d0d!important;border-radius:17px!important}
+.panel-corner,.panel-corner::before,.panel-corner::after{display:none!important}
+.hero{display:grid!important;grid-template-columns:1fr 1fr 1fr!important;gap:22px!important;padding:18px 22px!important;margin-bottom:26px!important;align-items:end!important}
+.hero .header-left{display:contents!important}
+.hero .header-right{display:contents!important}
+.hero .header-meta label{font-family:var(--font)!important;font-size:14px!important;font-weight:500!important;color:#a7a7a7!important;letter-spacing:0!important;text-align:left!important;gap:8px!important}
+.hero .header-meta label:nth-child(1){grid-column:1}
+.hero .header-meta label:nth-child(2){grid-column:2}
+.hero .header-date-label{grid-column:3!important;grid-row:1!important;justify-items:stretch!important;text-align:left!important;width:100%!important}
+.hero .header-date-label #fecha{max-width:none!important;text-align:left!important;text-align-last:left!important}
+.hero .brand-label,.hero .brand-ig,.hero .hero-title{display:none!important}
+.report h2{font-family:var(--font)!important;font-size:23px!important;font-weight:650!important;letter-spacing:0!important;color:#f6f6f6!important;margin-bottom:20px!important}
+.section{padding:26px 28px!important;margin-bottom:26px!important}
+.section>h2::first-letter,.note-box>h2::first-letter,.pricing-box>h2::first-letter{color:#e53935}
+.section>h2{font-size:23px!important}
+.card-data-grid{gap:18px 26px!important}
+.card-data-grid label{font-size:16px!important;font-weight:450!important;gap:14px!important}
+input:not([type=file]):not([type=checkbox]),textarea,select{font-family:var(--font)!important;font-weight:400!important;background:#202020!important;border:0!important;border-radius:9px!important;color:#f4f4f4!important;padding:12px 14px!important;box-shadow:none!important;outline-offset:2px}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid #e53935!important}
+.card-data-grid input{min-height:47px}
+.cr-topbar{background:#000!important;border:0!important;box-shadow:none!important;height:80px!important;padding:8px 26px!important}
+.cr-topbar #crMenuToggle{background:transparent!important;border:0!important;border-radius:10px!important;font-size:29px!important}
+.cr-topbar-brand{gap:24px!important}
+.cr-topbar-brand img{width:48px!important;height:54px!important}
+.cr-topbar-brand .cr-topbar-logo{width:250px!important;height:66px!important}
+.cr-nav-menu{background:#000!important;border:0!important;box-shadow:8px 0 30px #0009!important;width:min(310px,90vw)!important;padding:28px 16px!important;font-family:var(--font)!important}
+.cr-nav-head{border:0!important;color:#f2f2f2!important;font-size:18px!important;padding:12px 10px 25px!important;margin:0 0 12px!important}
+.cr-nav-head strong{letter-spacing:1.2px}
+.cr-nav-head button{border:0!important;background:#171717!important;border-radius:50%!important}
+.cr-nav-menu>button{font-family:var(--font)!important;font-size:15px!important;font-weight:500!important;line-height:1.3!important;background:transparent!important;color:#eaeaea!important;border:0!important;border-radius:10px!important;margin:4px 0!important;padding:15px 13px!important}
+.cr-nav-menu>button:first-of-type{border:0!important;border-left:3px solid #e53935!important;color:#fff!important}
+.cr-nav-menu>button:active{background:#1c1c1c!important}
+.cr-nav-divider{color:#777!important;font-size:11px!important;padding:22px 12px 6px!important;letter-spacing:1px}
+.compare-section{background:transparent!important;border:0!important;padding:0!important;margin:0 0 26px!important}
+.compare-head{display:none!important}
+.cr-compare-card{background:#0d0d0d!important;border:1px solid #252525!important;border-radius:17px!important;padding:27px 30px 30px!important;margin:0 0 26px!important}
+.cr-compare-card .photo-pair-block{margin:0 0 16px!important}
+.cr-compare-card .second-photo-block{border:0!important;padding:0!important;margin:0 0 16px!important}
+.cr-compare-card .block-title{color:#f2d83c!important;font-family:var(--font)!important;font-size:20px!important;font-weight:600!important;margin:0 0 18px!important}
+.cr-card-heading{font-family:var(--font);font-size:24px;font-weight:650;color:#f5f5f5;margin:0 0 18px}
+.photo-pair{gap:60px!important}
+.photo-box{width:min(100%,340px)!important;aspect-ratio:63/88!important;border:0!important;border-radius:12px!important;background:#050505!important;font-family:var(--font)!important;color:#aaa!important}
+.photo-box span{font-size:14px!important;font-weight:500!important}
+.rating-block{border:0!important;padding:0!important;margin:10px 0 0!important}
+.rating-head{grid-template-columns:1fr 220px 1fr!important}
+.rating-head h2{font-size:15px!important;color:#ddd!important;margin:0!important;font-weight:550!important}
+.rating-head .block-title{font-size:13px!important;color:#aaa!important;margin:0!important}
+.rating-row{padding:7px 0!important}
+.rating-row .criterion{font-size:15px!important;font-weight:450!important}
+.scale{gap:9px!important}
+.cr-compare-card .centering-row{background:transparent!important;border:0!important;padding:15px 0 0!important}
+.centering-measure-btn,.centering-remeasure,.mini-action,.detail-add{background:#202020!important;border:0!important;border-radius:10px!important;color:#eee!important;padding:12px 18px!important;font-family:var(--font)!important;font-weight:550!important}
+.compact-ratings{background:#0d0d0d!important;border:1px solid #252525!important;border-radius:17px!important;padding:24px 30px!important;margin-top:26px!important}
+.notes-grid{gap:26px!important;margin-bottom:26px!important}
+.note-box{padding:26px!important}
+.work-item{font-family:var(--font)!important;font-weight:450!important;font-size:15px!important;padding:8px!important}
+.other-work{color:#aaa!important}
+.result-grade,.observations-label{font-family:var(--font)!important;color:#aaa!important;font-weight:500!important}
+.result-grade .result-input{border:0!important;background:#202020!important;color:#f5f5f5!important;font-size:28px!important;letter-spacing:0!important}
+.pricing-box{padding:26px!important}
+.pricing-panel{background:transparent!important;border:0!important}
+.pricing-row,.pricing-input-row{font-family:var(--font)!important;color:#bbb!important;font-weight:450!important}
+.pricing-input-row>span:first-child{color:#bbb!important}
+.restoration-details{background:#0d0d0d!important;border:0!important;border-radius:17px!important;padding:26px!important}
+.restoration-detail-row{background:#131313!important;border:0!important;border-radius:12px!important;padding:16px!important}
+.detail-photo{background:#050505!important;border:0!important;border-radius:10px!important}
+.detail-delete{border:0!important;border-radius:9px!important;background:#292929!important}
+dialog{font-family:var(--font)!important;border:1px solid #292929!important;border-radius:16px!important}
+#historyDialog button{font-family:var(--font)}
+#toast{font-family:var(--font);background:#252525;color:#fff;border:0;border-radius:10px}
+}
+@media screen and (max-width:700px){
+.cr-topbar{height:62px!important;padding:5px 10px!important}
+.cr-topbar-brand{gap:7px!important}
+.cr-topbar-brand img{width:30px!important;height:36px!important}
+.cr-topbar-brand .cr-topbar-logo{width:min(44vw,190px)!important;height:45px!important}
+.app-shell{padding:10px 8px!important}
+}
+@media print{.cr-compare-card{display:contents!important}}
