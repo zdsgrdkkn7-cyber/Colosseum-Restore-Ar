@@ -184,3 +184,94 @@ dialog{font-family:var(--font)!important;border:1px solid #292929!important;bord
  min-width:20px!important;min-height:20px!important;flex-basis:20px!important;
 }
 }
+
+/* V7.3 — more breathing room in comparison, equal general ratings, result alignment. */
+@media screen {
+.cr-compare-card{
+ padding:30px 42px 38px!important;
+ height:auto!important;max-height:none!important;overflow:visible!important;
+}
+.cr-compare-card .photo-pair{
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+ gap:180px!important;
+}
+.cr-compare-card .photo-box{
+ max-width:400px!important;
+ width:100%!important;
+}
+.cr-compare-card .rating-block{
+ margin-top:44px!important;
+}
+.cr-compare-card .rating-head,.cr-compare-card .rating-row{
+ grid-template-columns:minmax(0,1fr) 180px minmax(0,1fr)!important;
+ gap:8px!important;
+}
+.cr-compare-card .scale{
+ width:100%!important;max-width:400px!important;
+ justify-content:space-between!important;gap:0!important;
+}
+.cr-compare-card .scale .ball,
+.compact-ratings .scale .ball{
+ width:18px!important;height:18px!important;
+ min-width:18px!important;min-height:18px!important;flex-basis:18px!important;
+}
+.cr-compare-card .rating-row{padding:10px 0!important}
+.compact-ratings{
+ padding:30px 42px!important;
+}
+.compact-ratings .rating-head,.compact-ratings .rating-row{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) 180px minmax(0,1fr)!important;
+ gap:8px!important;align-items:center!important;
+}
+.compact-ratings .rating-row{padding:10px 0!important}
+.compact-ratings .scale{
+ width:100%!important;max-width:400px!important;
+ display:flex!important;justify-content:space-between!important;gap:0!important;
+ margin:0 auto!important;
+}
+.compact-ratings .rating-row .criterion{font-size:16px!important;font-weight:450!important}
+.result-box{
+ padding:26px 30px!important;
+}
+.result-box .result-grades{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:24px!important;
+ width:100%!important;
+ margin:8px 0 24px!important;
+}
+.result-box .result-grade{
+ width:100%!important;min-width:0!important;
+ display:flex!important;flex-direction:column!important;
+ align-items:stretch!important;gap:9px!important;
+}
+.result-box .result-grade>span{text-align:center!important}
+.result-box .result-grade .result-input{
+ display:block!important;
+ width:100%!important;max-width:none!important;
+ height:62px!important;min-height:62px!important;
+ box-sizing:border-box!important;
+ margin:0!important;text-align:center!important;
+}
+.result-box .observations-label{
+ display:block!important;margin:0 0 9px!important;
+}
+.result-box .result-notes-row{
+ position:relative!important;
+ display:block!important;width:100%!important;
+}
+.result-box .result-notes-row textarea{
+ display:block!important;width:100%!important;
+ min-height:176px!important;
+ box-sizing:border-box!important;
+ padding:16px 100px 16px 16px!important;
+ resize:vertical!important;
+}
+.result-box .result-celebi{
+ position:absolute!important;right:13px!important;bottom:12px!important;
+ width:72px!important;height:72px!important;
+ max-width:72px!important;max-height:72px!important;
+ pointer-events:none!important;
+}
+}
