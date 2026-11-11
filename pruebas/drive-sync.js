@@ -1,4 +1,4 @@
-/* Colosseum Rev20.8 — respaldo manual en Drive, base local móvil; respaldo en carpeta OFICIAL.
+/* Colosseum Rev20.9 — respaldo manual en Drive, base local móvil; respaldo en carpeta OFICIAL.
    Publica el manifiesto AL FINAL; no sobrescribe reportes locales.
    Recupera reportes y fotos directamente en IndexedDB, con confirmaciones. */
 (()=>{
@@ -161,8 +161,15 @@ async function download(){
    status("Verificando fotografía "+(++i)+"/"+missing.size+"…");
    try{
     if(!photos)throw Error("Carpeta photos no disponible");
-    const found=await list(photos,name);
-    if(!found.length)throw Error("Archivo no encontrado");
+    let found=await list(photos,name);
+    if(!found.length){
+     // Older imported manifests inserted a separator in the SHA-256 filename.
+     // Original Drive photos use the unseparated 64-character digest.
+     const extension=name.slice(name.lastIndexOf("."));
+     const canonical=ref.sha256+extension;
+     if(canonical!==name)found=await list(photos,canonical);
+    }
+    if(!found.length)throw Error("Archivo no encontrado (se probaron ambos formatos de nombre)");
     const blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
     const bytes=new Uint8Array(await blob.arrayBuffer());
     if(await hash(bytes)!==ref.sha256)throw Error("Verificación de integridad fallida");
