@@ -1,4 +1,4 @@
-/* Colosseum Rev20.7 — respaldo manual en Drive, base local móvil; respaldo en carpeta OFICIAL.
+/* Colosseum Rev20.8 — respaldo manual en Drive, base local móvil; respaldo en carpeta OFICIAL.
    Publica el manifiesto AL FINAL; no sobrescribe reportes locales.
    Recupera reportes y fotos directamente en IndexedDB, con confirmaciones. */
 (()=>{
@@ -151,30 +151,54 @@ async function download(){
   return;
  }
  if(!confirm("RECUPERAR CAMBIOS DE DRIVE\n\nNuevos: "+newCount+"\nActualizados: "+updated+"\nSin cambios: "+unchanged+"\nFotos para descargar: "+missing.size+"\n\n¿Continuar?"))return;
+ const unavailable=new Map();
  if(missing.size){
-  const photos=await folder(PHOTO_FOLDER,root,false);let i=0;
+  let photos=null;
+  try{photos=await folder(PHOTO_FOLDER,root,false);}
+  catch(e){status("No se encontró la carpeta photos; se recuperarán los reportes completos disponibles.");}
+  let i=0;
   for(const [name,ref] of missing){
-   status("Descargando foto necesaria "+(++i)+"/"+missing.size+"…");
-   const found=await list(photos,name);if(!found.length)throw Error("Falta en Drive: "+name);
-   const blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
-   const bytes=new Uint8Array(await blob.arrayBuffer());
-   if(await hash(bytes)!==ref.sha256)throw Error("Foto dañada: "+name);
-   let binary="";for(let j=0;j<bytes.length;j+=8192)binary+=String.fromCharCode(...bytes.subarray(j,j+8192));
-   photoCache.set(ref.sha256,"data:"+(ref.mime||"application/octet-stream")+";base64,"+btoa(binary));
+   status("Verificando fotografía "+(++i)+"/"+missing.size+"…");
+   try{
+    if(!photos)throw Error("Carpeta photos no disponible");
+    const found=await list(photos,name);
+    if(!found.length)throw Error("Archivo no encontrado");
+    const blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
+    const bytes=new Uint8Array(await blob.arrayBuffer());
+    if(await hash(bytes)!==ref.sha256)throw Error("Verificación de integridad fallida");
+    let binary="";for(let j=0;j<bytes.length;j+=8192)binary+=String.fromCharCode(...bytes.subarray(j,j+8192));
+    photoCache.set(ref.sha256,"data:"+(ref.mime||"application/octet-stream")+";base64,"+btoa(binary));
+   }catch(e){
+    unavailable.set(name,e.message);
+   }
   }
  }
- const records=pending.map(original=>{
+ const skipped=[];
+ const records=[];
+ for(const original of pending){
+  const absent=keys.map(key=>original.photos?.[key]).filter(ref=>ref&&!photoCache.has(ref.sha256));
+  if(absent.length){
+   skipped.push({id:original.id,client:original.clientName||original.client||original.customer||original.cliente||"",card:original.cardName||original.card||original.carta||"",files:absent.map(ref=>ref.filename)});
+   continue; // Never import an incomplete report or overwrite existing local photos.
+  }
   const record={...original,photos:{...(original.photos||{})}};
   for(const key of keys){
-   const ref=record.photos[key];if(!ref)continue;
-   const data=photoCache.get(ref.sha256);if(!data)throw Error("Falta fotografía: "+ref.filename);
-   record.photos[key]=data;
+   const ref=record.photos[key];if(ref)record.photos[key]=photoCache.get(ref.sha256);
   }
-  return record;
- });
+  records.push(record);
+ }
  status("Importando únicamente los cambios…");
- await window.ColosseumImportRecords(records,manifest.folderPreferences);
- status("Comparación completa: "+unchanged+" sin cambios; "+missing.size+" fotos descargadas.");
+ if(records.length)await window.ColosseumImportRecords(records,manifest.folderPreferences);
+ const summary="Recuperados: "+records.length+" reportes.\\nSin cambios: "+unchanged+".\\nPendientes por fotos: "+skipped.length+".";
+ if(skipped.length){
+  const details=skipped.map(item=>"• ID "+item.id+(item.client?" | "+item.client:"")+(item.card?" | "+item.card:"")+"\\n  "+item.files.join(", ")).join("\\n");
+  console.warn("Colosseum: reportes pendientes por fotos en Drive",skipped);
+  status("Recuperados "+records.length+"; pendientes por fotos "+skipped.length+". Revisá el detalle.");
+  alert(summary+"\\n\\nReportes pendientes (no se modificaron):\\n"+details.slice(0,2200));
+ }else{
+  status("Recuperación completa: "+records.length+" reportes; "+unchanged+" sin cambios.");
+  alert(summary);
+ }
 }
 async function run(action){if(busy)return;busy=true;buttons();try{await action();}catch(e){status("Error: "+e.message);alert("Google Drive: "+e.message);}finally{busy=false;buttons();}}
 window.ColosseumDrive=Object.freeze({connected,upload:()=>run(upload),download:()=>run(download)});
