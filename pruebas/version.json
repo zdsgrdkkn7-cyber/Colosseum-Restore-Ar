@@ -1,6 +1,6 @@
 {
-  "version": "9.39",
-  "build": "mobile939",
+  "version": "9.40",
+  "build": "mobile940",
   "channel": "stable",
   "status": "estable"
 }
