@@ -1,9 +1,9 @@
-/* Colosseum Rev20.7 — respaldo manual en Drive, solo base PRUEBAS.
+/* Colosseum Rev20.7 — respaldo manual en Drive, base local móvil; respaldo en carpeta OFICIAL.
    Publica el manifiesto AL FINAL; no sobrescribe reportes locales.
    Recupera reportes y fotos directamente en IndexedDB, con confirmaciones. */
 (()=>{
 "use strict";
-const DB="colosseumRestoration_PRUEBAS",STORE="reports",FOLDER="Colosseum Restore - PRUEBAS",PHOTO_FOLDER="photos",MANIFEST="database.json";
+const DB="colosseumRestoration_PRUEBAS",STORE="reports",FOLDER="Colosseum Restore - OFICIAL",PHOTO_FOLDER="photos",MANIFEST="database.json";
 const CLIENT_ID="406713503360-1sgm1cu6c4rm1gujse69basbh6s9h5o0.apps.googleusercontent.com";
 const SCOPE="https://www.googleapis.com/auth/drive.file";
 const $=id=>document.getElementById(id);
@@ -32,7 +32,7 @@ function buttons(){
   el.title=active?(id==="exportDatabaseBtn"?"Subir base a Google Drive":"Recuperar base desde Google Drive"):(id==="exportDatabaseBtn"?"Exportar ZIP al dispositivo":"Importar ZIP o JSON del dispositivo");
  }
 }
-function auth(){if(!window.google?.accounts?.oauth2)throw Error("No cargó Google Identity Services");if(client)return;client=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:r=>{if(r.error){status("Autorización fallida: "+r.error);return;}token=r.access_token;expires=Date.now()+(Number(r.expires_in)||3600)*1000;saveSession();status("Conectado. Podés subir o recuperar un respaldo de PRUEBAS.");buttons();}});}
+function auth(){if(!window.google?.accounts?.oauth2)throw Error("No cargó Google Identity Services");if(client)return;client=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:r=>{if(r.error){status("Autorización fallida: "+r.error);return;}token=r.access_token;expires=Date.now()+(Number(r.expires_in)||3600)*1000;saveSession();status("Conectado. Podés subir o recuperar un respaldo OFICIAL.");buttons();}});}
 async function api(url,opts={}){
  if(!connected())throw Error("La sesión de Google venció. Tocá CONECTAR GOOGLE DRIVE.");
  const res=await fetch(url,{...opts,headers:{Authorization:"Bearer "+token,...opts.headers}});
@@ -67,7 +67,7 @@ async function uploadBlob(name,blob,mime,parent,id){
 async function readDB(){const db=await new Promise((ok,no)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE,{keyPath:"id"});};r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error);});try{return await new Promise((ok,no)=>{const tx=db.transaction(STORE,"readonly"),r=tx.objectStore(STORE).getAll();r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error);});}finally{db.close();}}
 async function upload(){
  const reports=await readDB();if(!reports.length)throw Error("La base de pruebas está vacía.");
- if(!confirm("Subir "+reports.length+" reportes de PRUEBAS a Google Drive?\n\nSe copiarán los datos y fotos. No se modificará la base local."))return;
+ if(!confirm("Subir "+reports.length+" reportes locales a Google Drive OFICIAL?\n\nSe copiarán los datos y fotos. No se modificará la base local."))return;
  status("Buscando carpeta de Drive…");const root=await folder(FOLDER,null,true),photos=await folder(PHOTO_FOLDER,root,true);
  const manifest={format:"colosseum-split-backup",version:1,createdAt:new Date().toISOString(),database:DB,store:STORE,records:[],photoCount:0};
  try{manifest.folderPreferences=JSON.parse(localStorage.getItem("colosseumFolders_PRUEBAS_V1")||"null");}catch{}
