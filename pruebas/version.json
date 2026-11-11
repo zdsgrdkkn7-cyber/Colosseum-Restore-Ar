@@ -1,4 +1,6 @@
 {
   "version": "9.38",
-  "build": "mobile938"
+  "build": "mobile938",
+  "channel": "stable",
+  "status": "estable"
 }
