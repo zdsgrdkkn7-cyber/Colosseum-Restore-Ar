@@ -1145,6 +1145,45 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     downloadPdfDoc(doc,`Restauracion_${card}_${date}.pdf`);toast("PDF GENERADO");
   };
 
+  // Presupuestos: conservar el formato vigente e incluir las mismas páginas
+  // de detalles (texto y fotos antes/después) que el reporte y el remito.
+  generateBudgetPdf=async function(){
+    if(!window.jspdf?.jsPDF){alert("El motor PDF todavía no terminó de cargar. Revisá la conexión y probá nuevamente.");return;}
+    autosaveDraft();
+    const {jsPDF}=window.jspdf,assets=await loadReportPdfAssets(),report=collect();
+    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,620],compress:true});
+    renderBudgetPage(doc,report,assets);
+    appendDetailPages(doc,report);
+    const disclaimerLayout=getDisclaimerLayout(doc);
+    doc.addPage([210,disclaimerLayout.pageH],"portrait");
+    renderDisclaimerPage(doc);
+    const f=report.fields||{},card=(pdfSafeText(f.carta)||"carta").replace(/[^\\w\\-]+/g,"_"),date=(pdfSafeText(f.fecha)||new Date().toISOString().slice(0,10)).replace(/[^\\d\\-]+/g,"");
+    downloadPdfDoc(doc,`Presupuesto_${card}_${date}.pdf`);
+    toast("PRESUPUESTO GENERADO");
+  };
+
+  generateBatchBudget=async function(rawReports,discountPercent=0){
+    if(!window.jspdf?.jsPDF){alert("El motor PDF todavía no terminó de cargar. Revisá la conexión y probá nuevamente.");return;}
+    const reports=(rawReports||[]).filter(Boolean);
+    if(!reports.length){toast("NO HAY REPORTES SELECCIONADOS");return;}
+    const {jsPDF}=window.jspdf,assets=await loadReportPdfAssets();
+    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,620],compress:true});
+    reports.forEach((report,idx)=>{
+      if(idx>0)doc.addPage([210,620],"portrait");
+      renderBudgetPage(doc,report,assets);
+      appendDetailPages(doc,report);
+    });
+    const summaryLayout=getBatchBudgetSummaryLayout(reports);
+    doc.addPage([210,summaryLayout.pageH],"portrait");
+    renderBatchBudgetSummaryPage(doc,reports,discountPercent,assets);
+    const disclaimerLayout=getDisclaimerLayout(doc);
+    doc.addPage([210,disclaimerLayout.pageH],"portrait");
+    renderDisclaimerPage(doc);
+    const first=normalizePdfReport(reports[0]),client=(pdfSafeText(first.fields.cliente)||"cliente").replace(/[^\\w\\-]+/g,"_"),date=new Date().toISOString().slice(0,10);
+    downloadPdfDoc(doc,`Presupuesto_Lote_${client}_${date}.pdf`);
+    toast("PRESUPUESTO POR LOTE GENERADO");
+  };
+
   // Remito keeps each saved report complete, including Rev18 detail pages.
   generateRemito=async function(rawReports,discountPercent=0){
     if(!window.jspdf?.jsPDF){alert("El motor PDF todavía no terminó de cargar. Revisá la conexión y probá nuevamente.");return;}
