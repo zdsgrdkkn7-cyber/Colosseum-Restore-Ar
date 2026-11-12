@@ -1099,7 +1099,7 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     const n=Math.max(1,itemCount||1);
     return rowsTop + (n-1)*rowStep + rowH + bottomMargin;
   }
-  function renderDetailsPage(doc,report,items,pageIndex,totalPages,pageH){
+  function renderDetailsPage(doc,report,items,pageIndex,totalPages,pageH,budgetOnly=false){
     const cream=[242,242,235],amber=[242,165,26],muted=[150,150,145];
     const H=pageH||getDetailsPageHeight(items.length);paintPdfBackground(doc,210,H);
     drawBattleFrame(doc,8,10,194,24);drawCenteredFrameTitle(doc,8,10,194,"DETALLES DE RESTAURACION");
@@ -1109,9 +1109,14 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     items.forEach((d,i)=>{
       const boxH=88;drawBattleFrame(doc,8,y,194,boxH);
       doc.setTextColor(...amber);doc.setFontSize(6.5);
-      doc.text("ANTES",56,y+8,{align:"center"});doc.text("DESPUES",154,y+8,{align:"center"});
-      // 4:3 horizontal boxes, 84 x 63 mm.
-      addImageContain(doc,d.before,14,y+13,84,63);addImageContain(doc,d.after,112,y+13,84,63);
+      if(budgetOnly){
+        doc.text("ESTADO INICIAL",105,y+8,{align:"center"});
+        // Budget only: one centered 4:3 before image, no after image.
+        addImageContain(doc,d.before,63,y+12,84,63);
+      }else{
+        doc.text("ANTES",56,y+8,{align:"center"});doc.text("DESPUES",154,y+8,{align:"center"});
+        addImageContain(doc,d.before,14,y+13,84,63);addImageContain(doc,d.after,112,y+13,84,63);
+      }
       doc.setTextColor(...cream);doc.setFontSize(5.8);
       let txt=pdfSafeText(d.text||"");
       while(doc.getTextWidth(txt)>178 && doc.getFontSize()>4.2)doc.setFontSize(doc.getFontSize()-.2);
@@ -1120,15 +1125,17 @@ async function generateBatchBudget(rawReports,discountPercent=0){
       y+=96;
     });
   }
-  function appendDetailPages(doc,rawReport){
+  function appendDetailPages(doc,rawReport,budgetOnly=false){
     const report=normalizePdfReport(rawReport);report.restorationDetails=rawReport?.restorationDetails||[];
     const details=validDetails(report);if(!details.length)return;
     const perPage=2,total=Math.ceil(details.length/perPage);
     for(let p=0;p<total;p++){
       const items=details.slice(p*perPage,p*perPage+perPage);
       const pageH=getDetailsPageHeight(items.length);
-      doc.addPage([210,pageH],"portrait");
-      renderDetailsPage(doc,report,items,p+1,total,pageH);
+      // jsPDF normalizes page dimensions by orientation: one row is 140 mm tall
+      // (landscape), while two rows are 236 mm tall (portrait).
+      doc.addPage([210,pageH],pageH<210?"landscape":"portrait");
+      renderDetailsPage(doc,report,items,p+1,total,pageH,budgetOnly);
     }
   }
 
@@ -1153,7 +1160,7 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     const {jsPDF}=window.jspdf,assets=await loadReportPdfAssets(),report=collect();
     const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,620],compress:true});
     renderBudgetPage(doc,report,assets);
-    appendDetailPages(doc,report);
+    appendDetailPages(doc,report,true);
     const disclaimerLayout=getDisclaimerLayout(doc);
     doc.addPage([210,disclaimerLayout.pageH],"portrait");
     renderDisclaimerPage(doc);
@@ -1171,7 +1178,7 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     reports.forEach((report,idx)=>{
       if(idx>0)doc.addPage([210,620],"portrait");
       renderBudgetPage(doc,report,assets);
-      appendDetailPages(doc,report);
+      appendDetailPages(doc,report,true);
     });
     const summaryLayout=getBatchBudgetSummaryLayout(reports);
     doc.addPage([210,summaryLayout.pageH],"portrait");
