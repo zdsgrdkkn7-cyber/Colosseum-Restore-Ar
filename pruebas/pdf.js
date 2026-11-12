@@ -1157,7 +1157,7 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     const disclaimerLayout=getDisclaimerLayout(doc);
     doc.addPage([210,disclaimerLayout.pageH],"portrait");
     renderDisclaimerPage(doc);
-    const f=report.fields||{},card=(pdfSafeText(f.carta)||"carta").replace(/[^\\w\\-]+/g,"_"),date=(pdfSafeText(f.fecha)||new Date().toISOString().slice(0,10)).replace(/[^\\d\\-]+/g,"");
+    const f=report.fields||{},card=(pdfSafeText(f.carta)||"carta").replace(/[^\w\-]+/g,"_"),date=(pdfSafeText(f.fecha)||new Date().toISOString().slice(0,10)).replace(/[^\d\-]+/g,"");
     downloadPdfDoc(doc,`Presupuesto_${card}_${date}.pdf`);
     toast("PRESUPUESTO GENERADO");
   };
@@ -1179,7 +1179,7 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     const disclaimerLayout=getDisclaimerLayout(doc);
     doc.addPage([210,disclaimerLayout.pageH],"portrait");
     renderDisclaimerPage(doc);
-    const first=normalizePdfReport(reports[0]),client=(pdfSafeText(first.fields.cliente)||"cliente").replace(/[^\\w\\-]+/g,"_"),date=new Date().toISOString().slice(0,10);
+    const first=normalizePdfReport(reports[0]),client=(pdfSafeText(first.fields.cliente)||"cliente").replace(/[^\w\-]+/g,"_"),date=new Date().toISOString().slice(0,10);
     downloadPdfDoc(doc,`Presupuesto_Lote_${client}_${date}.pdf`);
     toast("PRESUPUESTO POR LOTE GENERADO");
   };
