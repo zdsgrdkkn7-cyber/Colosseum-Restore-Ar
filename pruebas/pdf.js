@@ -1110,18 +1110,26 @@ async function generateBatchBudget(rawReports,discountPercent=0){
       const boxH=88;drawBattleFrame(doc,8,y,194,boxH);
       doc.setTextColor(...amber);doc.setFontSize(6.5);
       if(budgetOnly){
-        doc.text("ESTADO INICIAL",105,y+8,{align:"center"});
-        // Budget only: one centered 4:3 before image, no after image.
-        addImageContain(doc,d.before,63,y+12,84,63);
+        // Budget: keep the original two-column layout; replace AFTER with the proposed work.
+        doc.text("ANTES",56,y+8,{align:"center"});
+        doc.text("TRABAJO PROPUESTO",154,y+8,{align:"center"});
+        addImageContain(doc,d.before,14,y+13,84,63);
+        doc.setDrawColor(...muted);doc.setLineWidth(.25);doc.rect(112,y+13,84,63,"S");
+        doc.setTextColor(...cream);doc.setFontSize(6.2);
+        const lines=doc.splitTextToSize(pdfSafeText(d.text||"Sin descripcion"),74);
+        const lineH=4.2,maxLines=14;
+        const visible=lines.slice(0,maxLines);
+        const startY=y+13+Math.max(7,(63-visible.length*lineH)/2)+3;
+        visible.forEach((line,j)=>doc.text(line,154,startY+j*lineH,{align:"center"}));
       }else{
         doc.text("ANTES",56,y+8,{align:"center"});doc.text("DESPUES",154,y+8,{align:"center"});
         addImageContain(doc,d.before,14,y+13,84,63);addImageContain(doc,d.after,112,y+13,84,63);
+        doc.setTextColor(...cream);doc.setFontSize(5.8);
+        let txt=pdfSafeText(d.text||"");
+        while(doc.getTextWidth(txt)>178 && doc.getFontSize()>4.2)doc.setFontSize(doc.getFontSize()-.2);
+        if(doc.getTextWidth(txt)>178)txt=doc.splitTextToSize(txt,178)[0];
+        doc.text(txt||" ",105,y+82,{align:"center"});
       }
-      doc.setTextColor(...cream);doc.setFontSize(5.8);
-      let txt=pdfSafeText(d.text||"");
-      while(doc.getTextWidth(txt)>178 && doc.getFontSize()>4.2)doc.setFontSize(doc.getFontSize()-.2);
-      if(doc.getTextWidth(txt)>178)txt=doc.splitTextToSize(txt,178)[0];
-      doc.text(txt||" ",105,y+82,{align:"center"});
       y+=96;
     });
   }
