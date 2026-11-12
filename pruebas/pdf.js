@@ -1127,7 +1127,7 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     for(let p=0;p<total;p++){
       const items=details.slice(p*perPage,p*perPage+perPage);
       const pageH=getDetailsPageHeight(items.length);
-      doc.addPage([210,pageH],"landscape");
+      doc.addPage([210,pageH],"portrait");
       renderDetailsPage(doc,report,items,p+1,total,pageH);
     }
   }
