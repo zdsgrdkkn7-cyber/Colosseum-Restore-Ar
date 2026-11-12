@@ -1178,7 +1178,7 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,470],compress:true});
     renderBudgetPage(doc,report,assets);
     appendDetailPages(doc,report,true);
-    doc.addPage([210,160],"portrait");
+    doc.addPage([210,160],"landscape");
     renderBudgetPricingPage(doc,report);
     const disclaimerLayout=getDisclaimerLayout(doc);
     doc.addPage([210,disclaimerLayout.pageH],"portrait");
@@ -1198,7 +1198,7 @@ async function generateBatchBudget(rawReports,discountPercent=0){
       if(idx>0)doc.addPage([210,470],"portrait");
       renderBudgetPage(doc,report,assets);
       appendDetailPages(doc,report,true);
-    doc.addPage([210,160],"portrait");
+    doc.addPage([210,160],"landscape");
     renderBudgetPricingPage(doc,report);
     });
     const summaryLayout=getBatchBudgetSummaryLayout(reports);
