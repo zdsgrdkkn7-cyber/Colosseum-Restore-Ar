@@ -576,7 +576,7 @@ function renderBudgetPage(doc,rawReport,assets){
   const report=normalizePdfReport(rawReport);
   const f=report.fields;
   const cream=[242,242,235],amber=[242,165,26],red=[232,48,48],muted=[150,150,145];
-  const W=210,H=620;
+  const W=210,H=470;
   paintPdfBackground(doc,W,H);
 
   // HEADER
@@ -628,9 +628,20 @@ function renderBudgetPage(doc,rawReport,assets){
   drawCenteredFrameTitle(doc,8,419,194,"GENERAL - ESTADO INICIAL");
   drawSingleRatingRows(doc,report,"extra",criteria.extra,26,437,160);
 
+
+}
+
+function renderBudgetPricingPage(doc,rawReport){
+  const report=normalizePdfReport(rawReport),f=report.fields;
+  const cream=[242,242,235],amber=[242,165,26],muted=[150,150,145];
+  paintPdfBackground(doc,210,160);
+  drawBattleFrame(doc,8,10,194,18);
+  drawCenteredFrameTitle(doc,8,10,194,"TRABAJOS PROPUESTOS Y COTIZACION");
+  doc.setFont("courier","bold");doc.setFontSize(6);doc.setTextColor(...cream);
+  doc.text(pdfSafeText(f.carta||"Carta"),105,24,{align:"center"});
   // WORK PROPOSED + PRICE
-  drawBattleFrame(doc,8,471,92,115);
-  drawCenteredFrameTitle(doc,8,471,92,"TRABAJOS PROPUESTOS");
+  drawBattleFrame(doc,8,36,92,115);
+  drawCenteredFrameTitle(doc,8,36,92,"TRABAJOS PROPUESTOS");
   const workLabels=[
     ["limpieza","Limpieza"],["bordes","Limpieza de bordes"],
     ["pliegues","Reparacion pliegues / creases"],["relaminado","Pegado / relaminado"],
@@ -638,7 +649,7 @@ function renderBudgetPage(doc,rawReport,assets){
   ];
   doc.setFont("courier","bold");doc.setFontSize(6.8);
   workLabels.forEach(([k,label],i)=>{
-    const yy=486+i*10.0;
+    const yy=51+i*10.0;
     drawPdfPokeball(doc,15,yy-1.2,1.55,!!report.work[k]);
     let shown=label;
     if(k==="otro"&&f.otroTrabajo)shown=`Otro: ${pdfSafeText(f.otroTrabajo)}`;
@@ -648,8 +659,8 @@ function renderBudgetPage(doc,rawReport,assets){
     doc.text(pdfMoney(getReportWorkPrice(k)),92,yy,{align:"right"});
   });
 
-  drawBattleFrame(doc,110,471,92,115);
-  drawCenteredFrameTitle(doc,110,471,92,"COTIZACION");
+  drawBattleFrame(doc,110,36,92,115);
+  drawCenteredFrameTitle(doc,110,36,92,"COTIZACION");
 
   const count=getReportWorkCount(report);
   const proposed=getReportWorkSubtotal(report);
@@ -660,31 +671,31 @@ function renderBudgetPage(doc,rawReport,assets){
 
   doc.setFontSize(7.4);
   doc.setTextColor(...cream);
-  doc.text("Trabajos propuestos",118,493);
-  doc.text(pdfMoney(proposed),194,493,{align:"right"});
+  doc.text("Trabajos propuestos",118,58);
+  doc.text(pdfMoney(proposed),194,58,{align:"right"});
   doc.setTextColor(...amber);
-  doc.text("Factor de responsabilidad",118,513);
+  doc.text("Factor de responsabilidad",118,78);
   doc.setTextColor(...cream);
-  doc.text(factorInfo.label,194,513,{align:"right"});
+  doc.text(factorInfo.label,194,78,{align:"right"});
 
   doc.setTextColor(...muted);doc.setFontSize(6.0);
-  doc.text("(en base al valor declarado)",118,520);
+  doc.text("(en base al valor declarado)",118,85);
 
   doc.setDrawColor(...cream);doc.setLineWidth(.35);
-  doc.line(118,535,194,535);
+  doc.line(118,100,194,100);
   doc.setTextColor(...amber);doc.setFontSize(8.8);
-  doc.text("PRECIO BASE",118,548);
-  doc.text("PRESUPUESTADO",118,557);
+  doc.text("PRECIO BASE",118,113);
+  doc.text("PRESUPUESTADO",118,122);
   doc.setFontSize(13);
   if(factorInfo.special && !savedBudget){
     doc.setFontSize(7.3);
-    doc.text("EVALUACION ESPECIAL",194,557,{align:"right"});
+    doc.text("EVALUACION ESPECIAL",194,122,{align:"right"});
   }else{
-    doc.text(pdfMoney(shownBudget),194,557,{align:"right"});
+    doc.text(pdfMoney(shownBudget),194,122,{align:"right"});
   }
 
   doc.setTextColor(...muted);doc.setFontSize(5.8);
-  doc.text("Precio minimo de restauracion: U$ 15",118,575);
+  doc.text("Precio minimo de restauracion: U$ 15",118,140);
 }
 
 function renderDisclaimerPage(doc){
@@ -1164,9 +1175,11 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     if(!window.jspdf?.jsPDF){alert("El motor PDF todavía no terminó de cargar. Revisá la conexión y probá nuevamente.");return;}
     autosaveDraft();
     const {jsPDF}=window.jspdf,assets=await loadReportPdfAssets(),report=collect();
-    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,620],compress:true});
+    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,470],compress:true});
     renderBudgetPage(doc,report,assets);
     appendDetailPages(doc,report,true);
+    doc.addPage([210,160],"portrait");
+    renderBudgetPricingPage(doc,report);
     const disclaimerLayout=getDisclaimerLayout(doc);
     doc.addPage([210,disclaimerLayout.pageH],"portrait");
     renderDisclaimerPage(doc);
@@ -1180,11 +1193,13 @@ async function generateBatchBudget(rawReports,discountPercent=0){
     const reports=(rawReports||[]).filter(Boolean);
     if(!reports.length){toast("NO HAY REPORTES SELECCIONADOS");return;}
     const {jsPDF}=window.jspdf,assets=await loadReportPdfAssets();
-    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,620],compress:true});
+    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:[210,470],compress:true});
     reports.forEach((report,idx)=>{
-      if(idx>0)doc.addPage([210,620],"portrait");
+      if(idx>0)doc.addPage([210,470],"portrait");
       renderBudgetPage(doc,report,assets);
       appendDetailPages(doc,report,true);
+    doc.addPage([210,160],"portrait");
+    renderBudgetPricingPage(doc,report);
     });
     const summaryLayout=getBatchBudgetSummaryLayout(reports);
     doc.addPage([210,summaryLayout.pageH],"portrait");
