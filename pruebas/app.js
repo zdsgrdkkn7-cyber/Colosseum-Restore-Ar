@@ -53,7 +53,7 @@ function getResponsibilityFactor(){
   if(value<=750)return {factor:1.50,label:"×1,50",special:false};
   if(value<=1000)return {factor:1.75,label:"×1,75",special:false};
   if(value<=1500)return {factor:2.00,label:"×2,00",special:false};
-  if(value<=2000)return {factor:3.00,label:"×3,00",special:false};
+  if(value<=4000)return {factor:3.00,label:"×3,00",special:false};
   return {factor:null,label:"EVALUACIÓN ESPECIAL",special:true};
 }
 
@@ -85,7 +85,7 @@ function updateBudgetPreview({force=false}={}){
 
   if(!state.budgetManualOverride && budgetEl){
     if(factorInfo.special){
-      // Above U$2,000 the table intentionally requires manual evaluation.
+      // Above U$4,000 the table intentionally requires manual evaluation.
       budgetEl.value="";
     }else{
       const suggested=count===0?0:Math.max(MIN_RESTORATION_PRICE,worksSubtotal*factorInfo.factor);
@@ -368,7 +368,7 @@ function initControls(){
      const budget=$("#precioPresupuestado");
      if(budget)budget.focus();
      updateBudgetPreview();
-     toast("VALOR > U$2000: EVALUACIÓN ESPECIAL");
+     toast("VALOR > U$4000: EVALUACIÓN ESPECIAL");
      return;
    }
    state.finalManualOverride=false;
