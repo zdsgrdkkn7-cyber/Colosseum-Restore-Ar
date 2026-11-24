@@ -291,8 +291,8 @@ function getDisclaimerLayout(doc){
   const rows=[
     ["Hasta U$50","x0,50"],["U$51 - 100","x0,75"],["U$101 - 250","x1,00"],
     ["U$251 - 500","x1,25"],["U$501 - 750","x1,50"],["U$751 - 1.000","x1,75"],
-    ["U$1.001 - 1.500","x2,00"],["U$1.501 - 2.000","x3,00"],
-    ["Mas de U$2.000","Evaluacion especial"]
+    ["U$1.001 - 1.500","x2,00"],["U$1.501 - 4.000","x3,00"],
+    ["Mas de U$4.000","Evaluacion especial"]
   ];
   const sections=[
     ["COTIZACION DEL SERVICIO",
@@ -538,7 +538,7 @@ function getBudgetFactorForValue(rawValue){
   if(v<=750)return {factor:1.50,label:"x1,50",special:false};
   if(v<=1000)return {factor:1.75,label:"x1,75",special:false};
   if(v<=1500)return {factor:2.00,label:"x2,00",special:false};
-  if(v<=2000)return {factor:3.00,label:"x3,00",special:false};
+  if(v<=4000)return {factor:3.00,label:"x3,00",special:false};
   return {factor:null,label:"EVALUACION ESPECIAL",special:true};
 }
 
