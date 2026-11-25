@@ -116,9 +116,10 @@
         records=[];
         const hashCache=new Map();
         for(const original of payload.records){
-          const record={...original,photos:{...(original.photos||{})}};
-          for(const key of ["frontBefore","frontAfter","backBefore","backAfter"]){
-            const ref=record.photos[key];if(!ref)continue;
+          const record=ColosseumMediaV201.cloneReport(original);
+          for(const {owner,key,path} of ColosseumMediaV201.slots(record)){
+            const ref=owner[key];if(!ref)continue;
+            if(!ColosseumMediaV201.isRef(ref)&&path.startsWith("restorationDetails.")&&typeof ref==="string"&&ref.startsWith("data:"))continue;
             if(!ref.filename||!ref.sha256||!/^([a-f0-9]{64})\.(jpg|png|webp|gif|bin)$/.test(ref.filename)||ref.filename.split(".")[0]!==ref.sha256)throw Error("Referencia de foto inválida.");
             const entry=byName.get("photos/"+ref.filename);
             if(!entry||entry.directory)throw Error("Falta la foto "+ref.filename);
@@ -133,7 +134,7 @@
               data="data:"+(ref.mime||"application/octet-stream")+";base64,"+btoa(binary);
               hashCache.set(ref.filename,data);
             }
-            record.photos[key]=data;
+            owner[key]=data;
           }
           records.push(record);
         }
