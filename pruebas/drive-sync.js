@@ -90,6 +90,14 @@ async function upload(){
  status("Buscando carpeta de Drive…");const root=await folder(FOLDER,null,true),photos=await folder(PHOTO_FOLDER,root,true);
  const manifest={format:"colosseum-split-backup",version:1,createdAt:new Date().toISOString(),database:DB,store:STORE,records:[],photoCount:0};
  try{manifest.folderPreferences=JSON.parse(localStorage.getItem("colosseumFolders_PRUEBAS_V1")||"null");}catch{}
+ // Read the current remote inventory once; it is the durable upload checkpoint.
+ const inventory=new Set();let page="";
+ do{
+  const url="https://www.googleapis.com/drive/v3/files?q="+q("'"+photos+"' in parents and trashed = false")+"&fields="+q("nextPageToken,files(name)")+"&page_size=1000"+(page?"&pageToken="+q(page):"");
+  const result=await (await api(url)).json();
+  for(const file of result.files||[])inventory.add(file.name);
+  page=result.nextPageToken||"";
+ }while(page);
  const done=new Set();let existing=0,uploaded=0;
  for(let i=0;i<reports.length;i++){
   status("Reporte "+(i+1)+"/"+reports.length+" · existentes "+existing+" · nuevas "+uploaded+"…");
@@ -97,14 +105,13 @@ async function upload(){
   manifest.records.push(part.manifest.records[0]);
   for(const f of part.files){
    if(done.has(f.filename))continue;
-   const found=await list(photos,f.filename);
-   if(!found.length){
+   if(!inventory.has(f.filename)){
     for(let attempt=0;;attempt++){
      try{await uploadBlob(f.filename,f.blob,f.mime,photos);uploaded++;break;}
      catch(e){if(attempt>=3||!connected()||/HTTP 4(?!29)/.test(e.message))throw e;await pause(1000*2**attempt);if((await list(photos,f.filename)).length){uploaded++;break;}}
     }
    }else existing++;
-   done.add(f.filename);
+   inventory.add(f.filename);done.add(f.filename);
    status("Reporte "+(i+1)+"/"+reports.length+" · existentes "+existing+" · nuevas "+uploaded);
   }
  }
