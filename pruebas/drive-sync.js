@@ -88,7 +88,11 @@ async function upload(){
  status("Publicando database.json…");
  // A manifest is only published after all its referenced images have uploaded.
  const old=await list(root,MANIFEST);
- await uploadBlob(MANIFEST,new Blob([JSON.stringify(manifest)],{type:"application/json"}),"application/json",root,old[0]?.id);
+ const manifestBlob=new Blob([JSON.stringify(manifest)],{type:"application/json"});
+ status("Publicando database.json ("+Math.ceil(manifestBlob.size/1024)+" KB)…");
+ const savedId=await uploadBlob(MANIFEST,manifestBlob,"application/json",root,old[0]?.id);
+ const saved=await (await api("https://www.googleapis.com/drive/v3/files/"+savedId+"?fields=id,size")).json();
+ if(saved.id!==savedId||Number(saved.size)!==manifestBlob.size)throw Error("No se pudo verificar el tamaño del JSON publicado.");
  status("Respaldo subido: "+reports.length+" reportes, "+done.size+" fotografías. Carpeta: "+FOLDER+".");
 }
 async function download(){
@@ -97,7 +101,7 @@ async function download(){
  const m=await list(root,MANIFEST);if(!m.length)throw Error("No se encontró database.json.");
  const manifest=await (await api("https://www.googleapis.com/drive/v3/files/"+m[0].id+"?alt=media")).json();
  if(manifest.format!=="colosseum-split-backup"||manifest.version!==1||!Array.isArray(manifest.records)||manifest.records.length>10000)throw Error("Formato de respaldo incompatible.");
- const keys=["frontBefore","frontAfter","backBefore","backAfter"];
+ const {cloneReport,slots,isRef}=ColosseumMediaV201;
  const local=await readDB(),byId=new Map(local.map(r=>[r.id,r])),seen=new Set();
  const photoCache=new Map(),needed=new Map(),pending=[];
  const stable=value=>{
@@ -120,19 +124,21 @@ async function download(){
   const remote=manifest.records[i];
   if(!remote||(typeof remote.id!=="string"&&typeof remote.id!=="number")||seen.has(remote.id))throw Error("ID de reporte inválido o duplicado.");
   seen.add(remote.id);
-  const previous=byId.get(remote.id),localCopy=previous?{...previous,photos:{...(previous.photos||{})}}:null;
-  const remoteCopy={...remote,photos:{...(remote.photos||{})}};
+  const previous=byId.get(remote.id),localCopy=previous?cloneReport(previous):null;
+  const remoteCopy=cloneReport(remote);
   status("Comparando reportes "+(i+1)+"/"+manifest.records.length+"…");
-  for(const key of keys){
-   const ref=remoteCopy.photos[key];
+  const localSlots=new Map(localCopy?slots(localCopy).map(s=>[s.path,s]):[]);
+  for(const {owner,key,path} of slots(remoteCopy)){
+   const ref=owner[key];
+   if(ref&&!isRef(ref)&&path.startsWith("restorationDetails.")&&typeof ref==="string"&&ref.startsWith("data:"))continue;
    if(ref){
     if(!ref.filename||!ref.sha256||!/^[a-f0-9]{64}\.(jpg|png|webp|gif|bin)$/.test(ref.filename)||ref.filename.split(".")[0]!==ref.sha256)throw Error("Referencia de fotografía inválida.");
    }
-   const old=localCopy?.photos[key];
+   const localSlot=localSlots.get(path),old=localSlot?.owner[localSlot.key];
    if(old){
     const info=await localPhoto(old);
     if(!photoCache.has(info.sha256))photoCache.set(info.sha256,info.data);
-    localCopy.photos[key]={fileId:null,filename:info.sha256+"."+({"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"}[info.mime]||"bin"),sha256:info.sha256,mime:info.mime,size:info.size};
+    localSlot.owner[localSlot.key]={fileId:null,filename:info.sha256+"."+({"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"}[info.mime]||"bin"),sha256:info.sha256,mime:info.mime,size:info.size};
    }
    if(ref&&!photoCache.has(ref.sha256))needed.set(ref.filename,ref);
   }
@@ -142,8 +148,8 @@ async function download(){
  const newCount=pending.filter(r=>!byId.has(r.id)).length,updated=pending.length-newCount,unchanged=manifest.records.length-pending.length;
  // Only fetch photos referenced by records that will actually be imported.
  const missing=new Map();
- for(const record of pending)for(const key of keys){
-  const ref=record.photos?.[key];if(ref&&!photoCache.has(ref.sha256))missing.set(ref.filename,ref);
+ for(const record of pending)for(const {owner,key} of slots(record)){
+  const ref=owner[key];if(isRef(ref)&&!photoCache.has(ref.sha256))missing.set(ref.filename,ref);
  }
  if(!pending.length){
   status("Drive actualizado: "+unchanged+" reportes sin cambios. No se descargaron fotografías.");
@@ -183,14 +189,14 @@ async function download(){
  const skipped=[];
  const records=[];
  for(const original of pending){
-  const absent=keys.map(key=>original.photos?.[key]).filter(ref=>ref&&!photoCache.has(ref.sha256));
+  const absent=slots(original).map(({owner,key})=>owner[key]).filter(ref=>isRef(ref)&&!photoCache.has(ref.sha256));
   if(absent.length){
    skipped.push({id:original.id,client:original.clientName||original.client||original.customer||original.cliente||"",card:original.cardName||original.card||original.carta||"",files:absent.map(ref=>ref.filename)});
    continue; // Never import an incomplete report or overwrite existing local photos.
   }
-  const record={...original,photos:{...(original.photos||{})}};
-  for(const key of keys){
-   const ref=record.photos[key];if(ref)record.photos[key]=photoCache.get(ref.sha256);
+  const record=cloneReport(original);
+  for(const {owner,key} of slots(record)){
+   const ref=owner[key];if(isRef(ref))owner[key]=photoCache.get(ref.sha256);
   }
   records.push(record);
  }
