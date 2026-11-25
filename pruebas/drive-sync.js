@@ -33,9 +33,28 @@ function buttons(){
  }
 }
 function auth(){if(!window.google?.accounts?.oauth2)throw Error("No cargó Google Identity Services");if(client)return;client=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:r=>{if(r.error){status("Autorización fallida: "+r.error);return;}token=r.access_token;expires=Date.now()+(Number(r.expires_in)||3600)*1000;saveSession();status("Conectado. Podés subir o recuperar un respaldo OFICIAL.");buttons();}});}
+let wake=null;
+async function keepAwake(){if(!busy||document.visibilityState!=="visible"||wake&&!wake.released)return;try{wake=await navigator.wakeLock?.request("screen");}catch{}}
+document.addEventListener("visibilitychange",()=>{if(busy)keepAwake();});
+const pause=ms=>new Promise(r=>setTimeout(r,ms));
+const CACHE_DB="colosseumTransferCache_V1";
+async function cacheOp(mode,fn){
+ const db=await new Promise((ok,no)=>{const r=indexedDB.open(CACHE_DB,1);r.onupgradeneeded=()=>r.result.createObjectStore("photos");r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error);});
+ try{return await new Promise((ok,no)=>{const tx=db.transaction("photos",mode),r=fn(tx.objectStore("photos"));tx.oncomplete=()=>ok(r.result);tx.onabort=()=>no(tx.error);tx.onerror=()=>no(tx.error);});}finally{db.close();}
+}
+async function cachedPhoto(key){try{return await cacheOp("readonly",s=>s.get(key));}catch{return null;}}
+async function savePhoto(key,blob){try{await cacheOp("readwrite",s=>s.put(blob,key));}catch{}}
 async function api(url,opts={}){
  if(!connected())throw Error("La sesión de Google venció. Tocá CONECTAR GOOGLE DRIVE.");
- const res=await fetch(url,{...opts,headers:{Authorization:"Bearer "+token,...opts.headers}});
+ let res;
+ const safe=!opts.method||opts.method==="GET"||opts.method==="PATCH";
+ for(let attempt=0;;attempt++){
+  if(!connected())throw Error("La sesión de Google venció. Reconectá Drive y retomá.");
+  try{res=await fetch(url,{...opts,headers:{Authorization:"Bearer "+token,...opts.headers}});}
+  catch(e){if(!safe||attempt>=3)throw e;await pause(1000*2**attempt);continue;}
+  if(safe&&attempt<3&&(res.status===429||res.status>=500)){await pause(1000*2**attempt);continue;}
+  break;
+ }
  if(!res.ok){let details="";try{details=(await res.text()).slice(0,250);}catch{}throw Error("Drive HTTP "+res.status+": "+details);}
  return res;
 }
@@ -71,16 +90,22 @@ async function upload(){
  status("Buscando carpeta de Drive…");const root=await folder(FOLDER,null,true),photos=await folder(PHOTO_FOLDER,root,true);
  const manifest={format:"colosseum-split-backup",version:1,createdAt:new Date().toISOString(),database:DB,store:STORE,records:[],photoCount:0};
  try{manifest.folderPreferences=JSON.parse(localStorage.getItem("colosseumFolders_PRUEBAS_V1")||"null");}catch{}
- const done=new Set();
+ const done=new Set();let existing=0,uploaded=0;
  for(let i=0;i<reports.length;i++){
-  status("Subiendo fotos del reporte "+(i+1)+"/"+reports.length+"…");
+  status("Reporte "+(i+1)+"/"+reports.length+" · existentes "+existing+" · nuevas "+uploaded+"…");
   const part=await ColosseumMediaV201.split([reports[i]]);
   manifest.records.push(part.manifest.records[0]);
   for(const f of part.files){
    if(done.has(f.filename))continue;
    const found=await list(photos,f.filename);
-   if(!found.length)await uploadBlob(f.filename,f.blob,f.mime,photos);
+   if(!found.length){
+    for(let attempt=0;;attempt++){
+     try{await uploadBlob(f.filename,f.blob,f.mime,photos);uploaded++;break;}
+     catch(e){if(attempt>=3||!connected()||/HTTP 4(?!29)/.test(e.message))throw e;await pause(1000*2**attempt);if((await list(photos,f.filename)).length){uploaded++;break;}}
+    }
+   }else existing++;
    done.add(f.filename);
+   status("Reporte "+(i+1)+"/"+reports.length+" · existentes "+existing+" · nuevas "+uploaded);
   }
  }
  manifest.photoCount=done.size;
@@ -167,6 +192,9 @@ async function download(){
    status("Verificando fotografía "+(++i)+"/"+missing.size+"…");
    try{
     if(!photos)throw Error("Carpeta photos no disponible");
+    let blob=await cachedPhoto(root+":"+ref.sha256);
+    if(blob&&await hash(await blob.arrayBuffer())!==ref.sha256)blob=null;
+    if(!blob){
     let found=await list(photos,name);
     if(!found.length){
      // Older imported manifests inserted a separator in the SHA-256 filename.
@@ -176,9 +204,11 @@ async function download(){
      if(canonical!==name)found=await list(photos,canonical);
     }
     if(!found.length)throw Error("Archivo no encontrado (se probaron ambos formatos de nombre)");
-    const blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
+    blob=await (await api("https://www.googleapis.com/drive/v3/files/"+found[0].id+"?alt=media")).blob();
+    }
     const bytes=new Uint8Array(await blob.arrayBuffer());
     if(await hash(bytes)!==ref.sha256)throw Error("Verificación de integridad fallida");
+    await savePhoto(root+":"+ref.sha256,blob);
     let binary="";for(let j=0;j<bytes.length;j+=8192)binary+=String.fromCharCode(...bytes.subarray(j,j+8192));
     photoCache.set(ref.sha256,"data:"+(ref.mime||"application/octet-stream")+";base64,"+btoa(binary));
    }catch(e){
@@ -213,10 +243,11 @@ async function download(){
   alert(summary);
  }
 }
-async function run(action){if(busy)return;busy=true;buttons();try{await action();}catch(e){status("Error: "+e.message);alert("Google Drive: "+e.message);}finally{busy=false;buttons();}}
+async function run(action){if(busy)return;busy=true;buttons();const key="colosseumTransferPending_V1";try{localStorage.setItem(key,action===upload?"export":"import");}catch{}try{await keepAwake();await action();try{localStorage.removeItem(key);}catch{}}catch(e){status("Interrumpido: "+e.message+" · Volvé a iniciar la transferencia para retomar.");alert("Google Drive: "+e.message+"\nPodés retomar desde el mismo botón.");}finally{busy=false;try{await wake?.release();}catch{}wake=null;buttons();}}
 window.ColosseumDrive=Object.freeze({connected,upload:()=>run(upload),download:()=>run(download)});
 function init(){
  restoreSession();
+ try{const pending=localStorage.getItem("colosseumTransferPending_V1");if(pending)status("Transferencia anterior interrumpida. Reconectá si hace falta y tocá "+(pending==="export"?"EXPORTAR":"IMPORTAR")+" para retomar.");}catch{}
  const connect=$("driveConnectBtn");if(!connect)return;
  connect.onclick=()=>{
   if(connected()){
