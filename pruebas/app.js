@@ -248,6 +248,17 @@ function updateRemitoControls(){
 function db(){return new Promise((resolve,reject)=>{const r=indexedDB.open("colosseumRestoration_PRUEBAS",1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains("reports"))r.result.createObjectStore("reports",{keyPath:"id"})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 async function saveReport(){const now=new Date();const localDate=[now.getFullYear(),String(now.getMonth()+1).padStart(2,"0"),String(now.getDate()).padStart(2,"0")].join("-");const dateInput=$("#fecha");if(dateInput)dateInput.value=localDate;const data=collect();data.fields.fecha=localDate;if(!data.id)data.id=crypto.randomUUID();data.updatedAt=new Date().toISOString();if(typeof assignReportFolder==="function")assignReportFolder(data);state.clientFolder=data.clientFolder;state.lotFolder=data.lotFolder;state.id=data.id;const d=await db();await new Promise((res,rej)=>{const tx=d.transaction("reports","readwrite");tx.objectStore("reports").put(data);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});autosaveDraft();toast("REPORTE GUARDADO")}
 async function listReports(){const d=await db();return await new Promise((res,rej)=>{const r=d.transaction("reports","readonly").objectStore("reports").getAll();r.onsuccess=()=>res(r.result.sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||"")));r.onerror=()=>rej(r.error)})}
+async function getFullReport(id){
+ const d=await db();try{return await new Promise((res,rej)=>{const q=d.transaction("reports","readonly").objectStore("reports").get(id);q.onsuccess=()=>q.result?res(q.result):rej(new Error("Reporte no encontrado"));q.onerror=()=>rej(q.error)})}finally{d.close()}
+}
+async function listHistoryMetadata(){
+ const d=await db();try{return await new Promise((res,rej)=>{
+ const rows=[];const q=d.transaction("reports","readonly").objectStore("reports").openCursor();
+ q.onsuccess=()=>{const cur=q.result;if(!cur){res(rows.sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||"")));return;}
+ const r=cur.value;const f=r.fields||{};rows.push({id:r.id,updatedAt:r.updatedAt,clientFolder:r.clientFolder,lotFolder:r.lotFolder,fields:{cliente:f.cliente,lote:f.lote,carta:f.carta,fecha:f.fecha,precioTrabajo:f.precioTrabajo}});cur.continue();};q.onerror=()=>rej(q.error);
+ })}finally{d.close()}
+}
+async function loadSelectedFullReports(rows){const out=[];for(const r of rows)out.push(await getFullReport(r.id));return out;}
 async function deleteReport(id){
  const d=await db();
  await new Promise((res,rej)=>{
@@ -264,7 +275,7 @@ async function renderHistory(){
  const list=$("#historyList");
  if(!list)return;
  list.innerHTML="";
- historyReports=await listReports();
+ historyReports=await listHistoryMetadata();
 
  // Drop selections for reports that no longer exist.
  const validIds=new Set(historyReports.map(r=>r.id));
@@ -303,8 +314,8 @@ async function renderHistory(){
 
    const open=document.createElement("button");
    open.textContent="ABRIR";
-   open.onclick=()=>{
-     apply(r);
+   open.onclick=async()=>{
+     apply(await getFullReport(r.id));
      $("#historyDialog").close();
      autosaveDraft();
    };
@@ -335,7 +346,7 @@ async function createSelectedRemito(){
    toast("GENERADOR DE REMITO NO DISPONIBLE");
    return;
  }
- await generateRemito(reports,discount);
+ await generateRemito(await loadSelectedFullReports(reports),discount);
 }
 
 function initControls(){
