@@ -739,8 +739,12 @@ function renderDisclaimerPage(doc){
   });
 }
 
+function getRemitoSummaryHeight(reports){
+  return Math.max(620,106+28+reports.length*17+12+108+58+18);
+}
+
 function renderRemitoSummaryPage(doc,reports,discountPercent,assets){
-  const W=210,H=620;
+  const W=210,H=getRemitoSummaryHeight(reports);
   const cream=[242,242,235],amber=[242,165,26],red=[232,48,48],muted=[150,150,145];
   paintPdfBackground(doc,W,H);
 
@@ -1001,8 +1005,9 @@ async function generateRemito(rawReports,discountPercent=0){
     renderReportPage(doc,report,assets);
   });
 
-  doc.addPage([210,620],"portrait");
+  doc.addPage([210,getRemitoSummaryHeight(reports)],"portrait");
   renderRemitoSummaryPage(doc,reports,discountPercent,assets);
+  const disclaimerLayout=getDisclaimerLayout(doc);doc.addPage([210,disclaimerLayout.pageH],"portrait");renderDisclaimerPage(doc);
 
   const first=normalizePdfReport(reports[0]);
   const client=(pdfSafeText(first.fields.cliente)||"cliente").replace(/[^\w\-]+/g,"_");
@@ -1222,7 +1227,8 @@ async function generateBatchBudget(rawReports,discountPercent=0){
       const layout=getFinalReportLayout(report);if(idx>0)doc.addPage([210,layout.pageH],"portrait");
       renderReportPage(doc,report,assets);appendDetailPages(doc,report);
     });
-    doc.addPage([210,620],"portrait");renderRemitoSummaryPage(doc,reports,discountPercent,assets);
+    doc.addPage([210,getRemitoSummaryHeight(reports)],"portrait");renderRemitoSummaryPage(doc,reports,discountPercent,assets);
+    const disclaimerLayout=getDisclaimerLayout(doc);doc.addPage([210,disclaimerLayout.pageH],"portrait");renderDisclaimerPage(doc);
     const first=normalizePdfReport(reports[0]),client=(pdfSafeText(first.fields.cliente)||"cliente").replace(/[^\w\-]+/g,"_"),date=(pdfSafeText(first.fields.fecha)||new Date().toISOString().slice(0,10)).replace(/[^\d\-]+/g,"");
     downloadPdfDoc(doc,`Remito_${client}_${date}.pdf`);toast("REMITO GENERADO");
   };
