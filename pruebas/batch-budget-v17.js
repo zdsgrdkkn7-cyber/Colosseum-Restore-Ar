@@ -14,7 +14,7 @@
     let discount=Number.parseFloat(discountEl?.value||"0"); if(!Number.isFinite(discount))discount=0; discount=Math.max(0,Math.min(100,discount));
     if(discountEl)discountEl.value=String(discount);
     if(typeof generateBatchBudget!=="function"){toast("GENERADOR DE PRESUPUESTO POR LOTE NO DISPONIBLE");return;}
-    await generateBatchBudget(reports,discount);
+    await generateBatchBudget(await loadSelectedFullReports(reports),discount);
   }
   document.addEventListener("DOMContentLoaded",()=>{
     const btn=document.getElementById("batchBudgetBtn"); if(btn)btn.onclick=()=>createSelectedBatchBudget().catch(e=>{console.error(e);toast("ERROR AL GENERAR PRESUPUESTO")});
